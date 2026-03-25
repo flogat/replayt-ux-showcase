@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- _(Add user-visible changes here; move bullets into a version section when you release.)_
+- Defined project mission (users, Replayt role, scope, success metrics with CI tests) in MISSION.md.
+- Initial polished demo: basic-player.html (vanilla JS replay player).
+- Explicit contracts in DESIGN_PRINCIPLES.md: supported replayt/frameworks versions.
 
 ## [0.1.0] - 2026-03-25
 

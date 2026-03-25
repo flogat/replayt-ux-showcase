@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt Basic Player Demo</title>
+    <!-- Assume replayt player CDN; replace with npm/your bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        #player { width: 100%; height: 60vh; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .instructions { background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Basic Replayt Player</h1>
+    <div class="instructions">
+        <p><strong>Copy-paste ready:</strong> Embed in your app. Fetch <code>sessionData</code> from replayt backend API.</p>
+        <ul>
+            <li>Theme via CSS vars (e.g., <code>--replayt-primary: #007bff;</code>)</li>
+            <li>Extend: Add timeline scrubber via replayt events API.</li>
+        </ul>
+    </div>
+    <div id="player"></div>
+    <script>
+        // Placeholder: Fetch real data e.g. fetch('/api/sessions/:id/replay')
+        const sessionData = {
+            events: [],  // Replayt event array
+            metadata: { startTs: Date.now(), viewport: { width: 1920, height: 1080 } }
+            // Full schema: see replayt docs
+        };
+
+        // Init player (assumed API; match your replayt version)
+        window.replayt?.player?.init({
+            container: document.getElementById('player'),
+            data: sessionData,
+            theme: 'light'  // 'dark' supported
+        });
+    </script>
+</body>
+</html>
