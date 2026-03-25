@@ -39,5 +39,5 @@ _Novel composition of replayt + other tools._
 
 ## Your choice
 
-- **Primary pattern:** _(1–4 or short name)_
-- **One-paragraph pitch:** _
+- **Primary pattern:** 1) Core-gap
+- **One-paragraph pitch:** Replayt core excels at session capture and replay primitives but intentionally omits polished frontend UI patterns and design-engineering handoff materials to stay backend-focused. This repo fills that gap with copy-pasteable demos (e.g., timeline players, event overlays), themeable components for React/Vue/Svelte, Figma design kits, and a playbook (checklists, tokens) ensuring pixel-perfect handoffs from design to code. Replayt releases are tracked via a compatibility matrix (docs/) and CI matrix tests across pinned versions; upstream changes trigger re-tests/shims here (consumer-side maintenance).
