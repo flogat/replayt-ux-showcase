@@ -1,14 +1,26 @@
 # Mission: Polished demos and UI patterns for replayt integrators with design-engineering handoff playbook
 
-Fill this in as the **maintainer** of this project. See [REPLAYT_ECOSYSTEM_IDEA.md](REPLAYT_ECOSYSTEM_IDEA.md) for
-positioning options.
+See [REPLAYT_ECOSYSTEM_IDEA.md](REPLAYT_ECOSYSTEM_IDEA.md) for positioning.
 
-## Draft prompts
+## Users / problem
 
-- **Users / problem:** Who benefits and what pain does this remove?
-- **Replayt's role:** Which replayt capabilities you rely on; what stays **consumer-side** (you maintain compatibility
-  in this repo, not inside replayt core).
-- **Scope:** What this package owns vs what it delegates upstream.
-- **Success:** Concrete outcomes, including **automated tests** in CI.
+Replayt integrators (frontend devs/teams embedding session replay in dashboards/apps). Pain removed: No polished, themeable UI patterns (timelines, overlays, players) or design-dev handoff playbook, forcing reinvention and pixel-misaligned handoffs.
 
-_Remove this section when the mission is written._
+## Replayt's role
+
+Relies on replayt core primitives: session capture, event data, replay APIs/player. Consumer-side maintenance here: version pins, shims, CI integration tests (not in replayt core).
+
+## Scope
+
+Owns:
+- Copy-pasteable demos/snippets: timeline players, event overlays (vanilla JS, React/Vue/Svelte).
+- Design kits: Figma files/tokens.
+- Playbook: checklists/tokens for design-to-code handoff.
+
+Delegates upstream: core capture/replay logic.
+
+## Success
+
+- CI automated tests: Demos render/load across supported replayt versions (smoke/integration via pytest + browser automation); compatibility matrix green.
+- Playbook: Handovers pass checklist (<1 dev-day).
+- Coverage: 5+ patterns; tracked via CHANGELOG/compat docs.
