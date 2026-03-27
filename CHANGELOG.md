@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Pytest contract checks: `pyproject.toml` replayt pin and `requires-python`, CI Python version, and required headings in `docs/DESIGN_PRINCIPLES.md` stay consistent with the documented matrices (phase 3 backlog).
 - Expanded `docs/DESIGN_PRINCIPLES.md` with canonical “one way” patterns, module boundaries, replayt/showcase version matrices, extension points, deprecation and migration policy, LLM boundaries, and extended audience table (spec-only refinement, phase 2 backlog).
 - Defined project mission (users, Replayt role, scope, success metrics with CI tests) in MISSION.md.
 - Initial polished demo: basic-player.html (vanilla JS replay player).
