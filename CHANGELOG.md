@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial polished demo: basic-player.html (vanilla JS replay player).
 - Explicit contracts in DESIGN_PRINCIPLES.md: supported replayt/frameworks versions.
 - `demo.py`: console timeline renderer (`python -m replayt_ux_showcase.demo`) with sample session data (12 events, 30s).
+- Refined `docs/demo.md` spec: added replayt primitives usage notes, expanded test plan with 5 test cases, integration notes.
 
 ## [0.1.0] - 2026-03-25
 
