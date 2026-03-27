@@ -4,12 +4,11 @@
 
 This project builds on **[replayt](https://pypi.org/project/replayt/)**. Read
 **[docs/REPLAYT_ECOSYSTEM_IDEA.md](docs/REPLAYT_ECOSYSTEM_IDEA.md)** for positioning prompts, then
-**[docs/MISSION.md](docs/MISSION.md)** for scope and goals (stubs until you flesh them out).
+**[docs/MISSION.md](docs/MISSION.md)** for scope and goals.
 
 ## Design principles
 
-**[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)** covers **replayt** compatibility, versioning, and (for showcases)
-**LLM** boundaries.
+**[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)** is the canonical contract for **replayt** and Python support matrices, extension points, deprecation policy, and **LLM** boundaries.
 
 
 ## Reference documentation
