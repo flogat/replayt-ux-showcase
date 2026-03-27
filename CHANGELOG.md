@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `tests/test_design_principles_contract.py`: asserts replayt API boundary subsection, packaged **`replayt_ux_showcase`** extension row, and release/automation audience rows; traceability table in `docs/DESIGN_PRINCIPLES.md` lists these checks (phase 3, Expand DESIGN_PRINCIPLES.md with canonical patterns).
 - `docs/DESIGN_PRINCIPLES.md`: traceability to `tests/test_design_principles_contract.py`, explicit **replayt** Python API boundary, extension point for packaged **`replayt_ux_showcase`** surface, and audience rows for release consumers and LLM/automation tooling (phase 2, Expand DESIGN_PRINCIPLES.md with canonical patterns).
 - `docs/REPLAYT_ECOSYSTEM_IDEA.md` pitch: compatibility and CI wording matches **DESIGN_PRINCIPLES.md** (supported vs verified-in-CI, pytest contract). Minor wording in **DESIGN_PRINCIPLES.md** (showcase matrix) and **docs/demo.md** (phase 5 backlog review).
 

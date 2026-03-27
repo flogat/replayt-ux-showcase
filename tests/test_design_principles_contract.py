@@ -40,3 +40,19 @@ def test_design_principles_has_matrix_and_audience_headings() -> None:
         "## Audience",
     ):
         assert heading in text, f"missing section: {heading}"
+
+
+def test_design_principles_has_replayt_api_boundary_subsection() -> None:
+    text = (REPO_ROOT / "docs" / "DESIGN_PRINCIPLES.md").read_text(encoding="utf-8")
+    assert "### replayt Python API boundary" in text
+
+
+def test_design_principles_extension_points_include_packaged_showcase() -> None:
+    text = (REPO_ROOT / "docs" / "DESIGN_PRINCIPLES.md").read_text(encoding="utf-8")
+    assert "**`replayt_ux_showcase`** entrypoints" in text
+
+
+def test_design_principles_audience_includes_release_and_automation_rows() -> None:
+    text = (REPO_ROOT / "docs" / "DESIGN_PRINCIPLES.md").read_text(encoding="utf-8")
+    assert "**Release / tag consumers**" in text
+    assert "**Automation agents (LLM tooling)**" in text

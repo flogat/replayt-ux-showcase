@@ -25,6 +25,9 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`replayt`** dependency lower bound matches that matrix | Same |
 | CI **Python** version in `.github/workflows/ci.yml` matches that matrix | Same |
 | Section headings for the two matrices, extension points, and audience | Same |
+| Subsection **replayt Python API boundary** under [Module and directory boundaries](#module-and-directory-boundaries) | Same |
+| Extension points row for packaged **`replayt_ux_showcase`** surface | Same |
+| Audience rows for **Release / tag consumers** and **Automation agents (LLM tooling)** | Same |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
