@@ -15,6 +15,20 @@ is tracked separately in code and CHANGELOG):
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
 
+### Traceability to automated checks
+
+These alignments are **enforced in CI** today (the principles doc is broader):
+
+| Check | Enforced by |
+| ----- | ----------- |
+| `requires-python` matches the Python row in [Replayt and Python matrix](#replayt-and-python-matrix) | `tests/test_design_principles_contract.py` |
+| **`replayt`** dependency lower bound matches that matrix | Same |
+| CI **Python** version in `.github/workflows/ci.yml` matches that matrix | Same |
+| Section headings for the two matrices, extension points, and audience | Same |
+
+When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
+unless the test is being retired on purpose.
+
 ---
 
 ## One way to do it (canonical patterns)
@@ -44,6 +58,13 @@ is tracked separately in code and CHANGELOG):
 
 **Dependency direction:** showcase code and tests **→** **replayt** (PyPI). Demos may document how integrators pull
 **replayt** in their own apps; this repo does not re-export **replayt** as a different product.
+
+### replayt Python API boundary
+
+- Depend on **replayt** only through its **published** PyPI package and **documented** public surface (release notes,
+  upstream reference docs). Do not rely on private modules, underscore-prefixed internals, or undocumented symbols.
+- Workflow or mock-LLM helpers from **replayt** are allowed only when they stay **offline** and **deterministic** in
+  default CI, per [LLM boundaries](#llm-boundaries).
 
 ---
 
@@ -81,6 +102,7 @@ What integrators and maintainers may rely on or extend:
 | -------- | ----------------- | ---------------------- |
 | **Integrators** | Static files under **`docs/examples/`** as copy-paste starting points | Examples may gain features; breaking filename or contract changes follow [Deprecation and removal](#deprecation-and-removal) |
 | **Integrators** | **replayt** APIs used in examples (imports, session/event shapes) | Governed by **replayt** semver and this repo’s stated supported range |
+| **Integrators** | **`replayt_ux_showcase`** entrypoints and helpers described in README or package docs as stable | SemVer for behavior; breaking CLI or import paths follow [Deprecation and removal](#deprecation-and-removal) |
 | **Maintainers** | New pytest coverage and optional CI matrix dimensions | Internal to repo; must keep logs and exit codes obvious ([Observable automation](#principles)) |
 | **Maintainers** | Optional **`docs/reference-documentation/`** snapshots | Contributor convenience only; not a substitute for upstream docs |
 
@@ -150,3 +172,5 @@ metering in CI.
 | **Contributors** | README, tests, coding expectations, directory boundaries, “one way to do it” for new examples |
 | **Design / DX** | Tokens and handoff checklist alignment (playbook docs); clarity on what is example-only vs maintained API |
 | **Security / compliance** | No secrets in repo; LLM and third-party boundaries; supply-chain audit expectations in CI |
+| **Release / tag consumers** | SemVer and CHANGELOG for removals; matrix “policy vs CI” truth at the version they pin |
+| **Automation agents (LLM tooling)** | Respect [LLM boundaries](#llm-boundaries); treat this file and `tests/` as normative for boundaries—do not invent alternate package layouts or secret-handling rules |
