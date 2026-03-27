@@ -29,10 +29,9 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Subsection **replayt Python API boundary** under [Module and directory boundaries](#module-and-directory-boundaries) | Same |
 | Extension points row for packaged **`replayt_ux_showcase`** surface | Same |
 | Audience rows for **Release / tag consumers** and **Automation agents (LLM tooling)** | Same |
-
-**Builder follow-up:** when implementing [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain), extend
-`tests/test_design_principles_contract.py` so each direct line in **`[project.optional-dependencies].dev`** (and
-**`[project].dependencies`**, if useful) carries a PEP 508 version constraint—keeping the table above accurate.
+| Each line in **`[project].dependencies`** and **`[project.optional-dependencies].dev`** carries a PEP 508 version constraint | Same |
+| **`[build-system].requires`** entries carry a PEP 508 version constraint | Same |
+| **`replayt` is importable** after install (integration smoke) | Same |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -81,8 +80,8 @@ unless the test is being retired on purpose.
 ## Dependency pins and dev toolchain
 
 Normative spec for pinning **replayt** and contributor **dev** dependencies in **`pyproject.toml`** (consumer-side
-constraints; integration boundaries). Implementation and any new contract tests ship in the Builder phase; this section
-is what “done” means.
+constraints; integration boundaries). **`pyproject.toml`** and `tests/test_design_principles_contract.py` implement
+this section; it is what “done” means.
 
 ### Goals
 
@@ -143,7 +142,7 @@ when additional cells become required.
 
 | Dimension | Supported (policy) | Verified in CI today | Migration / notes |
 | --------- | ------------------- | -------------------- | ------------------ |
-| **replayt** (PyPI) | Lower bound (and optional upper bound) per `[project].dependencies` in `pyproject.toml`; MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | Latest version resolved on `pip install -e ".[dev]"` (see lock-free installs in CI logs) | Tightening or widening the declared range is a maintainer decision: update this cell, contract tests, and **CHANGELOG** together; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
+| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` in `[project].dependencies` (PEP 508); MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | Latest **replayt** allowed by that range on `pip install -e ".[dev]"` (see lock-free installs in CI logs) | The `<0.5` cap excludes 0.5+ until maintainers widen the range after compatibility checks; any change to bounds updates this cell, contract tests, and **CHANGELOG** together; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
 | **Python** | `>=3.11` per `requires-python` | **3.12** on `ubuntu-latest` (`.github/workflows/ci.yml`) | Adding 3.11 to the matrix is optional; document if parity is required for integrators |
 
 ---

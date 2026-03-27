@@ -7,17 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Documentation
-
-- `docs/DESIGN_PRINCIPLES.md`: dependency pin and dev-toolchain acceptance criteria (PEP 508 vs caret wording, no loose direct deps, dev optional set table, traceability for future contract tests) for backlog “Pin replayt dependency and dev tools in pyproject.toml” (phase 2 spec).
-
 ### Changed
 
+- `pyproject.toml`: **replayt** bounded to `>=0.1.0,<0.5.0` (PEP 508); `tests/test_design_principles_contract.py` enforces version constraints on **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`**, plus **replayt** import smoke (phase 3, Pin replayt dependency and dev tools in pyproject.toml).
+- `docs/DESIGN_PRINCIPLES.md`: **Replayt and Python matrix** and traceability table aligned with the declared **replayt** range and new contract checks (same backlog).
+- `docs/demo.md`: implementation and integration notes reference the same **replayt** PEP 508 range as `pyproject.toml` (same backlog).
 - `tests/test_design_principles_contract.py`: asserts replayt API boundary subsection, packaged **`replayt_ux_showcase`** extension row, and release/automation audience rows; traceability table in `docs/DESIGN_PRINCIPLES.md` lists these checks (phase 3, Expand DESIGN_PRINCIPLES.md with canonical patterns).
 - `docs/DESIGN_PRINCIPLES.md`: traceability to `tests/test_design_principles_contract.py`, explicit **replayt** Python API boundary, extension point for packaged **`replayt_ux_showcase`** surface, and audience rows for release consumers and LLM/automation tooling (phase 2, Expand DESIGN_PRINCIPLES.md with canonical patterns).
 - `docs/REPLAYT_ECOSYSTEM_IDEA.md` pitch: compatibility and CI wording matches **DESIGN_PRINCIPLES.md** (supported ranges vs verified-in-CI, pytest contract) (phase 5, architect review, Expand DESIGN_PRINCIPLES.md with canonical patterns).
 - `docs/demo.md`: integration notes label matches principle names in **DESIGN_PRINCIPLES.md** (phase 5, same backlog).
 - `README.md`: **MISSION.md** is no longer described as stub content (phase 5, same backlog).
+
+### Documentation
+
+- `docs/DESIGN_PRINCIPLES.md`: dependency pin and dev-toolchain acceptance criteria (PEP 508 vs caret wording, no loose direct deps, dev optional set table, traceability for future contract tests) for backlog “Pin replayt dependency and dev tools in pyproject.toml” (phase 2 spec).
 
 ### Added
 

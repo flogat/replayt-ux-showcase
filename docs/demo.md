@@ -100,7 +100,7 @@ Renders ASCII timeline to console via logging.
 
 - No network I/O
 - No GUI/file I/O
-- No external deps beyond `replayt >=0.1.0` (declared in pyproject.toml)
+- No external deps beyond **replayt** as pinned in `pyproject.toml` (`>=0.1.0,<0.5.0`)
 - Follow DESIGN_PRINCIPLES.md: small surface, observable logs
 
 ## Test Plan (Phase 4)
@@ -115,7 +115,7 @@ Renders ASCII timeline to console via logging.
 
 ## Integration Notes
 
-- **Version compatibility**: Tested against `replayt >=0.1.0`
+- **Version compatibility**: Tested against **replayt** in the `pyproject.toml` range `>=0.1.0,<0.5.0`
 - **No runtime dependency**: Module imports without replayt installed (stdlib only)
 - **Design principles**: Matches DESIGN_PRINCIPLES.md “small public surfaces” and “observable automation”
 
