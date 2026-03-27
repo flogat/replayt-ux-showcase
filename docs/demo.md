@@ -117,7 +117,7 @@ Renders ASCII timeline to console via logging.
 
 - **Version compatibility**: Tested against `replayt >=0.1.0`
 - **No runtime dependency**: Module imports without replayt installed (stdlib only)
-- **Design alignment**: Follows DESIGN_PRINCIPLES.md "small public surfaces" and "observable automation"
+- **Design principles**: Matches DESIGN_PRINCIPLES.md “small public surfaces” and “observable automation”
 
 ## Deprecation Notes
 

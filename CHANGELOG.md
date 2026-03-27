@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `docs/REPLAYT_ECOSYSTEM_IDEA.md` pitch: compatibility and CI wording matches **DESIGN_PRINCIPLES.md** (supported vs verified-in-CI, pytest contract). Minor wording in **DESIGN_PRINCIPLES.md** (showcase matrix) and **docs/demo.md** (phase 5 backlog review).
+
 ### Added
 
 - Pytest contract checks: `pyproject.toml` replayt pin and `requires-python`, CI Python version, and required headings in `docs/DESIGN_PRINCIPLES.md` stay consistent with the documented matrices (phase 3 backlog).

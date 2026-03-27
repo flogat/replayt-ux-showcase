@@ -67,7 +67,7 @@ copy the pattern; “CI” means automated verification exists.
 | Stack | Supported (intent) | CI | Notes |
 | ----- | ------------------- | --- | ----- |
 | Vanilla HTML/JS | Yes (`docs/examples/`) | File/smoke tests as implemented under `tests/` | Default integration path for smallest surface |
-| React | ^18 when a React example exists | Not required until a React demo ships | Align with mission “copy-pasteable” snippets |
+| React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
 | Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |
 
