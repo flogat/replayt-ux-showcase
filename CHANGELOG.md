@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- `docs/DESIGN_PRINCIPLES.md`: dependency pin and dev-toolchain acceptance criteria (PEP 508 vs caret wording, no loose direct deps, dev optional set table, traceability for future contract tests) for backlog “Pin replayt dependency and dev tools in pyproject.toml” (phase 2 spec).
+- `docs/DESIGN_PRINCIPLES.md`: dependency pin and dev-toolchain acceptance criteria (PEP 508 vs caret wording, no loose direct deps, dev optional set table); traceability rows are enforced by `tests/test_design_principles_contract.py` (spec backlog “Pin replayt dependency and dev tools in pyproject.toml”).
 
 ### Added
 
