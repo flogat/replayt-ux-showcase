@@ -12,6 +12,7 @@ is tracked separately in code and CHANGELOG):
 | Criterion | Where addressed |
 | --------- | ----------------- |
 | Version matrix table | [Replayt and Python matrix](#replayt-and-python-matrix), [Showcase stack matrix](#showcase-stack-matrix) |
+| **replayt** / dev-tool pins and “no loose deps” | [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
 
@@ -29,6 +30,10 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Extension points row for packaged **`replayt_ux_showcase`** surface | Same |
 | Audience rows for **Release / tag consumers** and **Automation agents (LLM tooling)** | Same |
 
+**Builder follow-up:** when implementing [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain), extend
+`tests/test_design_principles_contract.py` so each direct line in **`[project.optional-dependencies].dev`** (and
+**`[project].dependencies`**, if useful) carries a PEP 508 version constraint—keeping the table above accurate.
+
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
 
@@ -36,9 +41,11 @@ unless the test is being retired on purpose.
 
 ## One way to do it (canonical patterns)
 
-1. **Single compatibility story** — Supported ranges for **replayt** and runtimes are defined in **`pyproject.toml`**
-   and summarized in the matrices below. When support changes, update **both** and add a **CHANGELOG** entry under
-   **Unreleased** in the same change set as the pin or CI update.
+1. **Single compatibility story** — Supported ranges for **replayt**, **Python**, and **dev** tooling are defined in
+   **`pyproject.toml`** (runtime deps, **`[project.optional-dependencies].dev`**, **`[build-system].requires`**) and
+   summarized in the matrices and [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain). When
+   support changes, update **both** spec and metadata and add a **CHANGELOG** entry under **Unreleased** in the same
+   change set as the pin or CI update.
 2. **Single home for copy-paste demos** — New static examples live under **`docs/examples/`** with clear filenames
    (e.g. `basic-player.html`). Framework-specific trees (e.g. `docs/examples/react/`) are introduced only when a
    pattern ships; avoid parallel unofficial copies at repo root.
@@ -71,6 +78,64 @@ unless the test is being retired on purpose.
 
 ---
 
+## Dependency pins and dev toolchain
+
+Normative spec for pinning **replayt** and contributor **dev** dependencies in **`pyproject.toml`** (consumer-side
+constraints; integration boundaries). Implementation and any new contract tests ship in the Builder phase; this section
+is what “done” means.
+
+### Goals
+
+- **`pip install -e ".[dev]"`** is the supported local/CI entrypoint and must remain reliable.
+- Declared dependencies are **explicit** enough for review, security tooling (e.g. **pip-audit** in **dev**), and
+  integrators reading the repo—not ambiguous “latest” direct requirements.
+
+### PEP 508 vs caret-style wording
+
+- Python uses **PEP 508** requirement specifiers in **`pyproject.toml`**, not npm’s **`^` / `~`** syntax.
+- When the backlog or integrator docs refer to a **caret**-style pin (e.g. “^0.4”), interpret that as a **bounded
+  compatible range** on the **replayt** line (for example `>=0.4.0,<0.5.0`, or **`~=0.4.0`** if the intent is “0.4.x
+  only” per PEP 440). The **Maintainers** choose numeric bounds that match supported policy, what CI exercises, and
+  **CHANGELOG** notes when crossing lines.
+
+### Acceptance criteria (implementation)
+
+1. **`pip install -e ".[dev]"`** completes successfully on Python versions this repo claims under **`requires-python`**
+   and in CI (see [Replayt and Python matrix](#replayt-and-python-matrix)).
+2. **`replayt` is importable** after that install (e.g. `python -c "import replayt"` or via existing package/tests that
+   import **replayt** through its public API).
+3. **No loose direct requirements** — every line in **`[project].dependencies`** and in
+   **`[project.optional-dependencies].dev`** MUST include at least one explicit version constraint (lower bound, and
+   for **replayt** preferably a **compatible upper bound** unless maintainers document a deliberate “open ceiling”
+   policy in the matrix notes).
+4. **`[build-system].requires`** entries remain constrained (e.g. **`setuptools>=61`**), not bare unpinned names.
+5. **Single change set for truth** — when the **replayt** specifier or supported-range story changes, update
+   **`pyproject.toml`**, the [Replayt and Python matrix](#replayt-and-python-matrix) **Supported (policy)** cell,
+   **`tests/test_design_principles_contract.py`** (as needed), and **CHANGELOG** **Unreleased** together, per
+   [Traceability to automated checks](#traceability-to-automated-checks).
+
+### Dev optional dependency set (baseline)
+
+These are the **direct** **dev** tools expected under **`[project.optional-dependencies].dev`** today; each keeps
+explicit version constraints on its line:
+
+| Package | Role |
+| ------- | ---- |
+| **pytest** | Test runner |
+| **ruff** | Lint/format (as adopted by the repo) |
+| **pip-audit** | Supply-chain / vulnerability checks in contributor workflows |
+
+Adding, renaming, or dropping a **dev** tool updates this table, **CHANGELOG**, and (when applicable) CI or docs that
+mention the workflow.
+
+### Out of scope for “pins” here
+
+- Committing a **lock file** or **`pip freeze`** output is **not** required by this spec unless maintainers adopt that
+  separately. **Pins** mean **declared constraints in `pyproject.toml`** for **direct** dependencies; transitive versions
+  follow the resolver unless a stricter policy is adopted later.
+
+---
+
 ## Replayt and Python matrix
 
 Policy vs what CI currently exercises may differ; **CI must not claim coverage it does not run**. Expand matrix jobs
@@ -78,7 +143,7 @@ when additional cells become required.
 
 | Dimension | Supported (policy) | Verified in CI today | Migration / notes |
 | --------- | ------------------- | -------------------- | ------------------ |
-| **replayt** (PyPI) | `>=0.1.0` per `[project].dependencies` in `pyproject.toml` | Latest version resolved on `pip install -e ".[dev]"` (see lock-free installs in CI logs) | On breaking **replayt** majors, add **CHANGELOG** migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
+| **replayt** (PyPI) | Lower bound (and optional upper bound) per `[project].dependencies` in `pyproject.toml`; MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | Latest version resolved on `pip install -e ".[dev]"` (see lock-free installs in CI logs) | Tightening or widening the declared range is a maintainer decision: update this cell, contract tests, and **CHANGELOG** together; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
 | **Python** | `>=3.11` per `requires-python` | **3.12** on `ubuntu-latest` (`.github/workflows/ci.yml`) | Adding 3.11 to the matrix is optional; document if parity is required for integrators |
 
 ---
@@ -136,6 +201,7 @@ an API.
 | **New Python floor** | Update `requires-python`, CI images, and the [Replayt and Python matrix](#replayt-and-python-matrix) |
 | **New framework example** | Add under **`docs/examples/`** (or scoped subdir), link from README/demo spec, add showcase row above |
 | **Integrator upgrading** | Compare their pinned **replayt** to this repo’s supported range; follow **CHANGELOG** for the showcase version they target |
+| **Dev toolchain or replayt pin change** | Update **`pyproject.toml`**, [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) / matrix cells, contract tests, and **CHANGELOG** in one change set |
 
 ---
 

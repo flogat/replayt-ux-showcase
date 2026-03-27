@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- `docs/DESIGN_PRINCIPLES.md`: dependency pin and dev-toolchain acceptance criteria (PEP 508 vs caret wording, no loose direct deps, dev optional set table, traceability for future contract tests) for backlog “Pin replayt dependency and dev tools in pyproject.toml” (phase 2 spec).
+
 ### Changed
 
 - `tests/test_design_principles_contract.py`: asserts replayt API boundary subsection, packaged **`replayt_ux_showcase`** extension row, and release/automation audience rows; traceability table in `docs/DESIGN_PRINCIPLES.md` lists these checks (phase 3, Expand DESIGN_PRINCIPLES.md with canonical patterns).
