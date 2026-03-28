@@ -25,13 +25,16 @@ upstream context, or copy files from a local replayt documentation tree.
 
 ```bash
 python -m venv .venv
-# Windows: .venv\\Scripts\\activate
+source .venv/bin/activate
+# Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 pytest
 ```
 
+Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). The **dev** extra pulls in **pytest-cov**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. Use **`python -m pytest`** from the repo root to match **CI** (same **`[tool.pytest.ini_options]`** as **`pytest`**).
+
 **Tests and coverage policy** (demo module, **replayt** boundaries, **dev** pins) live in
-**[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **`docs/demo.md`** defines the console demo contract.
+**[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **[docs/demo.md](docs/demo.md)** defines the console demo contract.
 
 ## Optional agent workflows
 
@@ -47,8 +50,12 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 | `docs/MISSION.md` | Mission and scope |
 | `docs/DESIGN_PRINCIPLES.md` | Design and integration principles |
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
+| `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
+| `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
-| `pyproject.toml` | Package metadata |
+| `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates |
+| `pyproject.toml` | Package metadata, dependencies, **pytest**/**ruff** config |
+| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**) |
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
 | `.gitignore` | Ignores `path/` (doc placeholders), `.orchestrator/`, `.cursor/skills/`, and `AGENTS.md` (local tooling) |
