@@ -8,7 +8,7 @@ This project builds on **[replayt](https://pypi.org/project/replayt/)**. Read
 
 ## Design principles
 
-**[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)** is the canonical contract for **replayt** and Python support matrices, extension points, deprecation policy, and **LLM** boundaries.
+**[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)** is the canonical contract for **replayt** and Python support matrices, extension points, deprecation policy, and **LLM** boundaries. For a short integrator digest (supported vs CI-tested, shims, upgrades), see **[docs/compat.md](docs/compat.md)**.
 
 ## Continuous integration
 
@@ -46,6 +46,7 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 | `docs/REPLAYT_ECOSYSTEM_IDEA.md` | Positioning (core-gap / showcase / bridge / combinator prompts) |
 | `docs/MISSION.md` | Mission and scope |
 | `docs/DESIGN_PRINCIPLES.md` | Design and integration principles |
+| `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
 | `pyproject.toml` | Package metadata |
