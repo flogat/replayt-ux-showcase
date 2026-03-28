@@ -20,7 +20,7 @@ Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCI
 
 | Concern | What default CI is expected to exercise | What integrators should assume |
 | ------- | ---------------------------------------- | ------------------------------ |
-| **Install + tests** | Editable install with **`pip install -e ".[dev]"`**, then **`python -m pytest`** so `[tool.pytest.ini_options]` (including **pytest-cov** options) applies | Same commands reproduce the gate locally on the supported Python line. |
+| **Install + tests** | Editable install with **`pip install -e ".[dev]"`**, then **`python -m pytest`** so `[tool.pytest.ini_options]` (including **pytest-cov** options) applies | Same commands reproduce the gate locally on a **supported** **Python** (see **`requires-python`** and the **test** job matrix). |
 | **replayt resolution** | Whatever **pip** resolves for `replayt` under the declared PEP 508 range | Behavior is validated for **that** resolved version on that run; older minors inside the range are supported **by policy** until the range or matrices change. |
 | **Lint / supply chain** | **ruff** and **pip-audit** (or equivalent) per [GitHub Actions CI workflow](DESIGN_PRINCIPLES.md#github-actions-ci-workflow) | Failures block merge when those steps are required. |
 
@@ -46,7 +46,7 @@ Full rules: [Deprecation and removal](DESIGN_PRINCIPLES.md#deprecation-and-remov
 ## Migration and upgrades
 
 1. **Compare pins:** Match your app’s **replayt** constraint to the **Supported (policy)** column in [Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix) and to `pyproject.toml`.
-2. **Read release notes:** **CHANGELOG** for this package (showcase) and **replayt** upstream (PyPI / upstream docs) for breaking changes and deprecations.
+2. **Read release notes:** **CHANGELOG** for **replayt-ux-showcase** and **replayt** upstream (PyPI / upstream docs) for breaking changes and deprecations.
 3. **Follow the playbook:** [Migration paths (replayt and repo)](DESIGN_PRINCIPLES.md#migration-paths-replayt-and-repo) lists maintainer triggers; integrators mirror the same steps for their copies of examples.
 4. **API usage:** Rely only on **replayt**’s documented public API; private or underscore-prefixed symbols are not part of the compatibility promise.
 
