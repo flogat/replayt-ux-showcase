@@ -27,8 +27,12 @@ SAMPLE_SESSION_DATA: dict[str, Any] = {
 
 
 def render_console_timeline(session_data: dict[str, Any]) -> None:
-    logger.info(f"[replayt-demo] Rendering demo timeline ({session_data['metadata']['duration']}s)")
-    events = sorted(session_data.get("events", []), key=lambda e: e.get("ts", float("inf")))
+    logger.info(
+        f"[replayt-demo] Rendering demo timeline ({session_data['metadata']['duration']}s)"
+    )
+    events = sorted(
+        session_data.get("events", []), key=lambda e: e.get("ts", float("inf"))
+    )
     logger.info(f"[replayt-demo] Processing {len(events)} events")
 
     bar_width = 50

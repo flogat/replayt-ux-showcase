@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+### Changed
 
-- Stop tracking **`.coverage`** (pytest-cov local data); add **`.coverage`** / **`coverage.xml`** to **`.gitignore`** (phase 5 architecture review, Add unit/integration tests for demo).
+- `.github/workflows/ci.yml`: run **`ruff check`** and **`ruff format --check`** after **`pip install -e ".[dev]"`** and before **pytest** (phase 3, Set up GitHub Actions CI for tests and linting).
+- `README.md`: CI workflow badge points at **`flogat/replayt-ux-showcase`** on GitHub (same backlog).
+- `tests/test_design_principles_contract.py`: assert **ruff** steps in CI and a real **README** badge URL (same backlog).
+- `src/replayt_ux_showcase/demo.py`, `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (same backlog).
+- `docs/DESIGN_PRINCIPLES.md`: traceability rows for **ruff**/**README** badge checks match **`tests/test_design_principles_contract.py`** (same backlog).
 
 ### Changed
 
@@ -27,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- `docs/DESIGN_PRINCIPLES.md`: normative [GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow) — triggers, observable logs, **pytest**/**ruff**/**pip-audit** jobs, **README** badge rules, backlog traceability (phase 2 spec, Set up GitHub Actions CI for tests and linting).
+- `README.md`: CI badge section for **`ci.yml`**; phase 3 replaces **`OWNER/REPO`** with **`flogat/replayt-ux-showcase`** (same backlog).
 - `docs/DESIGN_PRINCIPLES.md`: normative [Demo module testing and replayt integration boundaries](docs/DESIGN_PRINCIPLES.md#demo-module-testing-and-replayt-integration-boundaries) — 80% line coverage on `demo.py`, boundary-break semantics, **pytest-cov** in **dev** (phase 2 spec; phase 3 implements gate and contract alignment).
 - `docs/demo.md`: automated test plan aligned with design principles; coverage gate documents **`pyproject.toml`** **`[tool.pytest.ini_options]`** (phase 3, Add unit/integration tests for demo).
 - `README.md`: quick start runs **`pytest`**; pointer to design principles for test/coverage policy (same backlog).
