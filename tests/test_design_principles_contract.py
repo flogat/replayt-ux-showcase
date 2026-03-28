@@ -6,13 +6,24 @@ import re
 from pathlib import Path
 
 import tomllib
+from packaging.requirements import Requirement
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
-def _project_table() -> dict:
+def _pyproject_root() -> dict:
     raw = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    return tomllib.loads(raw)["project"]
+    return tomllib.loads(raw)
+
+
+def _project_table() -> dict:
+    return _pyproject_root()["project"]
+
+
+def _assert_each_line_has_pep508_version_constraint(lines: list[str]) -> None:
+    for line in lines:
+        req = Requirement(line.strip())
+        assert len(req.specifier) > 0, f"missing PEP 508 version constraint: {line!r}"
 
 
 def test_requires_python_matches_design_principles_matrix() -> None:
@@ -23,12 +34,51 @@ def test_replayt_dependency_matches_design_principles_matrix() -> None:
     deps = _project_table()["dependencies"]
     replayt_lines = [d for d in deps if d.strip().lower().startswith("replayt")]
     assert len(replayt_lines) == 1
-    assert re.search(r"replayt\s*>=\s*0\.1\.0", replayt_lines[0], re.IGNORECASE)
+    req = Requirement(replayt_lines[0])
+    assert req.name.lower() == "replayt"
+    spec = str(req.specifier)
+    assert re.search(r">=\s*0\.1\.0", spec)
+    assert re.search(r"<\s*0\.5", spec)
+
+
+def test_replayt_importable() -> None:
+    import importlib
+
+    importlib.import_module("replayt")
+
+
+def test_project_dependencies_have_version_constraints() -> None:
+    _assert_each_line_has_pep508_version_constraint(_project_table()["dependencies"])
+
+
+def test_dev_optional_dependencies_have_version_constraints() -> None:
+    dev = _project_table()["optional-dependencies"]["dev"]
+    _assert_each_line_has_pep508_version_constraint(dev)
+
+
+def test_dev_optional_dependencies_match_baseline_package_set() -> None:
+    """Aligns with DESIGN_PRINCIPLES.md Dev optional dependency set (baseline)."""
+    dev = _project_table()["optional-dependencies"]["dev"]
+    names = {Requirement(d.strip()).name.lower() for d in dev}
+    assert names == {"pip-audit", "pytest", "ruff"}, (
+        f"dev extras must be exactly pytest, ruff, pip-audit; got {sorted(names)}"
+    )
+
+
+def test_build_system_requires_have_version_constraints() -> None:
+    requires = _pyproject_root()["build-system"]["requires"]
+    _assert_each_line_has_pep508_version_constraint(requires)
 
 
 def test_ci_python_version_matches_design_principles_matrix() -> None:
     ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     assert 'python-version: "3.12"' in ci
+
+
+def test_ci_installs_editable_with_dev_extras() -> None:
+    """Supported contributor entrypoint: pip install -e ".[dev]" (quoted extras)."""
+    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert 'pip install -e ".[dev]"' in ci
 
 
 def test_design_principles_has_matrix_and_audience_headings() -> None:
