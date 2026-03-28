@@ -30,8 +30,10 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Extension points row for packaged **`replayt_ux_showcase`** surface | Same |
 | Audience rows for **Release / tag consumers** and **Automation agents (LLM tooling)** | Same |
 | Each line in **`[project].dependencies`** and **`[project.optional-dependencies].dev`** carries a PEP 508 version constraint | Same |
+| **`[project.optional-dependencies].dev`** package names match [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same |
 | **`[build-system].requires`** entries carry a PEP 508 version constraint | Same |
 | **`replayt` is importable** after install (integration smoke) | Same |
+| CI installs with **`pip install -e ".[dev]"`** (quoted extras) per contributor entrypoint | Same |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -145,9 +147,9 @@ covered by the dependency contract tests.
 
 | Backlog acceptance criterion | Where specified | How it is verified (today) |
 | ---------------------------- | --------------- | -------------------------- |
-| **`pip install -e .[dev]`** works | [Goals](#goals) and [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 1 | Contributor **README** quick start and CI use **`pip install -e ".[dev]"`** (quoted extras are reliable in **POSIX** shells; unquoted **`.[dev]`** matches backlog wording but may need quotes under **zsh** / some setups) |
+| **`pip install -e .[dev]`** works | [Goals](#goals) and [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 1 | Contributor **README** quick start and CI use **`pip install -e ".[dev]"`** (quoted extras are reliable in **POSIX** shells; unquoted **`.[dev]`** matches backlog wording but may need quotes under **zsh** / some setups); `test_ci_installs_editable_with_dev_extras` asserts the workflow keeps that command |
 | **replayt** importable | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 2 | `tests/test_design_principles_contract.py` (`test_replayt_importable`) after install |
-| No loose direct deps | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) items 3–4 and [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same test module: every line in **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`** carries a non-empty PEP 508 specifier; **replayt** line must match [Replayt and Python matrix](#replayt-and-python-matrix) |
+| No loose direct deps | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) items 3–4 and [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same test module: every line in **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`** carries a non-empty PEP 508 specifier; **replayt** line must match [Replayt and Python matrix](#replayt-and-python-matrix); **`test_dev_optional_dependencies_match_baseline_package_set`** keeps **dev** to **pytest**, **ruff**, **pip-audit** only |
 
 **Caret-style backlog wording (e.g. “^0.1” for **replayt**):** Express in **`pyproject.toml`** using PEP 508 only—see
 [PEP 508 vs caret-style wording](#pep-508-vs-caret-style-wording). The numeric range in **`pyproject.toml`** and the

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `tests/test_design_principles_contract.py`: **`[dev]`** optional dependencies must be exactly **pytest**, **ruff**, **pip-audit**; CI must keep **`pip install -e ".[dev]"`** (phase 3, Pin replayt dependency and dev tools in pyproject.toml).
+- `docs/DESIGN_PRINCIPLES.md`: traceability rows for those contract checks (same backlog).
 - `pyproject.toml`: **replayt** bounded to `>=0.1.0,<0.5.0` (PEP 508); `tests/test_design_principles_contract.py` enforces version constraints on **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`**, plus **replayt** import smoke (phase 3, Pin replayt dependency and dev tools in pyproject.toml).
 - `docs/DESIGN_PRINCIPLES.md`: **Replayt and Python matrix** and traceability table aligned with the declared **replayt** range and new contract checks (same backlog).
 - `docs/demo.md`: implementation and integration notes reference the same **replayt** PEP 508 range as `pyproject.toml` (same backlog).
