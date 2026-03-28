@@ -13,6 +13,7 @@ is tracked separately in code and CHANGELOG):
 | --------- | ----------------- |
 | Version matrix table | [Replayt and Python matrix](#replayt-and-python-matrix), [Showcase stack matrix](#showcase-stack-matrix) |
 | **replayt** / dev-tool pins and “no loose deps” | [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) |
+| Demo **pytest** coverage and **replayt** boundary tests | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
 
@@ -76,6 +77,90 @@ unless the test is being retired on purpose.
   upstream reference docs). Do not rely on private modules, underscore-prefixed internals, or undocumented symbols.
 - Workflow or mock-LLM helpers from **replayt** are allowed only when they stay **offline** and **deterministic** in
   default CI, per [LLM boundaries](#llm-boundaries).
+
+---
+
+## Demo module testing and replayt integration boundaries
+
+Normative spec for the backlog item **Add unit/integration tests for demo**: what “coverage on demo”, “fails on
+boundary breaks”, and “dev dependencies” mean in **`pyproject.toml`**. **Implementation** (new tests, **CI** edits,
+**pytest-cov** pin, contract-test updates) is phase **3** (Builder) unless noted otherwise.
+
+### Scope of “the demo” for coverage
+
+- **Primary:** `src/replayt_ux_showcase/demo.py` — the console timeline module described in **`docs/demo.md`**.
+- **Out of scope for the 80% gate:** static files under **`docs/examples/`** (see [Showcase stack matrix](#showcase-stack-matrix));
+  future browser automation or framework tests are tracked separately when those examples ship CI.
+
+### Line coverage (acceptance: 80%+ on demo)
+
+- **Metric:** CPython **line** coverage for **`src/replayt_ux_showcase/demo.py`** only (not the whole package tree),
+  measured in default contributor and **CI** flows after **`pip install -e ".[dev]"`**.
+- **Threshold:** **≥ 80%** lines covered. **CI** MUST fail if coverage falls below the threshold (non-zero exit).
+- **Tooling:** **`pytest-cov`** (or equivalent that honors the same threshold semantics) with an **explicit PEP 508**
+  version constraint on its own line under **`[project.optional-dependencies].dev`**.
+
+### “Fails on boundary breaks” (acceptance)
+
+Tests MUST cause **CI** to fail when integration boundaries or the demo contract regress. At minimum this includes:
+
+| Boundary / contract | Intent | Examples of what to enforce (Builder) |
+| ------------------- | ------ | ------------------------------------- |
+| **Design principles metadata** | Pins, matrices, and headings stay aligned with **`pyproject.toml`** and **CI** | Existing `tests/test_design_principles_contract.py` (extend when new normative rows are added here) |
+| **Demo behavioral spec** | Observable behavior matches **`docs/demo.md`** | Subprocess **`python -m replayt_ux_showcase.demo`**, exports, log prefixes, sample data shape (see **`docs/demo.md`** test plan) |
+| **replayt Python API boundary** | Showcase code does not depend on private or undocumented **replayt** symbols | Lint/review plus tests: if **`demo.py`** (or other showcase modules under test) import **replayt**, imports MUST be restricted to **published** **`__all__`** / documented public surface; removing or renaming those symbols in a supported **replayt** release is an upstream semver concern—this repo adjusts pins and tests per [Migration paths](#migration-paths) |
+| Declared **replayt** range | Supported consumer range in **`pyproject.toml`** matches [Replayt and Python matrix](#replayt-and-python-matrix) | Contract tests on the **replayt** dependency line; optional smoke that **`import replayt`** succeeds after install (already part of contract tests today) |
+
+“Integration” here means **tests run against the installed environment** (editable install + resolved **replayt**),
+not mocked **replayt** internals.
+
+### Dev dependencies (acceptance: in pyproject.toml)
+
+- **`pytest`** remains the test runner (already in [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)).
+- **`pytest-cov`** MUST be added to **`[project.optional-dependencies].dev`** with a **non-empty PEP 508** constraint
+  when the coverage gate is implemented.
+- **Single change set:** adding **`pytest-cov`** MUST happen together with:
+  1. Promoting **`pytest-cov`** from [Planned dev dependency: demo coverage gate](#planned-dev-dependency-demo-coverage-gate) into the **baseline** table above (new row in [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)),
+  2. Updating **`test_dev_optional_dependencies_match_baseline_package_set`** in **`tests/test_design_principles_contract.py`**,
+  3. **CHANGELOG** **Unreleased**,
+  4. **CI** invoking **pytest** with **`--cov`** / **`--cov-fail-under=80`** (or equivalent) for **`demo.py`**.
+
+### Planned dev dependency: demo coverage gate
+
+Until the Builder lands the coverage gate, **`pytest-cov`** is **specified here** but **not** yet part of the enforced
+**dev** package-name set in **`test_dev_optional_dependencies_match_baseline_package_set`**:
+
+| Package | Role |
+| ------- | ---- |
+| **pytest-cov** | Measure line coverage and enforce **`--cov-fail-under`** for **`src/replayt_ux_showcase/demo.py`** |
+
+### Traceability (target implementation)
+
+After the Builder completes this backlog item, **CI** should enforce at least:
+
+| Check | Enforced by (target) |
+| ----- | -------------------- |
+| Line coverage **≥ 80%** on **`src/replayt_ux_showcase/demo.py`** | **`pytest`** + **`pytest-cov`** in **CI** with **`--cov-fail-under=80`** (exact CLI flags live in workflow or **`pyproject.toml`** **`[tool.pytest.ini_options]`** once added) |
+| Demo subprocess and data-shape checks | **`tests/`** per **`docs/demo.md`** |
+| **replayt** pin, **dev** pins, and design-principles structure | **`tests/test_design_principles_contract.py`** (existing; extend if new spec rows require it) |
+
+### Backlog traceability: Add unit/integration tests for demo
+
+**Normalized user story:** As maintainer, I want a **pytest** suite that covers **demo** behavior, enforces **replayt**
+integration boundaries, and runs in **CI** with coverage and explicit **dev** tooling pins.
+
+| Backlog acceptance criterion | Where specified | How it is verified (target) |
+| ---------------------------- | --------------- | --------------------------- |
+| **80%+ coverage on demo** | [Line coverage](#line-coverage-acceptance-80-on-demo) | **`pytest-cov`** on **`demo.py`** with fail-under **80** in **CI** |
+| **Fails on boundary breaks** | [Fails on boundary breaks](#fails-on-boundary-breaks-acceptance) | Failing tests / non-zero **pytest** when spec, pins, or public **replayt** usage regress |
+| **In pyproject.toml dev deps** | [Dev dependencies](#dev-dependencies-acceptance-in-pyprojecttoml), [Planned dev dependency](#planned-dev-dependency-demo-coverage-gate) | **`pytest`** and **`pytest-cov`** (after implementation) under **`[project.optional-dependencies].dev`** with PEP 508 constraints; contract test matches [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) |
+
+**Builder checklist (phase 3):**
+
+1. Add **`pytest-cov`** to **`pyproject.toml`** **`dev`** with a version constraint; merge [Planned dev dependency](#planned-dev-dependency-demo-coverage-gate) into [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) and update **`test_dev_optional_dependencies_match_baseline_package_set`**.
+2. Configure **CI** (and optionally **`[tool.pytest.ini_options]`**) so **`pytest`** measures coverage on **`demo.py`** and fails below **80%**.
+3. Add or extend tests so [Fails on boundary breaks](#fails-on-boundary-breaks-acceptance) is satisfied without relying on private **replayt** APIs.
+4. Run **`pip install -e ".[dev]"`** and full **pytest** locally; update **CHANGELOG** **Unreleased**.
 
 ---
 

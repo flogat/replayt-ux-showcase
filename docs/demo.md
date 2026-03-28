@@ -103,15 +103,25 @@ Renders ASCII timeline to console via logging.
 - No external deps beyond **replayt** as pinned in `pyproject.toml` (`>=0.1.0,<0.5.0`)
 - Follow DESIGN_PRINCIPLES.md: small surface, observable logs
 
-## Test Plan (Phase 4)
+## Automated test plan
+
+Behavioral cases below are implemented under **`tests/`** (see module docstring). **Coverage thresholds, CI wiring, and
+**replayt** boundary expectations** are normative in **`docs/DESIGN_PRINCIPLES.md`** → [Demo module testing and replayt integration boundaries](DESIGN_PRINCIPLES.md#demo-module-testing-and-replayt-integration-boundaries).
 
 | Test | Description | Expected |
 |------|-------------|----------|
 | `test_demo_runs` | Subprocess: `subprocess.run([sys.executable, "-m", "replayt_ux_showcase.demo"], capture_output=True)` | `returncode == 0` |
 | `test_exports` | Import check: `from replayt_ux_showcase import render_console_timeline, SAMPLE_SESSION_DATA` | Both symbols present; `len(SAMPLE_SESSION_DATA["events"]) in range(10, 16)` |
-| `test_output_format` | Output contains expected log lines | stdout contains both `[replayt-demo]` and `"Rendering demo timeline"` |
+| `test_output_format` | Output contains expected log lines | Combined stdout/stderr contains both `[replayt-demo]` and `"Rendering demo timeline"` |
 | `test_event_count` | Validate event count in sample data | `10 <= len(SAMPLE_SESSION_DATA["events"]) <= 15` |
 | `test_event_types` | Validate event types | All events have `type` in `('click', 'scroll', 'keypress', 'resize', 'mousemove')` |
+
+### Coverage gate (see design principles)
+
+- **Target:** **≥ 80%** CPython **line** coverage on **`src/replayt_ux_showcase/demo.py`** only, enforced in **CI** via
+  **`pytest-cov`** (or equivalent) with **`--cov-fail-under=80`** once the Builder lands [Add unit/integration tests for demo](DESIGN_PRINCIPLES.md#backlog-traceability-add-unitintegration-tests-for-demo) per **`docs/DESIGN_PRINCIPLES.md`**.
+- **`pytest-cov`** MUST be declared under **`[project.optional-dependencies].dev`** with a PEP 508 constraint in the
+  same change set as the gate (updates the **dev** baseline table and contract test there).
 
 ## Integration Notes
 

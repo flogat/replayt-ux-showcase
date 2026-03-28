@@ -22,7 +22,11 @@ upstream context, or copy files from a local replayt documentation tree.
 python -m venv .venv
 # Windows: .venv\\Scripts\\activate
 pip install -e ".[dev]"
+pytest
 ```
+
+**Tests and coverage policy** (demo module, **replayt** boundaries, **dev** pins) live in
+**[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **`docs/demo.md`** defines the console demo contract.
 
 ## Optional agent workflows
 
