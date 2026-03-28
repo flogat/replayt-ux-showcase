@@ -36,6 +36,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`[project.optional-dependencies].dev`** package names match [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same |
 | **`[build-system].requires`** entries carry a PEP 508 version constraint | Same |
 | **`replayt` is importable** after install (integration smoke) | Same |
+| **`[project].version`** matches **`replayt_ux_showcase.__version__`** | Same (`test_package_version_matches_pyproject`) |
 | CI installs with **`pip install -e ".[dev]"`** (quoted extras) per contributor entrypoint | Same |
 | **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
 | **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |

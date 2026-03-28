@@ -1,6 +1,6 @@
 [project]
 name = "replayt-ux-showcase"
-version = "0.1.0"
+version = "0.2.0"
 description = "Polished demos and UI patterns for replayt integrators with design-engineering handoff playbook: Python project using replayt; see docs for scope."
 requires-python = ">=3.11"
 dependencies = [

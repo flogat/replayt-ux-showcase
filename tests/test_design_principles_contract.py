@@ -47,6 +47,14 @@ def test_replayt_importable() -> None:
     importlib.import_module("replayt")
 
 
+def test_package_version_matches_pyproject() -> None:
+    """Releases and CHANGELOG: __version__ matches [project].version."""
+    import importlib
+
+    pkg = importlib.import_module("replayt_ux_showcase")
+    assert pkg.__version__ == _project_table()["version"]
+
+
 def test_project_dependencies_have_version_constraints() -> None:
     _assert_each_line_has_pep508_version_constraint(_project_table()["dependencies"])
 

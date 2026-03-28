@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-03-28
+
 ### Changed
 
+- **0.2.0** release: **`[project].version`** and **`replayt_ux_showcase.__version__`** set to **0.2.0**; **`test_package_version_matches_pyproject`** keeps them aligned; prior **Unreleased** notes consolidated here (Prepare CHANGELOG.md for 0.2.0 release).
 - `.github/workflows/ci.yml`: **test** job uses **`strategy.matrix`** for **Python 3.11** and **3.12**, **`pip install --upgrade pip`** before **`pip install -e ".[dev]"`**, and **`${{ matrix.python-version }}`** so **pytest-cov** gates run on each row (phase 3, Document compatibility matrix and upgrade paths).
+- `docs/DESIGN_PRINCIPLES.md`: **Traceability to automated checks** includes **`test_package_version_matches_pyproject`** (Prepare CHANGELOG.md for 0.2.0 release).
 - `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: **Verified in CI today** for **Python** matches the matrix; supported-vs-tested wording updated for two interpreter rows (same backlog).
 - `tests/test_design_principles_contract.py`: contract asserts the **test** job **Python** matrix lists **3.11** and **3.12** (same backlog).
 - `.github/workflows/ci.yml`: run **`ruff check`** and **`ruff format --check`** after **`pip install -e ".[dev]"`** and before **pytest** (phase 3, Set up GitHub Actions CI for tests and linting).
@@ -32,8 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 - `README.md`: quick start documents **`source .venv/bin/activate`**, why **dev** extras matter for **pytest-cov** (exit code **4** without them), **`python -m pytest`** for **CI** parity; layout table adds **`tests/`**, **`.github/workflows/`**, **`docs/demo.md`**, **`docs/examples/`** (phase 3, Update README quickstart and layout docs).
-- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: **GitHub Actions** **Install** / local-repro wording matches the **test** job **Python** matrix (phase 5 architect review, Document compatibility matrix and upgrade paths).
-- `CHANGELOG.md`: single **`### Changed`** under **[Unreleased]** (phase 5, same review).
+- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: **GitHub Actions** **Install** / local-repro wording matches the **test** job **Python** matrix (phase 3, Document compatibility matrix and upgrade paths).
+- `CHANGELOG.md`: **Unreleased** entries for this cycle moved under **`[0.2.0]`** (Prepare CHANGELOG.md for 0.2.0 release).
 - `docs/DESIGN_PRINCIPLES.md`: normative [GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow) — triggers, observable logs, **pytest**/**ruff**/**pip-audit** jobs, **README** badge rules, backlog traceability (phase 2 spec, Set up GitHub Actions CI for tests and linting).
 - `README.md`: CI badge section for **`ci.yml`**; phase 3 replaces **`OWNER/REPO`** with **`flogat/replayt-ux-showcase`** (same backlog).
 - `docs/DESIGN_PRINCIPLES.md`: normative [Demo module testing and replayt integration boundaries](docs/DESIGN_PRINCIPLES.md#demo-module-testing-and-replayt-integration-boundaries) — 80% line coverage on `demo.py`, boundary-break semantics, **pytest-cov** in **dev** (phase 2 spec; phase 3 implements gate and contract alignment).
