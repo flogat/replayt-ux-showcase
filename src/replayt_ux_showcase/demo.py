@@ -58,10 +58,14 @@ def render_console_timeline(session_data: dict[str, Any]) -> None:
             logger.warning(f"  {tstr} unknown: {etype}")
 
 
-if __name__ == "__main__":
+def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     try:
         render_console_timeline(SAMPLE_SESSION_DATA)
     except Exception as e:
         logger.error(f"[replayt-demo] Error: {e}")
         raise
+
+
+if __name__ == "__main__":
+    main()

@@ -34,3 +34,7 @@ alignment_result.json
 # Mis-placed workflow handoff (safety net if Aider writes at git root)
 handoff.md
 .handoff.md
+
+# Coverage (local pytest-cov)
+.coverage
+coverage.xml
