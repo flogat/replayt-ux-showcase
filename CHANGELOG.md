@@ -9,8 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- `docs/DESIGN_PRINCIPLES.md`: basic player static HTML contract, **Showcase stack matrix** row for **Tailwind**, migration path row, and backlog traceability for **`docs/examples/tailwind-player.html`** (phase 2 spec, Add Tailwind-based player layout example under docs/examples/).
-- `README.md`: **Examples** subsection under project layout with cross-links and illustrative-not-npm disclaimer (same backlog).
+- `docs/examples/tailwind-player.html`: **Tailwind** Play CDN layout + CSS variables for theming; same **`sessionData`** / **`replayt.player.init`** contract as **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
+- `README.md`: **Examples** links **`basic-player.html`** and **`tailwind-player.html`**, contract anchors, illustrative-not-npm disclaimer; **Tailwind** entry is present tense (phase 2–3, Add Tailwind-based player layout example under docs/examples/).
+- `docs/DESIGN_PRINCIPLES.md`: basic player static HTML contract, **Showcase stack matrix** row for **Tailwind**, migration path row, and backlog traceability for **`docs/examples/tailwind-player.html`** (phase 2 spec, same backlog).
+
+### Tests
+
+- `tests/test_examples.py`: **`tailwind-player.html`** presence and contract parity with **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
 
 ## [0.2.0] - 2026-03-28
 

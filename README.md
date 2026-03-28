@@ -63,6 +63,6 @@ local tooling entries. Adapt or remove optional directories to match your team�
 ### Examples (`docs/examples/`)
 
 - **[`docs/examples/basic-player.html`](docs/examples/basic-player.html)** — vanilla CSS minimal player layout; reference for the [basic player example contract](docs/DESIGN_PRINCIPLES.md#basic-player-example-contract-static-html).
-- **`docs/examples/tailwind-player.html`** — planned **Tailwind** + CSS variables variant with the same contract; spec and acceptance criteria live under [DESIGN_PRINCIPLES — Tailwind backlog traceability](docs/DESIGN_PRINCIPLES.md#backlog-traceability-tailwind-based-player-layout-example).
+- **[`docs/examples/tailwind-player.html`](docs/examples/tailwind-player.html)** — **Tailwind** utilities + CSS variables for the same [basic player example contract](docs/DESIGN_PRINCIPLES.md#basic-player-example-contract-static-html); details under [DESIGN_PRINCIPLES — Tailwind backlog traceability](docs/DESIGN_PRINCIPLES.md#backlog-traceability-tailwind-based-player-layout-example).
 
 These files are **illustrative copy-paste** starters only. They are **not** published **npm** packages and do not extend the Python package surface—see [`docs/DESIGN_PRINCIPLES.md` — Module and directory boundaries](docs/DESIGN_PRINCIPLES.md#module-and-directory-boundaries).
