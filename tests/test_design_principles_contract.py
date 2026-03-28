@@ -70,9 +70,15 @@ def test_build_system_requires_have_version_constraints() -> None:
     _assert_each_line_has_pep508_version_constraint(requires)
 
 
-def test_ci_python_version_matches_design_principles_matrix() -> None:
+def test_ci_test_job_python_matrix_matches_design_principles_matrix() -> None:
+    """Replayt and Python matrix: CI test job exercises 3.11 and 3.12 (requires-python floor)."""
     ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-    assert 'python-version: "3.12"' in ci
+    assert "strategy:" in ci
+    assert "matrix:" in ci
+    assert "python-version:" in ci
+    assert "${{ matrix.python-version }}" in ci
+    assert '"3.11"' in ci
+    assert '"3.12"' in ci
 
 
 def test_ci_installs_editable_with_dev_extras() -> None:

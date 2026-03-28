@@ -27,7 +27,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | ----- | ----------- |
 | `requires-python` matches the Python row in [Replayt and Python matrix](#replayt-and-python-matrix) | `tests/test_design_principles_contract.py` |
 | **`replayt`** dependency specifier matches that matrix (`>=0.1.0` and compatible `<0.5` cap, per `tests/test_design_principles_contract.py`) | Same |
-| CI **Python** version in `.github/workflows/ci.yml` matches that matrix | Same |
+| CI **Python** version(s) in the **test** job matrix in `.github/workflows/ci.yml` match that matrix | Same |
 | Section headings for the two matrices, extension points, and audience | Same |
 | Subsection **replayt Python API boundary** under [Module and directory boundaries](#module-and-directory-boundaries) | Same |
 | Extension points row for packaged **`replayt_ux_showcase`** surface | Same |
@@ -328,7 +328,7 @@ when additional cells become required.
 | Dimension | Supported (policy) | Verified in CI today | Migration / notes |
 | --------- | ------------------- | -------------------- | ------------------ |
 | **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` in `[project].dependencies` (PEP 508); MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | Latest **replayt** allowed by that range on `pip install -e ".[dev]"` (see lock-free installs in CI logs) | The `<0.5` cap excludes 0.5+ until maintainers widen the range after compatibility checks; any change to bounds updates this cell, contract tests, and **CHANGELOG** together; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
-| **Python** | `>=3.11` per `requires-python` | **3.12** on `ubuntu-latest` (`.github/workflows/ci.yml`) | Adding 3.11 to the matrix is optional; document if parity is required for integrators |
+| **Python** | `>=3.11` per `requires-python` | **3.11** and **3.12** on `ubuntu-latest` via **`strategy.matrix`** in the **test** job (`.github/workflows/ci.yml`) | Add or drop matrix rows with `requires-python`, **compat.md**, and contract tests in one change set |
 
 ---
 
@@ -344,9 +344,9 @@ the two differ.
 - **Supported (policy)** — Declared in **`pyproject.toml`** and summarized in [Replayt and Python matrix](#replayt-and-python-matrix)
   and [Showcase stack matrix](#showcase-stack-matrix). Integrators may rely on this range unless **CHANGELOG** narrows it.
 - **Verified in CI today** — Whatever the default **GitHub Actions** workflow actually installs and runs tests against.
-  Today that is **one** **Python** interpreter row and **one** resolved **replayt** version per job (**latest** satisfying
-  the PEP 508 range at install time). That is **not** the same as “every minor in the range is regression-tested” until
-  optional matrix jobs pin additional cells.
+  Today the **test** job uses **two** **Python** rows (**3.11** and **3.12**); each row resolves **one** **replayt**
+  version (**latest** satisfying the PEP 508 range at install time). That is **not** the same as “every **replayt**
+  minor in the range is regression-tested” until optional jobs pin additional **replayt** cells.
 - **No false claims** — Documentation (including **README**, this file, and **compat.md**) MUST NOT imply CI exercises
   matrix cells that are not implemented in **`.github/workflows/ci.yml`** (or documented follow-up jobs). When new rows
   ship, update the **Verified in CI today** columns here and in **compat.md** in the same change set as the workflow.

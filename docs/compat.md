@@ -9,7 +9,7 @@ in `docs/DESIGN_PRINCIPLES.md`. If anything here disagrees with that document, *
 | Dimension | Supported (policy) | Verified in CI today | Notes |
 | --------- | ------------------ | -------------------- | ----- |
 | **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` (PEP 508 in `pyproject.toml`) | **One** resolved version per default CI job: the **latest** package on PyPI that satisfies that range at install time | Not every patch release is pinned in CI; the range is the support promise. To claim specific minors are regression-tested, add explicit matrix jobs (see [CI matrix coverage](#ci-matrix-coverage)). |
-| **Python** | `requires-python` (currently **≥ 3.11**) | The single **Python** version configured in `.github/workflows/ci.yml` (see design principles matrix) | Policy may allow 3.11+ while CI runs one interpreter; do not imply CI exercises every allowed minor without extra jobs. |
+| **Python** | `requires-python` (currently **≥ 3.11**) | **3.11** and **3.12** in the **test** job **`strategy.matrix`** (`.github/workflows/ci.yml`; see design principles matrix) | Extra interpreters need new matrix rows and doc updates in the same change set. |
 | **Vanilla examples** (`docs/examples/`) | Intended copy-paste surface per [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix) | File or smoke checks under `tests/` **when implemented** | Front-end stacks (React/Vue/Svelte) are documented ahead of examples; CI follows when demos ship. |
 
 Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix), [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix).
@@ -24,7 +24,7 @@ Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCI
 | **replayt resolution** | Whatever **pip** resolves for `replayt` under the declared PEP 508 range | Behavior is validated for **that** resolved version on that run; older minors inside the range are supported **by policy** until the range or matrices change. |
 | **Lint / supply chain** | **ruff** and **pip-audit** (or equivalent) per [GitHub Actions CI workflow](DESIGN_PRINCIPLES.md#github-actions-ci-workflow) | Failures block merge when those steps are required. |
 
-**Future matrix rows (Builder):** When maintainers need to **prove** compatibility with specific **replayt** minors (e.g. `0.4.x` and `0.3.x`) or multiple **Python** versions, add parallel **CI** jobs (or a `strategy.matrix`) that pin or constrain the resolver per row, and update the **Verified in CI today** cells in `docs/DESIGN_PRINCIPLES.md` and this file in the **same** change set.
+**Future matrix rows:** When maintainers need to **prove** compatibility with specific **replayt** minors (e.g. `0.4.x` and `0.3.x`), add parallel **CI** jobs or extra **`strategy.matrix`** dimensions that pin or constrain the resolver per row, and update the **Verified in CI today** cells in `docs/DESIGN_PRINCIPLES.md` and this file in the **same** change set.
 
 ## Deprecation policy (summary)
 

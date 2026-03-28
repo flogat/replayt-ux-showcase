@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Documentation
+### Changed
 
-- `docs/compat.md`: integrator digest for supported **replayt** / **Python** versions, honest **CI** coverage vs policy, shim placement, and upgrade/migration pointers (phase 2 spec, Document compatibility matrix and upgrade paths).
-- `docs/DESIGN_PRINCIPLES.md`: normative [Compatibility matrix and upgrade paths](docs/DESIGN_PRINCIPLES.md#compatibility-matrix-and-upgrade-paths) — supported vs tested, shim rules, backlog traceability; traceability table links **compat.md** (same backlog).
-- `README.md`: links **`docs/compat.md`** from design principles and project layout (same backlog).
+- `.github/workflows/ci.yml`: **test** job uses **`strategy.matrix`** for **Python 3.11** and **3.12**, **`pip install --upgrade pip`** before **`pip install -e ".[dev]"`**, and **`${{ matrix.python-version }}`** so **pytest-cov** gates run on each row (phase 3, Document compatibility matrix and upgrade paths).
+- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: **Verified in CI today** for **Python** matches the matrix; supported-vs-tested wording updated for two interpreter rows (same backlog).
+- `tests/test_design_principles_contract.py`: contract asserts the **test** job **Python** matrix lists **3.11** and **3.12** (same backlog).
 
 ### Changed
 
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Pytest contract checks: `pyproject.toml` replayt pin and `requires-python`, CI Python version, and required headings in `docs/DESIGN_PRINCIPLES.md` stay consistent with the documented matrices (phase 3 backlog).
+- Pytest contract checks: `pyproject.toml` replayt pin and `requires-python`, CI **test** job **Python** matrix, and required headings in `docs/DESIGN_PRINCIPLES.md` stay consistent with the documented matrices (phase 3 backlog).
 - Expanded `docs/DESIGN_PRINCIPLES.md` with canonical “one way” patterns, module boundaries, replayt/showcase version matrices, extension points, deprecation and migration policy, LLM boundaries, and extended audience table (spec-only refinement, phase 2 backlog).
 - Defined project mission (users, Replayt role, scope, success metrics with CI tests) in MISSION.md.
 - Initial polished demo: basic-player.html (vanilla JS replay player).
