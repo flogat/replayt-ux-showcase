@@ -37,7 +37,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`replayt` is importable** after install (integration smoke) | Same |
 | CI installs with **`pip install -e ".[dev]"`** (quoted extras) per contributor entrypoint | Same |
 | **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
-| **`ruff check`** runs in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow) — **Builder** wires workflow; optional contract assertion later |
+| **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -302,8 +302,8 @@ observable logs and **README** badges.
 | ---------------------------- | --------------- | ---------------------- |
 | Runs on push/PR | [Triggers](#triggers-acceptance) | **`on:`** in **`ci.yml`** |
 | Fails on dirty tests | [Jobs and commands](#jobs-and-commands-normative-target) (**Tests** row) | **pytest** non-zero on failures / coverage below threshold |
-| Badges in **README** | [README badges](#readme-badges-acceptance) | **README.md** contains workflow badge(s) with real **`OWNER/REPO`** |
-| **ruff** | [Jobs and commands](#jobs-and-commands-normative-target) (**Lint** row) | **`ruff check`** step in CI |
+| Badges in **README** | [README badges](#readme-badges-acceptance) | **README.md** workflow badge URL; `tests/test_design_principles_contract.py` (`test_readme_ci_badge_uses_repository_slug`) |
+| **ruff** | [Jobs and commands](#jobs-and-commands-normative-target) (**Lint** row) | **`ruff check`** and **`ruff format --check`** in CI; `test_ci_runs_ruff_lint_and_format_check` |
 | **replayt** compat | [Jobs and commands](#jobs-and-commands-normative-target) (**replayt** row) | Editable **dev** install + **pytest** + contract tests |
 
 **Builder checklist (phase 3):**

@@ -81,6 +81,18 @@ def test_ci_installs_editable_with_dev_extras() -> None:
     assert 'pip install -e ".[dev]"' in ci
 
 
+def test_ci_runs_ruff_lint_and_format_check() -> None:
+    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "ruff check" in ci
+    assert "ruff format --check" in ci
+
+
+def test_readme_ci_badge_uses_repository_slug() -> None:
+    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    assert "OWNER/REPO" not in readme
+    assert "github.com/flogat/replayt-ux-showcase/actions/workflows/ci.yml" in readme
+
+
 def test_design_principles_has_matrix_and_audience_headings() -> None:
     text = (REPO_ROOT / "docs" / "DESIGN_PRINCIPLES.md").read_text(encoding="utf-8")
     for heading in (
