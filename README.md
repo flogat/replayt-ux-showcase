@@ -10,6 +10,11 @@ This project builds on **[replayt](https://pypi.org/project/replayt/)**. Read
 
 **[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)** is the canonical contract for **replayt** and Python support matrices, extension points, deprecation policy, and **LLM** boundaries.
 
+## Continuous integration
+
+[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+
+Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Replace **`OWNER/REPO`** with this repository’s GitHub path. Normative requirements (tests with the **pytest-cov** gate, **ruff**, **replayt** install path, supply chain, badges) are in **[docs/DESIGN_PRINCIPLES.md — GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow)**.
 
 ## Reference documentation
 

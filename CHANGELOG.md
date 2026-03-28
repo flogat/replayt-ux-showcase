@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- `docs/DESIGN_PRINCIPLES.md`: normative [GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow) — triggers, observable logs, **pytest**/**ruff**/**pip-audit** jobs, **README** badge rules, backlog traceability (phase 2 spec, Set up GitHub Actions CI for tests and linting).
+- `README.md`: CI badge placeholder and link to **`.github/workflows/ci.yml`** and the design-principles CI section (same backlog).
+
 ### Fixed
 
 - Stop tracking **`.coverage`** (pytest-cov local data); add **`.coverage`** / **`coverage.xml`** to **`.gitignore`** (phase 5 architecture review, Add unit/integration tests for demo).

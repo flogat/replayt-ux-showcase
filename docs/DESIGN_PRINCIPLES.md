@@ -14,6 +14,7 @@ is tracked separately in code and CHANGELOG):
 | Version matrix table | [Replayt and Python matrix](#replayt-and-python-matrix), [Showcase stack matrix](#showcase-stack-matrix) |
 | **replayt** / dev-tool pins and “no loose deps” | [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) |
 | Demo **pytest** coverage and **replayt** boundary tests | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries) |
+| **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
 
@@ -35,6 +36,8 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`[build-system].requires`** entries carry a PEP 508 version constraint | Same |
 | **`replayt` is importable** after install (integration smoke) | Same |
 | CI installs with **`pip install -e ".[dev]"`** (quoted extras) per contributor entrypoint | Same |
+| **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
+| **`ruff check`** runs in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow) — **Builder** wires workflow; optional contract assertion later |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -66,7 +69,7 @@ unless the test is being retired on purpose.
 | **`docs/`** | Mission, principles, demo specs, copy-paste examples, playbook-oriented markdown | Hold secrets, credentials, or environment-specific endpoints checked into git |
 | **`docs/examples/`** | Static HTML/JS (and future framework snippets) that integrators copy | Imply they are supported npm packages unless explicitly published as such |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
-| **`.github/workflows/`** | CI that installs the package and runs **pytest** (and future matrix jobs) | Store long-lived tokens (read-only `contents` is the default contract) |
+| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); future matrix jobs as needed | Store long-lived tokens (read-only `contents` is the default contract) |
 
 **Dependency direction:** showcase code and tests **→** **replayt** (PyPI). Demos may document how integrators pull
 **replayt** in their own apps; this repo does not re-export **replayt** as a different product.
@@ -239,6 +242,80 @@ matrix is authoritative, not npm **`^` / `~`**.
    **CHANGELOG**, and any workflow docs that mention the tool, in the same change set as **`pyproject.toml`**.
 3. After any pin or dev-set change, run **`pip install -e ".[dev]"`** and **`pytest`** on the CI Python version;
    update **CHANGELOG** **Unreleased** per [Single change set for truth](#acceptance-criteria-implementation).
+
+---
+
+## GitHub Actions CI workflow
+
+Normative spec for the backlog item **Set up GitHub Actions CI for tests and linting**: what “runs on push/PR”, “fails on
+dirty tests”, **ruff**, **replayt** compatibility, observable logs, and **README** badges mean. **Implementation**
+(workflow YAML, badge URLs with the real **GitHub** `owner/repo`, and any new contract assertions) is **Builder**
+work unless a change here explicitly requires synchronized updates to **`.github/workflows/ci.yml`**, **README**, and
+**`tests/test_design_principles_contract.py`**.
+
+### Canonical workflow file
+
+- **Path:** **`.github/workflows/ci.yml`** — single primary workflow for PR/push automation on this repo (name aligns with
+  contract tests that read this file).
+
+### Triggers (acceptance)
+
+- **Pull requests:** MUST run on **`pull_request`** for the branch(es) this project integrates to (for example
+  **`master`** and optional **`mc/**`** when Mission Control backlog branches are in use). Adjust the **`branches:`**
+  filter here and in **README** badge examples if the default branch is renamed.
+- **Push:** MUST run on **`push`** to the same branch set (or document a deliberate narrower policy in this section if
+  maintainers intentionally skip some push events).
+- **Optional:** **`workflow_dispatch`** for manual runs is allowed.
+
+### Observable automation (acceptance)
+
+- Use **clear step names** (install, tests, lint, supply chain) so logs identify what failed.
+- Steps MUST **propagate failure** (**non-zero** exit) for **pytest**, **ruff**, and **pip-audit**; do not mask failures
+  with `|| true` unless a step is explicitly non-blocking and documented as such.
+
+### Jobs and commands (normative target)
+
+| Job / concern | Requirement | Verified by (target) |
+| ------------- | ----------- | -------------------- |
+| **Install** | **`pip install -e ".[dev]"`** (quoted extras) on the **CI Python** version from [Replayt and Python matrix](#replayt-and-python-matrix) | `test_ci_installs_editable_with_dev_extras`; green CI logs |
+| **Tests** | Run **`python -m pytest`** from the repo root so **`[tool.pytest.ini_options]`** applies ( **`--cov=replayt_ux_showcase.demo`**, **`--cov-fail-under=80`**, etc.). Extra CLI flags (e.g. **`-q`**, **`--tb=short`**) are fine if they do **not** remove coverage options. **CI** MUST install **dev** extras so **pytest-cov** is available — a plain editable install **without** **`[dev]`** is **not** sufficient for the coverage gate. | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries); green **`test`** job |
+| **Lint** | Run **`ruff check`** at the repository root (use **`pyproject.toml`** **`[tool.ruff]`** when present). If the repo adopts enforced formatting in CI, add **`ruff format --check`** in the same or a dedicated step. | Non-zero on violations; **Spec gate** treats missing **ruff** in CI as incomplete for this backlog |
+| **replayt** compatibility | **replayt** is resolved by the runtime install per **`[project].dependencies`**; contract tests and the **pytest** suite exercise pins, import smoke, and integration boundaries ([Demo module testing](#demo-module-testing-and-replayt-integration-boundaries), [Dependency pins](#dependency-pins-and-dev-toolchain)) | **`test_replayt_importable`**, **`test_replayt_dependency_matches_design_principles_matrix`**, and full **`pytest`** run in CI |
+| **Supply chain** | Keep **`pip-audit`** aligned with **`docs/DEPENDENCY_AUDIT.md`** (including documented **`--ignore-vuln`** entries that match the workflow). | Existing **`supply-chain`** (or equivalent) job |
+
+### README badges (acceptance)
+
+- **README.md** MUST include at least one **GitHub Actions** workflow status badge for **`ci.yml`**, linking to the
+  workflow or **Actions** tab. Substitute the real **`OWNER/REPO`** (for example
+  **`https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg`** with a matching **`href`** to the same repo’s
+  workflow). **shields.io** equivalents are acceptable if they reference the same workflow and default branch policy.
+- Badges are **documentation surface**: when the default branch or workflow file is renamed, update **README** and this
+  section in the same change set.
+
+### Backlog traceability: Set up GitHub Actions CI for tests and linting
+
+**Normalized user story:** As platform engineer, I want **`.github/workflows/ci.yml`** enforcing **pytest** (with the
+same coverage gate as local **dev** installs), **ruff**, and **replayt** compatibility on PRs and pushes, with
+observable logs and **README** badges.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ---------------------- |
+| Runs on push/PR | [Triggers](#triggers-acceptance) | **`on:`** in **`ci.yml`** |
+| Fails on dirty tests | [Jobs and commands](#jobs-and-commands-normative-target) (**Tests** row) | **pytest** non-zero on failures / coverage below threshold |
+| Badges in **README** | [README badges](#readme-badges-acceptance) | **README.md** contains workflow badge(s) with real **`OWNER/REPO`** |
+| **ruff** | [Jobs and commands](#jobs-and-commands-normative-target) (**Lint** row) | **`ruff check`** step in CI |
+| **replayt** compat | [Jobs and commands](#jobs-and-commands-normative-target) (**replayt** row) | Editable **dev** install + **pytest** + contract tests |
+
+**Builder checklist (phase 3):**
+
+1. Ensure the **test** job installs **`".[dev]"`** and runs **pytest** in a way that keeps the **pytest-cov** gate (see
+   phase **1c** logs: **exit code 4** / “unrecognized **--cov**” indicates **pytest-cov** not installed or **addopts**
+   stripped).
+2. Add **`ruff check`** (and **`ruff format --check`** if required) to **`ci.yml`**; keep **pip-audit** policy in sync
+   with **`docs/DEPENDENCY_AUDIT.md`**.
+3. Add **README** workflow badge(s) with the actual **GitHub** coordinates; extend **`tests/test_design_principles_contract.py`**
+   if maintainers want CI to assert **ruff** (and/or badge presence) mechanically.
+4. Record user-visible CI changes under **CHANGELOG** **Unreleased**.
 
 ---
 
