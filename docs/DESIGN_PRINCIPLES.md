@@ -83,8 +83,9 @@ unless the test is being retired on purpose.
 ## Demo module testing and replayt integration boundaries
 
 Normative spec for the backlog item **Add unit/integration tests for demo**: what “coverage on demo”, “fails on
-boundary breaks”, and “dev dependencies” mean in **`pyproject.toml`**. **Implementation** (new tests, **CI** edits,
-**pytest-cov** pin, contract-test updates) is phase **3** (Builder) unless noted otherwise.
+boundary breaks”, and “dev dependencies” mean in **`pyproject.toml`**. **Implementation** (**pytest-cov** pin,
+**`[tool.pytest.ini_options]`**, contract tests, and **CI** running **`pytest`**) is in tree; extend tests when new
+boundary rows appear here.
 
 ### Scope of “the demo” for coverage
 
@@ -116,33 +117,21 @@ not mocked **replayt** internals.
 
 ### Dev dependencies (acceptance: in pyproject.toml)
 
-- **`pytest`** remains the test runner (already in [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)).
-- **`pytest-cov`** MUST be added to **`[project.optional-dependencies].dev`** with a **non-empty PEP 508** constraint
-  when the coverage gate is implemented.
-- **Single change set:** adding **`pytest-cov`** MUST happen together with:
-  1. Promoting **`pytest-cov`** from [Planned dev dependency: demo coverage gate](#planned-dev-dependency-demo-coverage-gate) into the **baseline** table above (new row in [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)),
-  2. Updating **`test_dev_optional_dependencies_match_baseline_package_set`** in **`tests/test_design_principles_contract.py`**,
-  3. **CHANGELOG** **Unreleased**,
-  4. **CI** invoking **pytest** with **`--cov`** / **`--cov-fail-under=80`** (or equivalent) for **`demo.py`**.
+- **`pytest`** is the test runner; **`pytest-cov`** is a direct **dev** dependency with a PEP 508 constraint (see
+  [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)).
+- **`[tool.pytest.ini_options]`** in **`pyproject.toml`** passes **`--cov=replayt_ux_showcase.demo`** and
+  **`--cov-fail-under=80`** so local **`pytest`** and **CI** (`python -m pytest tests`) share the same gate.
 
-### Planned dev dependency: demo coverage gate
+### Traceability (implementation)
 
-Until the Builder lands the coverage gate, **`pytest-cov`** is **specified here** but **not** yet part of the enforced
-**dev** package-name set in **`test_dev_optional_dependencies_match_baseline_package_set`**:
+**CI** and contributor **`pytest`** runs enforce at least:
 
-| Package | Role |
-| ------- | ---- |
-| **pytest-cov** | Measure line coverage and enforce **`--cov-fail-under`** for **`src/replayt_ux_showcase/demo.py`** |
-
-### Traceability (target implementation)
-
-After the Builder completes this backlog item, **CI** should enforce at least:
-
-| Check | Enforced by (target) |
-| ----- | -------------------- |
-| Line coverage **≥ 80%** on **`src/replayt_ux_showcase/demo.py`** | **`pytest`** + **`pytest-cov`** in **CI** with **`--cov-fail-under=80`** (exact CLI flags live in workflow or **`pyproject.toml`** **`[tool.pytest.ini_options]`** once added) |
-| Demo subprocess and data-shape checks | **`tests/`** per **`docs/demo.md`** |
-| **replayt** pin, **dev** pins, and design-principles structure | **`tests/test_design_principles_contract.py`** (existing; extend if new spec rows require it) |
+| Check | Enforced by |
+| ----- | ----------- |
+| Line coverage **≥ 80%** on **`src/replayt_ux_showcase/demo.py`** | **`pytest`** + **`pytest-cov`** via **`[tool.pytest.ini_options]`** (`--cov-fail-under=80`) |
+| Demo subprocess and data-shape checks | **`tests/`** per **`docs/demo.md`** (including in-process calls so **pytest-cov** traces **`demo.py`**) |
+| **replayt** pin, **dev** pins, and design-principles structure | **`tests/test_design_principles_contract.py`** (extend if new spec rows require it) |
+| **replayt** import surface in **`demo.py`** | **`tests/test_demo.py`** asserts the module source does not import the **`replayt`** package (stdlib-only demo) |
 
 ### Backlog traceability: Add unit/integration tests for demo
 
@@ -153,14 +142,13 @@ integration boundaries, and runs in **CI** with coverage and explicit **dev** to
 | ---------------------------- | --------------- | --------------------------- |
 | **80%+ coverage on demo** | [Line coverage](#line-coverage-acceptance-80-on-demo) | **`pytest-cov`** on **`demo.py`** with fail-under **80** in **CI** |
 | **Fails on boundary breaks** | [Fails on boundary breaks](#fails-on-boundary-breaks-acceptance) | Failing tests / non-zero **pytest** when spec, pins, or public **replayt** usage regress |
-| **In pyproject.toml dev deps** | [Dev dependencies](#dev-dependencies-acceptance-in-pyprojecttoml), [Planned dev dependency](#planned-dev-dependency-demo-coverage-gate) | **`pytest`** and **`pytest-cov`** (after implementation) under **`[project.optional-dependencies].dev`** with PEP 508 constraints; contract test matches [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) |
+| **In pyproject.toml dev deps** | [Dev dependencies](#dev-dependencies-acceptance-in-pyprojecttoml), [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | **`pytest`** and **`pytest-cov`** under **`[project.optional-dependencies].dev`** with PEP 508 constraints; **`test_dev_optional_dependencies_match_baseline_package_set`** matches the baseline table |
 
-**Builder checklist (phase 3):**
+**Maintainer checklist (follow-up):**
 
-1. Add **`pytest-cov`** to **`pyproject.toml`** **`dev`** with a version constraint; merge [Planned dev dependency](#planned-dev-dependency-demo-coverage-gate) into [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) and update **`test_dev_optional_dependencies_match_baseline_package_set`**.
-2. Configure **CI** (and optionally **`[tool.pytest.ini_options]`**) so **`pytest`** measures coverage on **`demo.py`** and fails below **80%**.
-3. Add or extend tests so [Fails on boundary breaks](#fails-on-boundary-breaks-acceptance) is satisfied without relying on private **replayt** APIs.
-4. Run **`pip install -e ".[dev]"`** and full **pytest** locally; update **CHANGELOG** **Unreleased**.
+1. When raising or adding coverage gates, update **`[tool.pytest.ini_options]`**, **CHANGELOG**, and this section together.
+2. When **`demo.py`** begins importing **replayt**, replace or extend the stdlib-only import test with an assertion that
+   imported names are a subset of the published **`replayt`** public surface (per [Fails on boundary breaks](#fails-on-boundary-breaks-acceptance)).
 
 ---
 
@@ -208,6 +196,7 @@ explicit version constraints on its line:
 | Package | Role |
 | ------- | ---- |
 | **pytest** | Test runner |
+| **pytest-cov** | Line coverage and **`--cov-fail-under`** for **`src/replayt_ux_showcase/demo.py`** (via **`[tool.pytest.ini_options]`**) |
 | **ruff** | Lint/format (as adopted by the repo) |
 | **pip-audit** | Supply-chain / vulnerability checks in contributor workflows |
 
@@ -234,7 +223,7 @@ covered by the dependency contract tests.
 | ---------------------------- | --------------- | -------------------------- |
 | **`pip install -e .[dev]`** works | [Goals](#goals) and [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 1 | Contributor **README** quick start and CI use **`pip install -e ".[dev]"`** (quoted extras are reliable in **POSIX** shells; unquoted **`.[dev]`** matches backlog wording but may need quotes under **zsh** / some setups); `test_ci_installs_editable_with_dev_extras` asserts the workflow keeps that command |
 | **replayt** importable | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 2 | `tests/test_design_principles_contract.py` (`test_replayt_importable`) after install |
-| No loose direct deps | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) items 3–4 and [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same test module: every line in **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`** carries a non-empty PEP 508 specifier; **replayt** line must match [Replayt and Python matrix](#replayt-and-python-matrix); **`test_dev_optional_dependencies_match_baseline_package_set`** keeps **dev** to **pytest**, **ruff**, **pip-audit** only |
+| No loose direct deps | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) items 3–4 and [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same test module: every line in **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`** carries a non-empty PEP 508 specifier; **replayt** line must match [Replayt and Python matrix](#replayt-and-python-matrix); **`test_dev_optional_dependencies_match_baseline_package_set`** keeps **dev** to **pytest**, **pytest-cov**, **ruff**, **pip-audit** |
 
 **Caret-style backlog wording (e.g. “^0.1” for **replayt**):** Express in **`pyproject.toml`** using PEP 508 only—see
 [PEP 508 vs caret-style wording](#pep-508-vs-caret-style-wording). The numeric range in **`pyproject.toml`** and the
@@ -246,7 +235,7 @@ matrix is authoritative, not npm **`^` / `~`**.
    **`test_replayt_dependency_matches_design_principles_matrix`** (lower bound and **`<0.5`**-style cap unless the
    matrix and tests are intentionally revised together).
 2. Keep **`[project.optional-dependencies].dev`** aligned with [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)
-   (**pytest**, **ruff**, **pip-audit**). Adding, renaming, or dropping a tool requires updating this table,
+   (**pytest**, **pytest-cov**, **ruff**, **pip-audit**). Adding, renaming, or dropping a tool requires updating this table,
    **CHANGELOG**, and any workflow docs that mention the tool, in the same change set as **`pyproject.toml`**.
 3. After any pin or dev-set change, run **`pip install -e ".[dev]"`** and **`pytest`** on the CI Python version;
    update **CHANGELOG** **Unreleased** per [Single change set for truth](#acceptance-criteria-implementation).

@@ -118,10 +118,10 @@ Behavioral cases below are implemented under **`tests/`** (see module docstring)
 
 ### Coverage gate (see design principles)
 
-- **Target:** **≥ 80%** CPython **line** coverage on **`src/replayt_ux_showcase/demo.py`** only, enforced in **CI** via
-  **`pytest-cov`** (or equivalent) with **`--cov-fail-under=80`** once the Builder lands [Add unit/integration tests for demo](DESIGN_PRINCIPLES.md#backlog-traceability-add-unitintegration-tests-for-demo) per **`docs/DESIGN_PRINCIPLES.md`**.
-- **`pytest-cov`** MUST be declared under **`[project.optional-dependencies].dev`** with a PEP 508 constraint in the
-  same change set as the gate (updates the **dev** baseline table and contract test there).
+- **Target:** **≥ 80%** CPython **line** coverage on **`src/replayt_ux_showcase/demo.py`** only, enforced by **`pytest`**
+  + **`pytest-cov`** via **`[tool.pytest.ini_options]`** in **`pyproject.toml`** (`--cov-fail-under=80`) in **CI** and locally.
+- In-process tests exercise **`render_console_timeline`** / **`main()`** so coverage traces **`demo.py`**; subprocess
+  checks remain for the **`python -m replayt_ux_showcase.demo`** entrypoint.
 
 ## Integration Notes
 

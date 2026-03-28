@@ -60,8 +60,8 @@ def test_dev_optional_dependencies_match_baseline_package_set() -> None:
     """Aligns with DESIGN_PRINCIPLES.md Dev optional dependency set (baseline)."""
     dev = _project_table()["optional-dependencies"]["dev"]
     names = {Requirement(d.strip()).name.lower() for d in dev}
-    assert names == {"pip-audit", "pytest", "ruff"}, (
-        f"dev extras must be exactly pytest, ruff, pip-audit; got {sorted(names)}"
+    assert names == {"pip-audit", "pytest", "pytest-cov", "ruff"}, (
+        f"dev extras must be exactly pytest, pytest-cov, ruff, pip-audit; got {sorted(names)}"
     )
 
 

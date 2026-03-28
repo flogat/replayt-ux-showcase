@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `tests/test_design_principles_contract.py`: **`[dev]`** optional dependencies must be exactly **pytest**, **ruff**, **pip-audit**; CI must keep **`pip install -e ".[dev]"`** (phase 3, Pin replayt dependency and dev tools in pyproject.toml).
+- `pyproject.toml`: **`pytest-cov`** in **`[dev]`**; **`[tool.pytest.ini_options]`** enforces **≥ 80%** line coverage on **`replayt_ux_showcase.demo`** (phase 3, Add unit/integration tests for demo).
+- `docs/DESIGN_PRINCIPLES.md`: **dev** baseline table includes **pytest-cov**; demo testing traceability updated for the coverage gate and import-boundary test (same backlog).
+- `tests/test_design_principles_contract.py`: **`[dev]`** optional dependencies must be **pytest**, **pytest-cov**, **ruff**, **pip-audit** (same backlog).
+- `src/replayt_ux_showcase/demo.py`: **`main()`** entrypoint for tests and **`python -m replayt_ux_showcase.demo`** (same backlog).
+- `tests/test_demo.py`: in-process timeline and **`main()`** tests, unknown-event branch, stdlib-only import guard on **`demo.py`** (same backlog).
 - `docs/DESIGN_PRINCIPLES.md`: traceability rows for those contract checks (same backlog).
 - `pyproject.toml`: **replayt** bounded to `>=0.1.0,<0.5.0` (PEP 508); `tests/test_design_principles_contract.py` enforces version constraints on **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`**, plus **replayt** import smoke (phase 3, Pin replayt dependency and dev tools in pyproject.toml).
 - `docs/DESIGN_PRINCIPLES.md`: **Replayt and Python matrix** and traceability table aligned with the declared **replayt** range and new contract checks (same backlog).
@@ -19,8 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
-- `docs/DESIGN_PRINCIPLES.md`: normative [Demo module testing and replayt integration boundaries](docs/DESIGN_PRINCIPLES.md#demo-module-testing-and-replayt-integration-boundaries) — 80% line coverage on `demo.py`, boundary-break semantics, **pytest-cov** as planned **dev** dependency with builder checklist; traceability row for this backlog (phase 2, Add unit/integration tests for demo).
-- `docs/demo.md`: automated test plan aligned with design principles; coverage gate called out with link to spec.
+- `docs/DESIGN_PRINCIPLES.md`: normative [Demo module testing and replayt integration boundaries](docs/DESIGN_PRINCIPLES.md#demo-module-testing-and-replayt-integration-boundaries) — 80% line coverage on `demo.py`, boundary-break semantics, **pytest-cov** in **dev** (phase 2 spec; phase 3 implements gate and contract alignment).
+- `docs/demo.md`: automated test plan aligned with design principles; coverage gate documents **`pyproject.toml`** **`[tool.pytest.ini_options]`** (phase 3, Add unit/integration tests for demo).
 - `README.md`: quick start runs **`pytest`**; pointer to design principles for test/coverage policy (same backlog).
 - `docs/DESIGN_PRINCIPLES.md`: dependency pins and dev toolchain (PEP 508 vs caret wording, no loose direct deps, dev optional set table); traceability to `tests/test_design_principles_contract.py` including **replayt** specifier (`>=0.1.0` and `<0.5` cap); backlog-to-spec mapping, **`pip install -e ".[dev]"`** quoting note, and phase-3 builder checklist for “Pin replayt dependency and dev tools in pyproject.toml” (phase 2 spec lead).
 
