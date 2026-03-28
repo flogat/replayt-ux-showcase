@@ -51,7 +51,7 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/DESIGN_PRINCIPLES.md` | Design and integration principles |
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
-| `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
+| `docs/examples/` | Copy-paste static HTML/JS examples for integrators (not npm packages—see **Examples** below) |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
 | `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates |
@@ -59,3 +59,10 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**) |
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
 | `.gitignore` | Ignores `path/` (doc placeholders), `.orchestrator/`, `.cursor/skills/`, and `AGENTS.md` (local tooling) |
+
+### Examples (`docs/examples/`)
+
+- **[`docs/examples/basic-player.html`](docs/examples/basic-player.html)** — vanilla CSS minimal player layout; reference for the [basic player example contract](docs/DESIGN_PRINCIPLES.md#basic-player-example-contract-static-html).
+- **`docs/examples/tailwind-player.html`** — planned **Tailwind** + CSS variables variant with the same contract; spec and acceptance criteria live under [DESIGN_PRINCIPLES — Tailwind backlog traceability](docs/DESIGN_PRINCIPLES.md#backlog-traceability-tailwind-based-player-layout-example).
+
+These files are **illustrative copy-paste** starters only. They are **not** published **npm** packages and do not extend the Python package surface—see [`docs/DESIGN_PRINCIPLES.md` — Module and directory boundaries](docs/DESIGN_PRINCIPLES.md#module-and-directory-boundaries).

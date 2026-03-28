@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- `docs/DESIGN_PRINCIPLES.md`: basic player static HTML contract, **Showcase stack matrix** row for **Tailwind**, migration path row, and backlog traceability for **`docs/examples/tailwind-player.html`** (phase 2 spec, Add Tailwind-based player layout example under docs/examples/).
+- `README.md`: **Examples** subsection under project layout with cross-links and illustrative-not-npm disclaimer (same backlog).
+
 ## [0.2.0] - 2026-03-28
 
 ### Changed

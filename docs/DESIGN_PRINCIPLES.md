@@ -18,6 +18,7 @@ is tracked separately in code and CHANGELOG):
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
+| Tailwind static player example (contract + boundaries) | [Basic player example contract](#basic-player-example-contract-static-html), [Showcase stack matrix](#showcase-stack-matrix), [Backlog traceability: Tailwind-based player layout example](#backlog-traceability-tailwind-based-player-layout-example) |
 
 ### Traceability to automated checks
 
@@ -390,9 +391,47 @@ copy the pattern; “CI” means automated verification exists.
 | Stack | Supported (intent) | CI | Notes |
 | ----- | ------------------- | --- | ----- |
 | Vanilla HTML/JS | Yes (`docs/examples/`) | File/smoke tests as implemented under `tests/` | Default integration path for smallest surface |
+| Tailwind (utility CSS) | Yes when `docs/examples/tailwind-player.html` ships | Optional until a dedicated test or browser job ships; same posture as other static examples | Same **`docs/examples/`** boundaries as vanilla; not an npm-published package unless explicitly released as such |
 | React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
 | Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |
+
+---
+
+## Basic player example contract (static HTML)
+
+Normative contract for **minimal** embeddable player demos under **`docs/examples/`**. **`docs/examples/basic-player.html`** is the reference **vanilla CSS** implementation. A **Tailwind**-styled sibling (**`docs/examples/tailwind-player.html`**, see [Backlog traceability](#backlog-traceability-tailwind-based-player-layout-example) below) MUST preserve the same integrator-facing semantics even when markup and classes differ.
+
+| Element | Requirement |
+| ------- | ----------- |
+| **Player script** | Include a **replayt** player bundle (e.g. CDN **`script`** tag). Document that the URL/version is illustrative; integrators MUST align with their supported **replayt** release and bundling policy ([Upstream boundary](#one-way-to-do-it-canonical-patterns)). |
+| **Instructions** | A visible block (e.g. callout/card) explaining copy-paste intent, where **`sessionData`** comes from, and how theming works (CSS custom properties and/or **Tailwind**-compatible tokens). |
+| **Container** | A single dedicated mount element for the player (recommended id **`player`** for parity with **`basic-player.html`**). |
+| **Session payload** | In-page **`sessionData`** placeholder (or equivalent) with the same **shape** as **`basic-player.html`** (`events`, `metadata` with `startTs` and `viewport`) unless upstream docs mandate a newer shape—then update **both** reference examples in one change set. |
+| **Init hook** | Script that calls **`window.replayt?.player?.init({ container, data, theme })`** (or the current documented public init pattern for the pinned major), using optional chaining so the page fails softly when the script is absent. |
+| **Module boundary** | File header comment and/or instructions MUST state that the page is **illustrative** and **copy-paste** only, **not** a published **npm** package—see **`docs/examples/`** row under [Module and directory boundaries](#module-and-directory-boundaries). |
+
+**Out of scope for this contract:** **pytest** line-coverage gates (those apply to **`src/replayt_ux_showcase/demo.py`** only). Optional **CI** file-presence or smoke tests for static HTML are **Builder** decisions tracked in **CHANGELOG** when added.
+
+### Backlog traceability: Tailwind-based player layout example
+
+**Normalized user story:** As integrator using **Tailwind**, I want a static **`docs/examples/tailwind-player.html`** that matches the [basic player example contract](#basic-player-example-contract-static-html), uses **Tailwind** utility classes for layout and chrome, and documents **CSS variables** for theming—clearly labeled illustrative copy-paste, not a shipped frontend package.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ---------------------- |
+| **New static example file** | [Basic player example contract](#basic-player-example-contract-static-html) | **`docs/examples/tailwind-player.html`** exists at repo root path above |
+| **Contract parity** | Same table (**Player script**, **Instructions**, **Container**, **Session payload**, **Init hook**) | **Spec gate** / review diff against **`basic-player.html`**; **Builder** keeps shapes and init pattern aligned when either file changes |
+| **Tailwind styling** | This subsection | Layout, spacing, typography, and chrome use **Tailwind** utility classes in the HTML (e.g. **`class="..."`**). Prefer [**Tailwind Play CDN**](https://tailwindcss.com/docs/installation/play-cdn) or an equivalent **documented** zero-build CDN snippet in the file so the example opens standalone; integrators may replace with their own **Tailwind** pipeline. |
+| **Theming via CSS variables** | Same | Page documents integrator theming with **CSS custom properties** (e.g. on **`:root`** or a wrapper), wired into utilities via **`[style]`**, arbitrary properties, or **`@theme`** / **`theme()`** as appropriate to the chosen **Tailwind** version—must be visible in the shipped file or adjacent HTML comment. |
+| **README cross-link** | [Module and directory boundaries](#module-and-directory-boundaries) | **`README.md`** project layout (or immediate **Examples** note) links **`basic-player.html`**, the **Tailwind** file, and this contract section |
+| **Illustrative / not a package** | **`docs/examples/`** boundary | Instructions or header comment repeat that the file is not a published **npm** product |
+
+**Builder checklist (phase 3):**
+
+1. Add **`docs/examples/tailwind-player.html`**; keep **`sessionData`** and **`init`** call aligned with **`basic-player.html`** unless both are updated for a **replayt** API change.
+2. Update **`README.md`** with links and the illustrative-only disclaimer (cross-reference **DESIGN_PRINCIPLES** boundaries).
+3. Record the new example under **CHANGELOG** **Unreleased** when the file ships.
+4. Do **not** add **npm** packaging or imply **`replayt-ux-showcase`** ships this HTML as a **node** dependency without an explicit maintainer decision and **CHANGELOG** entry.
 
 ---
 
@@ -434,6 +473,7 @@ an API.
 | **replayt** minor/major with API changes | Update examples and tests; refresh matrices; **CHANGELOG** with “how to update your copy” bullets |
 | **New Python floor** | Update `requires-python`, CI images, and the [Replayt and Python matrix](#replayt-and-python-matrix) |
 | **New framework example** | Add under **`docs/examples/`** (or scoped subdir), link from README/demo spec, add showcase row above |
+| **New Tailwind static player** | Add **`tailwind-player.html`**, satisfy [Basic player example contract](#basic-player-example-contract-static-html), update **README** and **CHANGELOG**; **Showcase stack matrix** already reserves the row |
 | **Integrator upgrading** | Compare their pinned **replayt** to this repo’s supported range; follow **CHANGELOG** for the showcase version they target |
 | **Dev toolchain or replayt pin change** | Update **`pyproject.toml`**, [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) / matrix cells, contract tests, and **CHANGELOG** in one change set |
 
