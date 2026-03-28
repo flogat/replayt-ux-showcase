@@ -23,7 +23,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Check | Enforced by |
 | ----- | ----------- |
 | `requires-python` matches the Python row in [Replayt and Python matrix](#replayt-and-python-matrix) | `tests/test_design_principles_contract.py` |
-| **`replayt`** dependency lower bound matches that matrix | Same |
+| **`replayt`** dependency specifier matches that matrix (`>=0.1.0` and compatible `<0.5` cap, per `tests/test_design_principles_contract.py`) | Same |
 | CI **Python** version in `.github/workflows/ci.yml` matches that matrix | Same |
 | Section headings for the two matrices, extension points, and audience | Same |
 | Subsection **replayt Python API boundary** under [Module and directory boundaries](#module-and-directory-boundaries) | Same |
@@ -132,6 +132,37 @@ mention the workflow.
 - Committing a **lock file** or **`pip freeze`** output is **not** required by this spec unless maintainers adopt that
   separately. **Pins** mean **declared constraints in `pyproject.toml`** for **direct** dependencies; transitive versions
   follow the resolver unless a stricter policy is adopted later.
+
+### Backlog traceability: Pin replayt dependency and dev tools in pyproject.toml
+
+This subsection maps the staff-engineering backlog item to this document so **Spec gate** and **Builder** (phase 3)
+can confirm intent without re-deriving it. **Implementation and contract-test edits** belong to the Builder phase
+unless a change here explicitly requires synchronized updates to **`pyproject.toml`**, **`tests/test_design_principles_contract.py`**, and **CHANGELOG**.
+
+**Normalized user story:** Maintainers and integrators want **replayt** and direct **dev** dependencies declared in
+**`pyproject.toml`** with explicit PEP 508 constraints so editable installs are reproducible, reviewable, and
+covered by the dependency contract tests.
+
+| Backlog acceptance criterion | Where specified | How it is verified (today) |
+| ---------------------------- | --------------- | -------------------------- |
+| **`pip install -e .[dev]`** works | [Goals](#goals) and [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 1 | Contributor **README** quick start and CI use **`pip install -e ".[dev]"`** (quoted extras are reliable in **POSIX** shells; unquoted **`.[dev]`** matches backlog wording but may need quotes under **zsh** / some setups) |
+| **replayt** importable | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 2 | `tests/test_design_principles_contract.py` (`test_replayt_importable`) after install |
+| No loose direct deps | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) items 3–4 and [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same test module: every line in **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`** carries a non-empty PEP 508 specifier; **replayt** line must match [Replayt and Python matrix](#replayt-and-python-matrix) |
+
+**Caret-style backlog wording (e.g. “^0.1” for **replayt**):** Express in **`pyproject.toml`** using PEP 508 only—see
+[PEP 508 vs caret-style wording](#pep-508-vs-caret-style-wording). The numeric range in **`pyproject.toml`** and the
+matrix is authoritative, not npm **`^` / `~`**.
+
+**Builder checklist (phase 3):**
+
+1. Keep a **single** **`replayt`** entry in **`[project].dependencies`** whose specifier matches the matrix and
+   **`test_replayt_dependency_matches_design_principles_matrix`** (lower bound and **`<0.5`**-style cap unless the
+   matrix and tests are intentionally revised together).
+2. Keep **`[project.optional-dependencies].dev`** aligned with [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)
+   (**pytest**, **ruff**, **pip-audit**). Adding, renaming, or dropping a tool requires updating this table,
+   **CHANGELOG**, and any workflow docs that mention the tool, in the same change set as **`pyproject.toml`**.
+3. After any pin or dev-set change, run **`pip install -e ".[dev]"`** and **`pytest`** on the CI Python version;
+   update **CHANGELOG** **Unreleased** per [Single change set for truth](#acceptance-criteria-implementation).
 
 ---
 
