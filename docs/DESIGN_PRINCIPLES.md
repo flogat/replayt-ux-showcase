@@ -11,7 +11,8 @@ is tracked separately in code and CHANGELOG):
 
 | Criterion | Where addressed |
 | --------- | ----------------- |
-| Version matrix table | [Replayt and Python matrix](#replayt-and-python-matrix), [Showcase stack matrix](#showcase-stack-matrix) |
+| Version matrix table | [Replayt and Python matrix](#replayt-and-python-matrix), [Showcase stack matrix](#showcase-stack-matrix), [Compatibility matrix and upgrade paths](#compatibility-matrix-and-upgrade-paths), [Compatibility digest (integrators)](compat.md) |
+| Compatibility matrix, CI coverage truth, shims, upgrade paths | [Compatibility matrix and upgrade paths](#compatibility-matrix-and-upgrade-paths), [Compatibility digest (integrators)](compat.md) |
 | **replayt** / dev-tool pins and “no loose deps” | [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) |
 | Demo **pytest** coverage and **replayt** boundary tests | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries) |
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
@@ -328,6 +329,54 @@ when additional cells become required.
 | --------- | ------------------- | -------------------- | ------------------ |
 | **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` in `[project].dependencies` (PEP 508); MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | Latest **replayt** allowed by that range on `pip install -e ".[dev]"` (see lock-free installs in CI logs) | The `<0.5` cap excludes 0.5+ until maintainers widen the range after compatibility checks; any change to bounds updates this cell, contract tests, and **CHANGELOG** together; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
 | **Python** | `>=3.11` per `requires-python` | **3.12** on `ubuntu-latest` (`.github/workflows/ci.yml`) | Adding 3.11 to the matrix is optional; document if parity is required for integrators |
+
+---
+
+## Compatibility matrix and upgrade paths
+
+Normative spec for the backlog item **Document compatibility matrix and upgrade paths**: what “table of supported
+versions”, “CI matrix covers”, **replayt** versions **tested** vs **supported**, **shims**, and **migration** mean for
+maintainers and integrators. **[docs/compat.md](compat.md)** is the readable digest; this section is authoritative when
+the two differ.
+
+### Supported vs tested (replayt and Python)
+
+- **Supported (policy)** — Declared in **`pyproject.toml`** and summarized in [Replayt and Python matrix](#replayt-and-python-matrix)
+  and [Showcase stack matrix](#showcase-stack-matrix). Integrators may rely on this range unless **CHANGELOG** narrows it.
+- **Verified in CI today** — Whatever the default **GitHub Actions** workflow actually installs and runs tests against.
+  Today that is **one** **Python** interpreter row and **one** resolved **replayt** version per job (**latest** satisfying
+  the PEP 508 range at install time). That is **not** the same as “every minor in the range is regression-tested” until
+  optional matrix jobs pin additional cells.
+- **No false claims** — Documentation (including **README**, this file, and **compat.md**) MUST NOT imply CI exercises
+  matrix cells that are not implemented in **`.github/workflows/ci.yml`** (or documented follow-up jobs). When new rows
+  ship, update the **Verified in CI today** columns here and in **compat.md** in the same change set as the workflow.
+
+### Compatibility shims (consumer-side)
+
+- **Goal** — Avoid stranding integrators when **replayt**’s public surface evolves within the supported range (or across a
+  planned range change): adapt in **this repo** via thin wrappers or re-exports; **do not** fork or patch **replayt**
+  internals ([Upstream boundary](#one-way-to-do-it-canonical-patterns)).
+- **Placement** — Shims and adapter modules live only under **`src/replayt_ux_showcase/`**; they are part of the packaged
+  surface and follow [Deprecation and removal](#deprecation-and-removal) when retired.
+- **Documentation** — Every shim MUST ship with **CHANGELOG** notes (and user-facing pointers in **compat.md** or **`docs/demo.md`**
+  when integrators copy affected examples). Upstream release notes remain the source of truth for **replayt** API semantics.
+
+### Backlog traceability: Document compatibility matrix and upgrade paths
+
+**Normalized user story:** As integrator, I want a clear **compatibility matrix**, honest **CI coverage** statements,
+**shim** guidance, and **migration** notes so I can upgrade **replayt** and this showcase without surprise breakages.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ------------------------ |
+| **Table of supported versions** | [Replayt and Python matrix](#replayt-and-python-matrix), [Showcase stack matrix](#showcase-stack-matrix), **[docs/compat.md](compat.md) quick reference** | **Spec gate** — tables present, consistent with **`pyproject.toml`** / `requires-python`; **Builder** keeps contract tests aligned when pins change |
+| **CI matrix covers** | [Supported vs tested](#supported-vs-tested-replayt-and-python), **compat.md** [CI matrix coverage](compat.md#ci-matrix-coverage), [GitHub Actions CI workflow](#github-actions-ci-workflow) | **Spec gate** — no doc claims uncovered cells; **Builder** adds **`strategy.matrix`** (or equivalent jobs) when policy requires multiple **replayt** or **Python** rows and updates **Verified in CI today** cells |
+| **Deprecation policy** | [Deprecation and removal](#deprecation-and-removal), **compat.md** summary | **Spec gate** — policy cross-linked from digest; releases honor **CHANGELOG** and semver rules |
+
+**Builder checklist (follow-up):**
+
+1. If **pytest** exits with code **4** / “unrecognized **--cov**”, ensure **`pip install -e ".[dev]"`** runs before **pytest** so **pytest-cov** matches **[tool.pytest.ini_options]** (see phase **1c** baseline notes).
+2. When adding **replayt** or **Python** matrix rows, update **`.github/workflows/ci.yml`**, this matrix, **compat.md**, and **`tests/test_design_principles_contract.py`** (if CI assertions encode the matrix) in one change set.
+3. Record user-visible compatibility or CI matrix changes under **CHANGELOG** **Unreleased**.
 
 ---
 

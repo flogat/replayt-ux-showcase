@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- `docs/compat.md`: integrator digest for supported **replayt** / **Python** versions, honest **CI** coverage vs policy, shim placement, and upgrade/migration pointers (phase 2 spec, Document compatibility matrix and upgrade paths).
+- `docs/DESIGN_PRINCIPLES.md`: normative [Compatibility matrix and upgrade paths](docs/DESIGN_PRINCIPLES.md#compatibility-matrix-and-upgrade-paths) — supported vs tested, shim rules, backlog traceability; traceability table links **compat.md** (same backlog).
+- `README.md`: links **`docs/compat.md`** from design principles and project layout (same backlog).
+
 ### Changed
 
 - `.github/workflows/ci.yml`: run **`ruff check`** and **`ruff format --check`** after **`pip install -e ".[dev]"`** and before **pytest** (phase 3, Set up GitHub Actions CI for tests and linting).
