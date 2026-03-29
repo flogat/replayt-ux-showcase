@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Phase **3** (*Add React timeline player example aligned with SAMPLE_SESSION_DATA*): **`docs/examples/react/src/App.jsx`** — offline **`SAMPLE_SESSION_DATA`** matches **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`**; **`adaptConsoleSessionToReplaytMs`** maps console seconds to **P-01**-style ms for **`replayt.player.init`** and the scrubber; **`docs/examples/react/README.md`** — adapter table; **`tests/test_examples.py`** — **P-06** parity checks + demo module alignment test.
+
 ### Documentation
 
 - Phase **2** spec (*Document pip-audit failures and dependency override playbook*): **`docs/DEPENDENCY_AUDIT.md`** — **D1–D10** playbook (**CI** parity, local **`pip-audit`** reproduction, triage, upstream vs pin, override governance); **`docs/DESIGN_PRINCIPLES.md`** — [Dependency vulnerability audit (pip-audit)](docs/DESIGN_PRINCIPLES.md#dependency-vulnerability-audit-pip-audit) + traceability / automated-checks note; **`README.md`** — **Troubleshooting** + layout row.

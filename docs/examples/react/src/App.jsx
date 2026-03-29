@@ -5,6 +5,10 @@
       window.replayt.player.seekToMs(ms), window.replayt.player.goto(ms)
       where controller is the return value of init when present.
 
+  Console parity: SAMPLE_SESSION_DATA below matches replayt_ux_showcase.demo.SAMPLE_SESSION_DATA (demo.py):
+    events[].ts in seconds, metadata.start_ts, metadata.duration (seconds), metadata.viewport.w/h.
+  adaptConsoleSessionToReplaytMs maps that shape to P-01-style ms (timestamp, startTs, durationMs) for init + scrubber.
+
   Event ordering (P-03): replayt does not document one ordering guarantee for sessionData.events across
   all minors in this repo’s supported range. This demo sorts event times once before computing the scrub range.
 
@@ -17,22 +21,63 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const START_TS = 1704067200000;
+/** Wall-clock anchor (ms). Console sample uses relative seconds; scrub/init need absolute ms. */
+const ADAPTER_EPOCH_MS = 1704067200000;
 
-/** Same sessionData root shape as docs/examples/basic-player.html and P-03 (fixed literals for copy-paste). */
-const SESSION_DATA = {
+/** Same shape and numbers as replayt_ux_showcase.demo.SAMPLE_SESSION_DATA (src/replayt_ux_showcase/demo.py). */
+const SAMPLE_SESSION_DATA = {
   events: [
-    { timestamp: START_TS + 2000, type: "custom", label: "first paint" },
-    { timestamp: START_TS + 45000, type: "custom", label: "mid session" },
-    { timestamp: START_TS + 120000, type: "custom", label: "late event" },
-    { timestamp: START_TS + 8000, type: "custom", label: "out-of-order in source" },
+    { type: "click", ts: 1.0, x: 100, y: 200 },
+    { type: "scroll", ts: 5.0, dy: 300 },
+    { type: "keypress", ts: 8.5, key: "a" },
+    { type: "resize", ts: 12.0, w: 1920, h: 1080 },
+    { type: "click", ts: 15.0, x: 500, y: 300 },
+    { type: "scroll", ts: 18.0, dy: -150 },
+    { type: "keypress", ts: 22.0, key: "Enter" },
+    { type: "click", ts: 25.0, x: 800, y: 600 },
+    { type: "scroll", ts: 27.5, dy: 200 },
+    { type: "mousemove", ts: 28.0, x: 900, y: 700 },
+    { type: "click", ts: 29.0, x: 950, y: 750 },
+    { type: "scroll", ts: 29.5, dy: 50 },
   ],
   metadata: {
-    startTs: START_TS,
-    durationMs: 180000,
-    viewport: { width: 1920, height: 1080 },
+    start_ts: 0.0,
+    viewport: { w: 1920, h: 1080 },
+    duration: 30.0,
   },
 };
+
+/**
+ * Pure adapter: console SAMPLE_SESSION_DATA → replayt-facing sessionData (ms, P-01-style metadata).
+ * @param {object} session
+ * @param {number} [epochMs=ADAPTER_EPOCH_MS]
+ */
+function adaptConsoleSessionToReplaytMs(session, epochMs = ADAPTER_EPOCH_MS) {
+  const meta = session.metadata || {};
+  const startTsS = typeof meta.start_ts === "number" ? meta.start_ts : 0;
+  const durationS = typeof meta.duration === "number" ? meta.duration : null;
+  const vp = meta.viewport || {};
+  const w = vp.w ?? vp.width;
+  const h = vp.h ?? vp.height;
+  const startMs = epochMs + startTsS * 1000;
+  const durationMs = durationS != null ? durationS * 1000 : null;
+  const events = (session.events || []).map((ev) => {
+    const copy = { ...ev };
+    const tsS = ev.ts;
+    if (typeof tsS === "number" && !Number.isNaN(tsS)) {
+      copy.timestamp = startMs + tsS * 1000;
+    }
+    return copy;
+  });
+  const metadata = {
+    startTs: startMs,
+    ...(durationMs != null ? { durationMs } : {}),
+    ...(typeof w === "number" && typeof h === "number"
+      ? { viewport: { width: w, height: h } }
+      : {}),
+  };
+  return { events, metadata };
+}
 
 function extractEventTimeMs(ev) {
   if (!ev || typeof ev !== "object") return null;
@@ -181,9 +226,10 @@ export default function App() {
       setStatusError(isError);
     }
 
-    const rangeInfo = computeRangeMs(SESSION_DATA);
+    const playerSession = adaptConsoleSessionToReplaytMs(SAMPLE_SESSION_DATA);
+    const rangeInfo = computeRangeMs(playerSession);
     rangeInfoRef.current = rangeInfo;
-    const events = SESSION_DATA.events || [];
+    const events = playerSession.events || [];
 
     seekSinkRef.current = null;
 
@@ -235,7 +281,7 @@ export default function App() {
     try {
       controller = rtPlayer.init({
         container: playerEl,
-        data: SESSION_DATA,
+        data: playerSession,
         theme: "light",
       });
     } catch {
@@ -303,9 +349,10 @@ export default function App() {
         }}
       >
         <p style={{ margin: 0 }}>
-          <strong>P-06:</strong> Same <code>sessionData</code> root and{" "}
-          <code>replayt.player.init</code> contract as{" "}
-          <a href="../basic-player.html">basic-player.html</a>; scrub UX follows{" "}
+          <strong>P-06:</strong> Offline <code>sessionData</code> matches{" "}
+          <code>replayt_ux_showcase.demo.SAMPLE_SESSION_DATA</code> (see <code>demo.py</code>);{" "}
+          <code>adaptConsoleSessionToReplaytMs</code> feeds <code>replayt.player.init</code> the same P-01-style ms
+          shape as <a href="../basic-player.html">basic-player.html</a>. Scrub UX follows{" "}
           <a href="../timeline-scrubber.html">timeline-scrubber.html</a> (P-03). Keyboard / focus:{" "}
           <a href="../../a11y/keyboard-model.md">docs/a11y/keyboard-model.md</a>.
         </p>

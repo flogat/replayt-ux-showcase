@@ -187,8 +187,28 @@ def test_react_timeline_player_p06_contract_markers():
     assert "applySeekMs" in app
     assert "durationMs" in app and "metadata" in app
     assert "replayt.player.init" in app
+    assert "SAMPLE_SESSION_DATA" in app
+    assert "adaptConsoleSessionToReplaytMs" in app
+    assert "start_ts" in app
+    assert "ts: 1.0" in app
+    assert "duration: 30.0" in app
     idx = (REPO_ROOT / "docs/examples/react/index.html").read_text(encoding="utf-8")
     assert "cdn.jsdelivr.net/npm/replayt@" in idx
+
+
+def test_p06_react_sample_session_literals_match_demo_module():
+    """P-06 console parity: App.jsx event types and metadata match replayt_ux_showcase.demo.SAMPLE_SESSION_DATA."""
+    from replayt_ux_showcase.demo import SAMPLE_SESSION_DATA
+
+    app = (REPO_ROOT / "docs/examples/react/src/App.jsx").read_text(encoding="utf-8")
+    for ev in SAMPLE_SESSION_DATA["events"]:
+        assert f'type: "{ev["type"]}"' in app
+    meta = SAMPLE_SESSION_DATA["metadata"]
+    assert meta["duration"] == 30.0
+    assert meta["start_ts"] == 0.0
+    assert "30.0" in app
+    w, h = meta["viewport"]["w"], meta["viewport"]["h"]
+    assert f"w: {w}" in app and f"h: {h}" in app
 
 
 def test_react_timeline_player_readme_private_and_runbook():
