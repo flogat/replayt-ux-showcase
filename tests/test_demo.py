@@ -44,6 +44,8 @@ def test_output_format():
     output = result.stdout + result.stderr
     assert "[replayt-demo]" in output
     assert "Rendering demo timeline" in output
+    assert "Overlay teaching" in output
+    assert "event-overlay.html" in output
 
 
 def test_event_count():
@@ -87,7 +89,19 @@ def test_render_console_timeline_in_process(caplog: pytest.LogCaptureFixture):
     assert "[replayt-demo] Rendering demo timeline" in joined
     assert "[replayt-demo] Processing" in joined
     assert "Timeline:" in joined
+    assert "Overlay teaching" in joined
     assert "Events:" in joined
+
+
+def test_overlay_teaching_when_no_event_before_scrub(caplog: pytest.LogCaptureFixture):
+    """Branch: scrub snapshot before first event logs the empty-overlay message."""
+    caplog.set_level(logging.INFO, logger="replayt_ux_showcase.demo")
+    data = {
+        "events": [{"type": "click", "ts": 10.0}],
+        "metadata": {"duration": 30.0},
+    }
+    render_console_timeline(data)
+    assert any("no event at or before playhead" in r.message for r in caplog.records)
 
 
 def test_unknown_event_type_logs_warning(caplog: pytest.LogCaptureFixture):

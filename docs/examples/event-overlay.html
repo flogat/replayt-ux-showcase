@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt event overlay lane (P-09)</title>
+    <!--
+      P-09 — replayt browser symbols this file calls (confirm against replayt release notes for your CDN pin):
+        - window.replayt.player.init({ container, data, theme })
+        - Seek: optional, in try-order — controller.seekToMs(ms), controller.goto(ms), window.replayt.player.seekToMs(ms),
+          window.replayt.player.goto(ms) where controller is the return value of init when present.
+
+      Event ordering (handoff): replayt does not document a single ordering guarantee for sessionData.events across
+      all minors in this repo’s supported range. This demo copies events, sorts by extractEventTimeMs once, and uses
+      that list for the scrub range and overlay chips so behavior stays stable if the source array is unsorted.
+
+      Throttling (handoff): scrub input is coalesced with requestAnimationFrame (at most one seek per frame while
+      dragging). change and pointerup call applySeekMs for the committed thumb position (same pattern as P-03).
+
+      Escape + focus return (handoff): when the event callout layer is visible, Escape hides it and moves focus back
+      to the overlay chip (or scrubber) that last opened it — see hideCallout(true) in the script.
+
+      Tab order (handoff): scrubber (#event-overlay-scrubber) → overlay lane chips (#event-overlay-lane) → player
+      container (#player) in DOM order. Canonical checklist: ../a11y/keyboard-model.md
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        :root {
+            --surface-border: #e0e0e0;
+            --surface-muted: #f4f4f5;
+            --text: #222;
+            --warn: #b42318;
+            --replayt-primary: #007bff;
+        }
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: var(--text);
+        }
+        .instructions {
+            background: var(--surface-muted);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--surface-border);
+            font-size: 0.95rem;
+        }
+        .instructions a {
+            color: var(--replayt-primary);
+        }
+        .scrub-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0.75rem 0 1rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+            background: #fff;
+        }
+        .scrub-row label {
+            font-weight: 600;
+            min-width: 7rem;
+        }
+        #event-overlay-scrubber {
+            flex: 1 1 200px;
+            min-width: 160px;
+            accent-color: var(--replayt-primary);
+        }
+        #event-overlay-scrubber:focus-visible {
+            outline: 2px solid var(--replayt-primary);
+            outline-offset: 2px;
+        }
+        #overlay-readout {
+            font-variant-numeric: tabular-nums;
+            min-width: 14rem;
+        }
+        .overlay-section {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+            background: #fff;
+        }
+        .overlay-section h2 {
+            margin: 0 0 0.5rem;
+            font-size: 1rem;
+        }
+        #event-overlay-lane {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .event-chip {
+            font: inherit;
+            padding: 0.35rem 0.65rem;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface-muted);
+            cursor: pointer;
+        }
+        .event-chip:hover {
+            border-color: var(--replayt-primary);
+        }
+        .event-chip:focus-visible {
+            outline: 2px solid var(--replayt-primary);
+            outline-offset: 2px;
+        }
+        .event-chip.is-active {
+            background: #dbeafe;
+            border-color: var(--replayt-primary);
+            font-weight: 600;
+        }
+        #event-callout {
+            display: none;
+            margin-top: 0.75rem;
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--replayt-primary);
+            border-radius: 8px;
+            background: #f0f7ff;
+            max-width: 36rem;
+        }
+        #event-callout.is-open {
+            display: block;
+        }
+        #event-callout p {
+            margin: 0 0 0.5rem;
+        }
+        #event-callout .hint {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #444;
+        }
+        #player {
+            width: 100%;
+            height: 50vh;
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+        }
+        .player-placeholder,
+        .status-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            margin: 0;
+            color: #555;
+            font-size: 0.95rem;
+            text-align: center;
+            padding: 1rem;
+        }
+        .status-banner.is-error {
+            color: var(--warn);
+            font-weight: 600;
+        }
+        .limitations {
+            margin-top: 1.25rem;
+            padding: 0.75rem 1rem;
+            border-left: 4px solid var(--surface-border);
+            background: var(--surface-muted);
+            font-size: 0.9rem;
+        }
+        .limitations h2 {
+            margin: 0 0 0.35rem;
+            font-size: 1rem;
+        }
+        .limitations p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event overlay + scrubber (P-09)</h1>
+    <div class="instructions">
+        <p><strong>P-09:</strong> Scrubber time is linked to an <strong>active event</strong> in the lane below.
+            Range uses <code>metadata.startTs</code> / <code>metadata.durationMs</code> plus event timestamps.
+            Pointer <strong>hover</strong> or <strong>keyboard focus</strong> on a chip opens the same
+            <strong>callout</strong> summary. Press <kbd>Escape</kbd> to dismiss the callout; focus returns to the chip
+            that opened it. Data is inlined <code>sessionData</code> only (no session network fetch). See
+            <a href="../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts">component anatomy §2</a>
+            and <a href="../a11y/keyboard-model.md">keyboard-model.md</a>.</p>
+    </div>
+    <p id="overlay-status" class="status-banner" aria-live="polite">Initializing…</p>
+    <div class="scrub-row">
+        <label for="event-overlay-scrubber">Session timeline</label>
+        <input type="range" id="event-overlay-scrubber" min="0" max="1000" value="0"
+            aria-label="Session timeline scrubber" disabled>
+        <span id="overlay-readout" aria-hidden="true">—</span>
+    </div>
+    <section class="overlay-section" aria-labelledby="lane-heading">
+        <h2 id="lane-heading">Event overlay lane</h2>
+        <p class="hint" style="margin:0 0 0.5rem;font-size:0.9rem;color:#555;">Chips reflect sorted session events.
+            The <strong>active event</strong> tracks the scrub playhead.</p>
+        <div id="event-overlay-lane"></div>
+        <div id="event-callout" role="region" aria-label="Event callout" aria-hidden="true">
+            <p id="event-callout-body"></p>
+            <p class="hint">Escape dismisses this callout and restores focus to the activator chip.</p>
+        </div>
+    </section>
+    <div id="player"></div>
+    <section class="limitations" aria-labelledby="limitations-heading">
+        <h2 id="limitations-heading">Limitations</h2>
+        <p>Some CDN builds omit or rename seek and event APIs. Pin a replayt version whose browser bundle matches the
+            symbols in the header comment; upgrade if <code>init</code> works but seek hooks are missing.</p>
+    </section>
+    <script>
+        (function () {
+            var BASE = 1704067200000;
+            var sessionData = {
+                events: [
+                    { type: 'click', timestamp: BASE + 500, label: 'nav-home' },
+                    { type: 'scroll', timestamp: BASE + 8200, dy: 120 },
+                    { type: 'keypress', timestamp: BASE + 15000, key: 'Tab' },
+                    { type: 'scroll', timestamp: BASE + 22000, dy: 400 },
+                    { type: 'click', timestamp: BASE + 45000, label: 'submit' },
+                    { type: 'mousemove', timestamp: BASE + 90000, x: 400, y: 220 },
+                ],
+                metadata: {
+                    startTs: BASE,
+                    durationMs: 120000,
+                    viewport: { width: 1280, height: 720 },
+                    sessionId: 'p09-overlay-deterministic-001',
+                },
+            };
+
+            var statusEl = document.getElementById('overlay-status');
+            var scrubber = document.getElementById('event-overlay-scrubber');
+            var readout = document.getElementById('overlay-readout');
+            var playerEl = document.getElementById('player');
+            var laneEl = document.getElementById('event-overlay-lane');
+            var calloutEl = document.getElementById('event-callout');
+            var calloutBody = document.getElementById('event-callout-body');
+
+            function extractEventTimeMs(ev) {
+                if (!ev || typeof ev !== 'object') return null;
+                var raw = ev.timestamp !== undefined ? ev.timestamp : (ev.time !== undefined ? ev.time : ev.ts);
+                return typeof raw === 'number' && !isNaN(raw) ? raw : null;
+            }
+
+            function sortedEvents(events) {
+                var copy = events.slice();
+                copy.sort(function (a, b) {
+                    var ta = extractEventTimeMs(a);
+                    var tb = extractEventTimeMs(b);
+                    ta = ta === null ? 0 : ta;
+                    tb = tb === null ? 0 : tb;
+                    return ta - tb;
+                });
+                return copy;
+            }
+
+            function computeRangeMs(data) {
+                var meta = data.metadata || {};
+                var start = typeof meta.startTs === 'number' ? meta.startTs : null;
+                var dur = typeof meta.durationMs === 'number' ? meta.durationMs : null;
+                var evTimes = [];
+                var events = data.events || [];
+                for (var i = 0; i < events.length; i++) {
+                    var t = extractEventTimeMs(events[i]);
+                    if (t !== null) evTimes.push(t);
+                }
+                evTimes.sort(function (a, b) { return a - b; });
+                var candidates = [];
+                if (start !== null) candidates.push(start);
+                if (start !== null && dur !== null) candidates.push(start + dur);
+                for (var j = 0; j < evTimes.length; j++) candidates.push(evTimes[j]);
+                if (!candidates.length) return null;
+                var minT = Math.min.apply(null, candidates);
+                var maxT = Math.max.apply(null, candidates);
+                if (minT === maxT) return { minMs: minT, maxMs: minT + 1 };
+                return { minMs: minT, maxMs: maxT };
+            }
+
+            function formatClock(ms) {
+                var start = sessionData.metadata && typeof sessionData.metadata.startTs === 'number'
+                    ? sessionData.metadata.startTs
+                    : 0;
+                var rel = Math.max(0, Math.floor((ms - start) / 1000));
+                var m = Math.floor(rel / 60);
+                var r = rel % 60;
+                return m + ':' + String(r).padStart(2, '0');
+            }
+
+            function pickSeekSink(controller, playerNs) {
+                if (controller && typeof controller.seekToMs === 'function') {
+                    return function (ms) { controller.seekToMs(ms); };
+                }
+                if (controller && typeof controller.goto === 'function') {
+                    return function (ms) { controller.goto(ms); };
+                }
+                if (playerNs && typeof playerNs.seekToMs === 'function') {
+                    return function (ms) { playerNs.seekToMs(ms); };
+                }
+                if (playerNs && typeof playerNs.goto === 'function') {
+                    return function (ms) { playerNs.goto(ms); };
+                }
+                return null;
+            }
+
+            var rangeInfo = null;
+            var seekSink = null;
+            var rafId = null;
+            var pendingMs = null;
+            var orderedEvents = [];
+            var chipElements = [];
+            var lastCalloutActivator = null;
+            var calloutOpen = false;
+
+            function setStatus(msg, isError) {
+                statusEl.textContent = msg;
+                statusEl.className = 'status-banner' + (isError ? ' is-error' : '');
+            }
+
+            function applySeekMs(ms) {
+                if (!seekSink || rangeInfo === null) return;
+                var clamped = Math.min(rangeInfo.maxMs, Math.max(rangeInfo.minMs, ms));
+                seekSink(clamped);
+            }
+
+            function indexForPlayheadMs(ms) {
+                var idx = -1;
+                for (var i = 0; i < orderedEvents.length; i++) {
+                    var t = extractEventTimeMs(orderedEvents[i]);
+                    if (t !== null && t <= ms) idx = i;
+                }
+                return idx;
+            }
+
+            function updateActiveChip(activeIdx) {
+                for (var c = 0; c < chipElements.length; c++) {
+                    chipElements[c].classList.toggle('is-active', c === activeIdx);
+                }
+            }
+
+            function showCallout(activator, ev) {
+                var t = extractEventTimeMs(ev);
+                var type = ev.type || 'event';
+                var label = ev.label ? String(ev.label) : '';
+                var timeStr = t !== null ? formatClock(t) : '—';
+                calloutBody.textContent = type + ' at +' + timeStr + ' — ' + (label || '(no label)');
+                calloutEl.classList.add('is-open');
+                calloutEl.setAttribute('aria-hidden', 'false');
+                lastCalloutActivator = activator;
+                calloutOpen = true;
+            }
+
+            function hideCallout(returnFocus) {
+                calloutEl.classList.remove('is-open');
+                calloutEl.setAttribute('aria-hidden', 'true');
+                calloutOpen = false;
+                if (returnFocus && lastCalloutActivator && typeof lastCalloutActivator.focus === 'function') {
+                    lastCalloutActivator.focus();
+                }
+                lastCalloutActivator = null;
+            }
+
+            function updateReadout(ms) {
+                if (rangeInfo === null) {
+                    readout.textContent = '—';
+                    scrubber.removeAttribute('aria-valuetext');
+                    return;
+                }
+                var aidx = indexForPlayheadMs(ms);
+                var suffix = aidx >= 0 ? ' · active: ' + (orderedEvents[aidx].type || 'event') : '';
+                readout.textContent = formatClock(ms) + suffix;
+                scrubber.setAttribute('aria-valuetext', formatClock(ms) + suffix);
+            }
+
+            function syncAriaValue(ms) {
+                if (rangeInfo === null) return;
+                var span = rangeInfo.maxMs - rangeInfo.minMs;
+                var ratio = span > 0 ? (ms - rangeInfo.minMs) / span : 0;
+                var stepped = Math.round(ratio * 1000);
+                scrubber.setAttribute('aria-valuenow', String(stepped));
+            }
+
+            function onScrubInput() {
+                if (rangeInfo === null || scrubber.disabled) return;
+                var span = rangeInfo.maxMs - rangeInfo.minMs;
+                var ratio = Number(scrubber.value) / 1000;
+                var ms = rangeInfo.minMs + ratio * span;
+                pendingMs = ms;
+                if (rafId !== null) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(function () {
+                    rafId = null;
+                    if (pendingMs === null) return;
+                    var v = pendingMs;
+                    pendingMs = null;
+                    updateReadout(v);
+                    syncAriaValue(v);
+                    applySeekMs(v);
+                    updateActiveChip(indexForPlayheadMs(v));
+                });
+            }
+
+            function onScrubCommit() {
+                if (rangeInfo === null || scrubber.disabled) return;
+                if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+                pendingMs = null;
+                var span = rangeInfo.maxMs - rangeInfo.minMs;
+                var ratio = Number(scrubber.value) / 1000;
+                var ms = rangeInfo.minMs + ratio * span;
+                updateReadout(ms);
+                syncAriaValue(ms);
+                applySeekMs(ms);
+                updateActiveChip(indexForPlayheadMs(ms));
+            }
+
+            function buildLane() {
+                laneEl.replaceChildren();
+                chipElements = [];
+                for (var i = 0; i < orderedEvents.length; i++) {
+                    (function (idx, ev) {
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'event-chip';
+                        btn.setAttribute('aria-label', 'Event: ' + (ev.type || 'event'));
+                        btn.textContent = (ev.type || 'event') + ' · +' + formatClock(extractEventTimeMs(ev) || 0);
+                        btn.addEventListener('mouseenter', function () {
+                            showCallout(btn, ev);
+                        });
+                        btn.addEventListener('mouseleave', function () {
+                            if (document.activeElement !== btn && !calloutEl.contains(document.activeElement)) {
+                                hideCallout(false);
+                            }
+                        });
+                        btn.addEventListener('focus', function () {
+                            showCallout(btn, ev);
+                        });
+                        btn.addEventListener('blur', function () {
+                            setTimeout(function () {
+                                if (!calloutEl.contains(document.activeElement) &&
+                                    document.activeElement !== btn) {
+                                    hideCallout(false);
+                                }
+                            }, 0);
+                        });
+                        btn.addEventListener('click', function () {
+                            var t = extractEventTimeMs(ev);
+                            if (t === null || rangeInfo === null) return;
+                            var span = rangeInfo.maxMs - rangeInfo.minMs;
+                            var ratio = span > 0 ? (t - rangeInfo.minMs) / span : 0;
+                            var stepped = Math.round(Math.min(1, Math.max(0, ratio)) * 1000);
+                            scrubber.value = String(stepped);
+                            onScrubCommit();
+                        });
+                        laneEl.appendChild(btn);
+                        chipElements.push(btn);
+                    })(i, orderedEvents[i]);
+                }
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && calloutOpen) {
+                    e.preventDefault();
+                    hideCallout(true);
+                }
+            });
+
+            function mount() {
+                rangeInfo = computeRangeMs(sessionData);
+                orderedEvents = sortedEvents(sessionData.events || []);
+
+                if (!orderedEvents.length) {
+                    setStatus('No events in sessionData; P-09 needs a non-empty timeline.', true);
+                    scrubber.disabled = true;
+                    playerEl.replaceChildren();
+                    var ph = document.createElement('p');
+                    ph.className = 'player-placeholder';
+                    ph.textContent = 'Player not initialized (empty timeline).';
+                    playerEl.appendChild(ph);
+                    return;
+                }
+
+                if (!rangeInfo) {
+                    setStatus('Could not derive a time range from events and metadata.', true);
+                    scrubber.disabled = true;
+                    return;
+                }
+
+                scrubber.min = '0';
+                scrubber.max = '1000';
+                scrubber.value = '0';
+                scrubber.disabled = false;
+                scrubber.setAttribute('aria-valuemin', '0');
+                scrubber.setAttribute('aria-valuemax', '1000');
+                scrubber.setAttribute('aria-valuenow', '0');
+                updateReadout(rangeInfo.minMs);
+                syncAriaValue(rangeInfo.minMs);
+
+                buildLane();
+
+                var rtPlayer = window.replayt && window.replayt.player;
+                if (!rtPlayer || typeof rtPlayer.init !== 'function') {
+                    setStatus('replayt player not available (check script URL or CDN build).', true);
+                    seekSink = null;
+                    playerEl.replaceChildren();
+                    var ph2 = document.createElement('p');
+                    ph2.className = 'player-placeholder';
+                    ph2.textContent = 'replayt player not loaded.';
+                    playerEl.appendChild(ph2);
+                    return;
+                }
+
+                playerEl.replaceChildren();
+                var controller = null;
+                try {
+                    controller = rtPlayer.init({
+                        container: playerEl,
+                        data: sessionData,
+                        theme: 'light',
+                    });
+                } catch (err) {
+                    setStatus('Player init failed (see console).', true);
+                    var ph3 = document.createElement('p');
+                    ph3.className = 'player-placeholder';
+                    ph3.textContent = 'Init error.';
+                    playerEl.appendChild(ph3);
+                    return;
+                }
+
+                seekSink = pickSeekSink(controller, rtPlayer);
+                if (!seekSink) {
+                    setStatus('Player loaded, but no published seek hook matched. See Limitations.', true);
+                } else {
+                    setStatus('Scrub to move the active event; Tab to chips for keyboard callouts; Escape closes callout.');
+                }
+
+                applySeekMs(rangeInfo.minMs);
+                updateActiveChip(indexForPlayheadMs(rangeInfo.minMs));
+            }
+
+            scrubber.addEventListener('input', onScrubInput);
+            scrubber.addEventListener('change', onScrubCommit);
+            scrubber.addEventListener('pointerup', onScrubCommit);
+
+            mount();
+        })();
+    </script>
+</body>
+</html>

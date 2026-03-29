@@ -2,7 +2,7 @@
 
 This file is the **canonical inventory** for distinct, copy-paste integrator examples under `docs/examples/`: **vanilla
 HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**; **Vue** — **P-07**; **Svelte**
-— **P-08**). **P-09** registers the next **vanilla** teaching example for **event overlays** (currently **Spec only**). It supports the mission
+— **P-08**). **P-09** is the **vanilla** teaching example for **event overlays** (**Shipped** as **`event-overlay.html`**). It supports the mission
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
@@ -23,9 +23,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-06** | [`react/`](react/) ([`README.md`](react/README.md), [`src/App.jsx`](react/src/App.jsx)) | **Shipped** | **React 18** timeline player: same **`sessionData`** / **`replayt.player.init`** contract as **P-01**, timeline scrub UX aligned with **P-03**; **Vite**-first (or **esbuild** notes); **not** an npm-published package. |
 | **P-07** | [`vue/`](vue/) ([`README.md`](vue/README.md), [`src/App.vue`](vue/src/App.vue)) | **Shipped** | **Vue 3** minimal timeline player: same **replayt-facing** data and init contract as **P-01**, scrubber parity with **P-03** / **P-06**; **static-build**-friendly (**`npm run build`**); **not** an npm-published package from this repo. |
 | **P-08** | [`svelte/`](svelte/) ([`README.md`](svelte/README.md), [`src/App.svelte`](svelte/src/App.svelte)) | **Shipped** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
-| **P-09** | [`event-overlay.html`](event-overlay.html) (planned primary filename) | **Spec only** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
+| **P-09** | [`event-overlay.html`](event-overlay.html) | **Shipped** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
 
-**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** is the registered **sixth** vanilla pattern once **Shipped** (extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**). Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05** and **P-09** are shipped (**6** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -757,20 +757,19 @@ When the Builder implements this backlog **and** chooses the optional hook:
 
 ### P-09 Builder acceptance checklist (implementation)
 
-**P-09** is **Spec only** until the HTML ships; then:
+**P-09** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin tests aligned when this pattern changes.
 
-1. **`docs/examples/event-overlay.html`** (or approved rename) implements the normative sections above.
+1. **`docs/examples/event-overlay.html`** implements the normative sections above.
 2. [Pattern inventory](#pattern-inventory) lists **P-09** as **Shipped** with the correct filename.
 3. **CHANGELOG** **Unreleased** records the example; **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**
-   vanilla count moves to **6** shipped (**P-01**–**P-05**, **P-09**).
-4. **`tests/test_docs_examples_replayt_pins.py`** scans the new **`*.html`**; **`tests/test_examples.py`** gains file-presence
-   and **light contract markers** (Builder)—e.g. scrub + overlay tab-order comment, determinism / no session **`fetch(`**
-   on the primary path, **Limitations** note if mirroring **P-03**, **replayt** symbol list.
-5. **[`README.md`](../../README.md)** project layout row for **`event-overlay.html`** updated from **Spec only** to **Shipped**.
+   vanilla count is **6** shipped (**P-01**–**P-05**, **P-09**).
+4. **`tests/test_docs_examples_replayt_pins.py`** scans the **`*.html`**; **`tests/test_examples.py`** includes file-presence
+   and **light contract markers**—scrub + overlay tab-order comment, determinism / no session **`fetch(`** on the primary path,
+   **Limitations** note aligned with **P-03**, **replayt** symbol list.
+5. **[`README.md`](../../README.md)** project layout row for **`event-overlay.html`** is **Shipped**.
 6. **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest mentions **P-09** as **Shipped**.
 
-**Automated checks today (once shipped):** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers
-for **P-09** (Builder).
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-09**.
 
 ---
 

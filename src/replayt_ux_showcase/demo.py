@@ -3,6 +3,22 @@ from typing import Any
 
 logger = logging.getLogger("replayt_ux_showcase.demo")
 
+
+def _active_event_type_at_scrub(
+    events: list[dict[str, Any]], scrub_s: float
+) -> str | None:
+    """Last event at or before scrub_s (same selection rule as docs/examples/event-overlay.html)."""
+    eligible = [
+        e
+        for e in events
+        if isinstance(e.get("ts"), (int, float)) and e["ts"] <= scrub_s
+    ]
+    if not eligible:
+        return None
+    last = max(eligible, key=lambda e: float(e["ts"]))
+    return str(last.get("type", "event"))
+
+
 SAMPLE_SESSION_DATA: dict[str, Any] = {
     "events": [
         {"type": "click", "ts": 1.0, "x": 100, "y": 200},
@@ -42,6 +58,20 @@ def render_console_timeline(session_data: dict[str, Any]) -> None:
     min_ts = f"{int(sample_pos // 60):02d}:{int(sample_pos % 60):02d}"
     total_min = f"{int(session_data['metadata']['duration'] // 60):02d}:{int(session_data['metadata']['duration'] % 60):02d}"
     logger.info(f"Timeline: {bar} {min_ts} / {total_min} (speed: 2x)")
+    scrub_snapshot_s = 6.0
+    active_type = _active_event_type_at_scrub(events, scrub_snapshot_s)
+    if active_type is not None:
+        logger.info(
+            "[replayt-demo] Overlay teaching: at scrub %.1fs the active event type is %r "
+            "(callout / tooltip in docs/examples/event-overlay.html follows the same rule).",
+            scrub_snapshot_s,
+            active_type,
+        )
+    else:
+        logger.info(
+            "[replayt-demo] Overlay teaching: at scrub %.1fs no event at or before playhead.",
+            scrub_snapshot_s,
+        )
     logger.info("Events:")
     for event in events:
         ts = event.get("ts", 0.0)
@@ -71,5 +101,5 @@ def main() -> None:
         raise
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

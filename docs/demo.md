@@ -31,13 +31,12 @@ Integrators ship **web** embeds that spend real time in **loading**, **failure**
 | **Ready** (valid session, init OK) | **`[replayt-demo]`** timeline logs and ASCII progress snapshot | **P-01** / **P-04** after successful init; **React** parity: **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** (**Shipped** — [`docs/examples/react/`](examples/react/)) |
 | **Failure** (fetch/init/payload) | Unrecoverable errors propagate; **WARN** for bad events continues | **P-04** — visible error + **retry** where recoverable |
 | **Retry** | N/A in static demo | **P-04** — focusable control |
-| **Event overlay** (scrub-linked **active event**, hover / focus **callouts**) | **Optional:** additive **`[replayt-demo]`** lines or ASCII cues that name **active event**, **tooltip** / **callout**, or **scrub alignment** (only if **`demo.py`** is extended—must stay **stdlib-only**, **offline**, **deterministic**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**Spec only** until **`event-overlay.html`** ships); playbook overlay regions: **[component-anatomy §2](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)** |
+| **Event overlay** (scrub-linked **active event**, hover / focus **callouts**) | **`[replayt-demo] Overlay teaching`** line names the **active event** type at a fixed scrub snapshot (**6.0s**) using the same “last event at or before playhead” rule as **[`event-overlay.html`](examples/event-overlay.html)** | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**Shipped** — **`event-overlay.html`**); playbook overlay regions: **[component-anatomy §2](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)** |
 
 **Builder alignment:** **[P-04](examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery)** ships as
 [`embed-container-states.html`](examples/embed-container-states.html); keep this table accurate when web copy or console
-demo behavior changes. **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** defines the **web**
-event-overlay teaching example; when **`demo.py`** gains optional overlay vocabulary, extend the **Acceptance criteria**
-table and **pytest** expectations **in the same change set** (see **P-09** optional hook in **`docs/examples/PATTERNS.md`**).
+demo behavior changes. **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** ships
+[`event-overlay.html`](examples/event-overlay.html); console **`demo.py`** includes the overlay teaching line documented here and in **`tests/test_demo.py`**.
 Optional stretch (separate backlog unless combined): simulate phased console output (e.g. log
 lines that name **loading → ready** or **failed**)—must remain **offline** and **deterministic** per
 **`docs/DESIGN_PRINCIPLES.md`** → [LLM boundaries](DESIGN_PRINCIPLES.md#llm-boundaries).
@@ -139,6 +138,7 @@ Behavioral cases below are implemented under **`tests/`** (see module docstring)
 | `test_output_format` | Output contains expected log lines | Combined stdout/stderr contains both `[replayt-demo]` and `"Rendering demo timeline"` |
 | `test_event_count` | Validate event count in sample data | `10 <= len(SAMPLE_SESSION_DATA["events"]) <= 15` |
 | `test_event_types` | Validate event types | All events have `type` in `('click', 'scroll', 'keypress', 'resize', 'mousemove')` |
+| `test_output_format` / `test_render_console_timeline_in_process` | Overlay teaching line | Output / caplog contains **`Overlay teaching`** and references **`event-overlay.html`** |
 
 ### Coverage gate (see design principles)
 

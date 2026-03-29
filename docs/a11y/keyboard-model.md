@@ -3,7 +3,7 @@
 **Audience:** Designers, frontend integrators, and maintainers copying **`docs/examples/`** vanilla patterns.  
 **Goal:** One **checklist-level** contract so handoffs stay under **one dev-day** without re-deriving tab order, list focus, scrubber keys, or **Escape** behavior per pattern.
 
-**Normative companions:** Per-pattern rules and Builder checklists live in **[`docs/examples/PATTERNS.md`](../examples/PATTERNS.md)** (**P-01**–**P-05**; **P-09** **event overlay** when shipped). This document is the **shared** accessibility story; where they differ, **PATTERNS.md** wins for that pattern’s scope.
+**Normative companions:** Per-pattern rules and Builder checklists live in **[`docs/examples/PATTERNS.md`](../examples/PATTERNS.md)** (**P-01**–**P-05**, **P-09** **`event-overlay.html`**). This document is the **shared** accessibility story; where they differ, **PATTERNS.md** wins for that pattern’s scope.
 
 ---
 

@@ -26,7 +26,7 @@ is tracked separately in code and CHANGELOG):
 | **Design-to-code handoff** (tokens, anatomy, printable checklist) | [`docs/playbook/README.md`](playbook/README.md), [`tokens.md`](playbook/tokens.md), [`component-anatomy.md`](playbook/component-anatomy.md), [`handoff-checklist.md`](playbook/handoff-checklist.md), [README.md](../README.md#quick-start) (integrator quick start link) |
 | **Figma design kit** (library access, variable → **`rux-*`** mapping, change process, interim **JSON** export) | [Design kit (Figma) and token export](#design-kit-figma-and-token-export), [`docs/design-kit/README.md`](design-kit/README.md) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
-| **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**, [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), optional **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** hook |
+| **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
 
 ### Traceability to automated checks
 
@@ -601,7 +601,7 @@ copy the pattern; “CI” means automated verification exists.
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**–**P-05** **Shipped**; **P-09** **event overlay** — **Spec only** until HTML lands), plus **framework** subtrees
+(**P-01**–**P-05** and **P-09** **Shipped**; **P-09** is **`event-overlay.html`**), plus **framework** subtrees
 (**P-06** **React**, **P-07** **Vue**, **P-08** **Svelte** — all **Shipped**),
 each with normative acceptance criteria in **`docs/examples/PATTERNS.md`**. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
@@ -752,7 +752,7 @@ replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#
 
 #### Backlog traceability: Event overlay pattern (vanilla **P-09** + optional `demo.py` hook)
 
-**Scope:** **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** in **`docs/examples/PATTERNS.md`** (planned primary file **`docs/examples/event-overlay.html`**).
+**Scope:** **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** in **`docs/examples/PATTERNS.md`** (primary file **`docs/examples/event-overlay.html`** — **Shipped**).
 
 **Normalized user story:** As an integrator, I want a **second dedicated vanilla doc example** for **event overlays**
 (scrub-linked callouts, **hover** tooltips, **keyboard** focus and **Escape**) consistent with **[LLM boundaries](#llm-boundaries)**
@@ -761,15 +761,13 @@ and **[offline / deterministic fixture](#offline-deterministic-fixture-page-for-
 | Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
 | ---------------------------- | --------------- | --------------------------------------- |
 | **P-09** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-09** | **Shipped**: **`event-overlay.html`** (or approved rename) on disk; inventory → **Shipped** |
-| Scrub + overlay UX + a11y | **P-09** [Overlay UX](examples/PATTERNS.md#p-09-overlay-ux-normative), **[`keyboard-model.md`](a11y/keyboard-model.md)**, **[`component-anatomy.md` §2](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)** | Code review; optional **`tests/test_examples.py`** markers |
+| Scrub + overlay UX + a11y | **P-09** [Overlay UX](examples/PATTERNS.md#p-09-overlay-ux-normative), **[`keyboard-model.md`](a11y/keyboard-model.md)**, **[`component-anatomy.md` §2](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)** | Code review; **`tests/test_examples.py`** markers |
 | Inline **`sessionData`** (preferred); **LLM**-safe | **P-09** [Data and offline / LLM boundary](examples/PATTERNS.md#p-09-data-and-offline--llm-boundary-normative) | No session **`fetch`** on primary path; determinism like **P-05** |
 | **Published** replayt JS; **CDN** pin in range | **P-09** [replayt JS surface and pin](examples/PATTERNS.md#p-09-replayt-js-surface-and-pin-normative) | **`tests/test_docs_examples_replayt_pins.py`** |
-| Optional **`demo.py`** hook | **P-09** [Optional demo.py console hook](examples/PATTERNS.md#optional-demopy-console-hook-normative-intent-optional-deliverable), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** | Additive **`docs/demo.md`** rows + tests when implemented |
+| Optional **`demo.py`** hook | **P-09** [Optional demo.py console hook](examples/PATTERNS.md#optional-demopy-console-hook-normative-intent-optional-deliverable), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** | Additive **`docs/demo.md`** rows + **`tests/test_demo.py`** when implemented (**Shipped** with overlay teaching line) |
 | **MISSION** / **compat** / **README** | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)**, **[`README.md`](../README.md)** | Vanilla count **6** when **P-09** **Shipped** |
 
-**Spec only (phase 2):** Normative text and inventory row registered; **no** **`event-overlay.html`** on disk yet—**Builder**
-(phase **3**) implements HTML, pins, **CHANGELOG**, **MISSION** count, **`tests/test_examples.py`** markers, and optional
-**`demo.py`** / **`docs/demo.md`** updates per **P-09** checklist.
+**Shipped (phase 3):** **`docs/examples/event-overlay.html`**, **P-09** **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** vanilla count **6**, **`tests/test_examples.py`** markers, **`tests/test_docs_examples_replayt_pins.py`**, **`demo.py`** / **`docs/demo.md`** overlay teaching line + **`tests/test_demo.py`**, **CHANGELOG** **Unreleased**, **[`README.md`](../README.md)** and **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** digest updated.
 
 ---
 

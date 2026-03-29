@@ -94,6 +94,34 @@ def test_fixture_replay_contract_markers():
     assert "cdn.jsdelivr.net/npm/replayt@" in text
 
 
+def test_event_overlay_html_exists():
+    """P-09 example ships under docs/examples/ (see docs/examples/PATTERNS.md)."""
+    path = REPO_ROOT / "docs/examples/event-overlay.html"
+    assert path.is_file(), f"P-09 demo missing: {path}"
+
+
+def test_event_overlay_contract_markers():
+    """Light contract: P-03-style scrub, overlay tab order, callout/Escape, no session fetch, pin (P-09)."""
+    text = (REPO_ROOT / "docs/examples/event-overlay.html").read_text(encoding="utf-8")
+    assert "Event ordering (handoff):" in text
+    assert "requestAnimationFrame" in text
+    assert "Limitations" in text
+    assert 'id="event-overlay-scrubber"' in text
+    assert "Tab order (handoff):" in text
+    assert "applySeekMs" in text
+    assert "focus return" in text
+    assert "Escape" in text
+    assert "active event" in text
+    assert "callout" in text
+    assert "fetch(" not in text
+    assert "Date.now(" not in text
+    assert "Math.random(" not in text
+    assert "replayt.player.init" in text
+    assert "metadata.durationMs" in text
+    assert "keyboard-model.md" in text
+    assert "cdn.jsdelivr.net/npm/replayt@" in text
+
+
 def test_keyboard_model_doc_exists():
     """Shared a11y checklist ships (docs/DESIGN_PRINCIPLES.md traceability)."""
     assert _KEYBOARD_MODEL_DOC.is_file(), f"Missing {_KEYBOARD_MODEL_DOC}"
@@ -111,13 +139,14 @@ def test_keyboard_model_doc_core_sections():
 
 
 def test_examples_link_keyboard_model_checklist():
-    """P-01–P-05 vanilla examples reference the shared keyboard/focus doc."""
+    """P-01–P-05 and P-09 vanilla examples reference the shared keyboard/focus doc."""
     html_names = [
         "basic-player.html",
         "player-session-metadata-bar.html",
         "timeline-scrubber.html",
         "embed-container-states.html",
         "fixture-replay.html",
+        "event-overlay.html",
     ]
     needle = "keyboard-model.md"
     for name in html_names:

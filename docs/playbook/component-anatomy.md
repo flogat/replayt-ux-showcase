@@ -1,6 +1,6 @@
 # Component anatomy — timeline and overlays
 
-**Purpose:** Shared vocabulary for **design ↔ engineering** handoffs so layout, DOM order, and layering match [keyboard-model.md](../a11y/keyboard-model.md) and shipped patterns (**P-02**, **P-03**, **P-04**), plus registered **P-09** (**Spec only** — event overlay lane) when that HTML ships.
+**Purpose:** Shared vocabulary for **design ↔ engineering** handoffs so layout, DOM order, and layering match [keyboard-model.md](../a11y/keyboard-model.md) and shipped patterns (**P-02**, **P-03**, **P-04**, **P-09** **`event-overlay.html`**).
 
 ---
 
@@ -47,7 +47,7 @@
 | **P-03** | **Timeline** strip + range input + player |
 | **P-04** | **Embed shell** — skeleton, status region, **Retry** |
 | **P-01** | Minimal player only — anatomy starts at single `#player` container |
-| **P-09** | **Event overlay** lane — scrub-linked markers, hover/focus callouts (**Spec only** — see **[P-09](../examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)**) |
+| **P-09** | **Event overlay** lane — scrub-linked markers, hover/focus callouts (**Shipped** — **[`event-overlay.html`](../examples/event-overlay.html)**, **[P-09](../examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)**) |
 
 ---
 
