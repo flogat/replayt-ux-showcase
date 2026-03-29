@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*Second UI pattern: event overlay / heatmap on static canvas*): register vanilla pattern **P-10** (**Spec only**) — **click heatmap on static canvas** / session **`click`** **`x`/`y`** density on a viewport-sized stage, **`SAMPLE_SESSION_DATA`** / **[`SESSION_SCHEMA.md`](docs/examples/SESSION_SCHEMA.md)** §1 alignment, offline + determinism + a11y (**`aria-label`** / caption, **Tab order (handoff)**), optional **`replayt`** script, verification intent for **`pytest`** markers + **Playwright** when **Shipped** — in **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md)**; cross-links in **[`docs/MISSION.md`](docs/MISSION.md)**, **[`docs/compat.md`](docs/compat.md)**, **[`docs/examples/SESSION_SCHEMA.md`](docs/examples/SESSION_SCHEMA.md)**, **[`docs/DESIGN_PRINCIPLES.md`](docs/DESIGN_PRINCIPLES.md)** (traceability row + backlog table).
+
 ### Added
 
 - Phase **3** (*CI smoke: load static HTML examples with Playwright*): **`pytest-playwright`** in **`[project.optional-dependencies].dev`**; **`tests/playwright/test_static_html_examples_load.py`** — loopback **HTTP** server rooted at **`docs/examples/`**, **Chromium** load checks for **Shipped** root **`*.html`** (inventory guard + **console** / **`pageerror`** / **warning** policy); **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`** (**Python 3.12**, **`replayt==0.4.25`**, **`playwright install chromium --with-deps`**, **`pytest`** without the **demo** **cov** gate); **`[tool.pytest.ini_options]`** **`-m "not playwright"`** so default **`pytest`** skips browser tests; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE** and **CI matrix coverage** row; **`docs/DESIGN_PRINCIPLES.md`**, **`README.md`**, **`CONTRIBUTING.md`**, **`tests/test_design_principles_contract.py`** updated for the job and **dev** baseline.

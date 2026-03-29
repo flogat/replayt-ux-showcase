@@ -2,11 +2,13 @@
 
 This file is the **canonical inventory** for distinct, copy-paste integrator examples under `docs/examples/`: **vanilla
 HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**; **Vue** — **P-07**; **Svelte**
-— **P-08**). **P-09** is the **vanilla** teaching example for **event overlays** (**Shipped** as **`event-overlay.html`**). It supports the mission
+— **P-08**). **P-09** is the **vanilla** teaching example for **event overlays** (**Shipped** as **`event-overlay.html`**).
+**P-10** registers a **separate** pattern — **click heatmap / density on a static viewport-sized stage** — currently **Spec only**
+(see [P-10 — Click heatmap on static canvas](#p-10--click-heatmap-on-static-canvas-session-click-coordinates)). It supports the mission
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
-**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [**Session fixture schema (canonical)**](SESSION_SCHEMA.md) (`SAMPLE_SESSION_DATA` / **P-01** alignment), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Design-to-code playbook](../playbook/README.md) (tokens, component anatomy, printable handoff checklist), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID), [Changelog, semver, and release notes](../DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (**`CHANGELOG.md`** **Unreleased** bullets when **Shipped** patterns or mission counts move).
+**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [**Session fixture schema (canonical)**](SESSION_SCHEMA.md) (`SAMPLE_SESSION_DATA` / **P-01** alignment), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Design-to-code playbook](../playbook/README.md) (tokens, component anatomy, printable handoff checklist), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID), [Changelog, semver, and release notes](../DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (**`CHANGELOG.md`** **Unreleased** bullets when **Shipped** patterns or mission counts move). **P-10** (when **Shipped**) extends integrator **analytics-style** overlays without replacing **P-09**’s scrub-linked callout lane.
 
 **Release notes:** When a row here moves to **Shipped** (or you add a new **P-xx** consumers will track), update **`CHANGELOG.md`** **`[Unreleased]`** in the **same change set** as this file, **`docs/MISSION.md`** (pattern table), and **`docs/compat.md`** (vanilla catalog) when that digest lists the pattern—see [Unreleased: pattern coverage and mission tracking](../DESIGN_PRINCIPLES.md#unreleased-pattern-coverage-and-mission-tracking).
 
@@ -26,8 +28,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-07** | [`vue/`](vue/) ([`README.md`](vue/README.md), [`src/App.vue`](vue/src/App.vue)) | **Shipped** | **Vue 3** minimal timeline player: same **replayt-facing** data and init contract as **P-01**, scrubber parity with **P-03** / **P-06**; **static-build**-friendly (**`npm run build`**); **not** an npm-published package from this repo. |
 | **P-08** | [`svelte/`](svelte/) ([`README.md`](svelte/README.md), [`src/App.svelte`](svelte/src/App.svelte)) | **Shipped** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
 | **P-09** | [`event-overlay.html`](event-overlay.html) | **Shipped** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
+| **P-10** | *planned:* `click-heatmap-canvas.html` | **Spec only** | **Click heatmap on static canvas (or SVG)**: map **`click`** events’ **`x`/`y`** onto a **viewport-sized** stage; **density** / aggregation visualization; **`SAMPLE_SESSION_DATA`** (or trimmed **§1**-compatible literal); **accessible** name + focus order per normative section below — **distinct** from **P-09** (no requirement to duplicate scrub-linked callout lane as the primary teaching goal). |
 
-**Mission trajectory:** **P-01** through **P-05** and **P-09** are shipped (**6** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05** and **P-09** are shipped (**6** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. **P-10** is **registered** as **Spec only**; when **Shipped**, the vanilla count becomes **7** (update **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)**, **`README.md`** layout row, **`CHANGELOG`**, and **Playwright** **Shipped** HTML inventory in the **same** change set as **`click-heatmap-canvas.html`**). Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -821,6 +824,125 @@ When the Builder implements this backlog **and** chooses the optional hook:
 | **Published** replayt JS only + PEP 508 **CDN** pin | [P-09 replayt JS surface and pin](#p-09-replayt-js-surface-and-pin-normative) |
 | Optional **`demo.py`** narrative hook | [Optional demo.py console hook](#optional-demopy-console-hook-normative-intent-optional-deliverable), [`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed) |
 | **MISSION** / **compat** / **README** when **Shipped** | [P-09 Builder acceptance checklist](#p-09-builder-acceptance-checklist-implementation) |
+
+---
+
+## P-10 — Click heatmap on static canvas (session click coordinates)
+
+### User story
+
+As an integrator, I want a **copy-paste vanilla** page that draws a **viewport-sized “stage”** (static **`<canvas>`** 2D,
+**SVG**, or equivalent) showing **where users clicked** during a session by plotting **`click`** event coordinates from
+**`sessionData.events`**, with a **clear accessible name**, **visible summary text** for operators, and a **documented
+tab / focus order**—using **offline** fixture data aligned with **`SAMPLE_SESSION_DATA`** / [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1,
+without conflating this **spatial analytics** view with **P-09**’s **timeline + scrub-linked callouts** pattern.
+
+### Relationship to P-01, P-05, P-09, and SESSION_SCHEMA
+
+- **P-01** / [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md): **`sessionData`** uses **`events`** + **`metadata`**. **Click** events
+  carry **`x`**, **`y`** in **viewport pixel space** relative to the recorded session viewport (**`metadata.viewport.w` /
+  `h`**). **P-10** **must** document how **`x`/`y`** map to the **CSS size** of the drawing surface (scale, letterboxing,
+  or 1:1 when the stage’s **intrinsic** dimensions match **`metadata.viewport`**).
+- **P-05** / **P-09**: **Preferred** teaching path uses **inlined** synthetic **`sessionData`** — **no** `fetch` / **XHR** /
+  **WebSocket** / **EventSource** for the **session payload** (same forbidden list as **P-05** [sessionData and offline boundary](#p-05-sessiondata-and-offline-boundary-normative)).
+  **Determinism** and **LLM**-safe rules mirror **P-05** ([Determinism](#p-05-determinism-normative), [Forbidden behaviors](#p-05-forbidden-behaviors-normative) by reference).
+- **P-09**: **P-09** is normatively about **scrub-linked** event **callouts** and **hover**/**keyboard** disclosure along a
+  **timeline lane**. **P-10** is normatively about **aggregated spatial** visualization (**heatmap**, **bins**, **stacked
+  alpha circles**, or similar) on a **single** stage. A **Shipped** **P-10** file **may** live alongside a minimal player
+  **only** if the **primary** integrator job remains obvious in page structure and comments; **must not** replace **P-09**
+  or copy its acceptance checklist wholesale.
+
+### P-10 Event selection and data (normative)
+
+- **Filter:** Use events with **`type === 'click'`** (string) and numeric **`x`**, **`y`**. Other event types **may** be
+  ignored for the heatmap layer; **must** be stated in a short **header comment**.
+- **Fixture:** **Preferred:** literal derived from **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`** (full or **trimmed**
+  subset) so operators can diff against **`python -m replayt_ux_showcase.demo`** and **P-01**. **Trimmed** literals **must**
+  stay **§1**-compatible for all included events and **metadata** keys they rely on (see [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1).
+- **Minimum clicks:** Include **enough** **`click`** events (suggest **≥ 4** with **overlapping** or **nearby** coordinates)
+  so **density** or **stacking** is visible; an **empty** or **single-point-only** demo is **not** **Shipped** for **P-10**
+  unless the snippet explicitly demonstrates **degenerate** data as a **separate** labeled subsection (still with **user-visible**
+  explanation).
+
+### P-10 Stage and visualization (normative)
+
+- **Viewport-sized stage:** The drawing surface **must** represent the session viewport **semantically**: either **CSS**
+  dimensions match **`metadata.viewport.w` × `h`** (with documented scaling), or the snippet **documents** a **scale factor**
+  from viewport pixels to canvas pixels. **Letterboxing** is allowed if **documented** and **consistent** with **`x`/`y`** mapping.
+- **Heatmap / aggregation:** **Must** produce a **visual aggregation** (e.g. **2D histogram** / **binned** heatmap, **Gaussian**
+  blur of click points, **additive alpha** splats). A **scatter** of raw points **without** any **density** cue is **not**
+  sufficient for **Shipped** **P-10** unless paired with **binning** or **alpha** overlap that makes **hot regions** obvious —
+  document the chosen algorithm in-snippet for **design–engineering handoff**.
+- **Implementation:** **`<canvas>`** (2D context) **or** **SVG** — **Builder** choice; **must** state **why** if one is chosen
+  (e.g. performance vs inspectable DOM).
+
+### P-10 Accessibility and keyboard (normative)
+
+Shared checklist: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**.
+
+- **Programmatic name:** If the heatmap uses **`<canvas>`**, it **must** expose an accessible name via **`role="img"`** and
+  **`aria-label`**, or **`aria-labelledby`** pointing at a visible **heading** / **caption** element that describes the
+  visualization (e.g. “Click density heatmap for session viewport”).
+- **Visible text:** **Must** include a **short** visible description (paragraph or **`<figcaption>`**-style) summarizing what
+  the heatmap encodes (e.g. “Darker regions = more recorded clicks in that area of the viewport”) — **not** only tooltip copy.
+- **Focus order:** **Must** include a **“Tab order (handoff):”** comment listing focusable controls in **DOM order** (e.g.
+  page **Skip** link if present → **legend** / **controls** → **optional** player chrome). **If** the page ships **only**
+  non-focusable static output besides global navigation, **must** document that choice and still provide **focusable**
+  **skip** or **“About this demo”** disclosure control **or** link **before** any **optional** embedded player trap — pick
+  one **keyboard** path that does not **strand** screen-reader users with **no** focusable landmark in the pattern’s **main**
+  section.
+- **Optional controls:** Toggles (**density vs points**, **reset**, **opacity**) **must** be **real** **focusable** controls
+  with **visible** **`:focus`** / **`focus-visible`** styling when present.
+
+### P-10 replayt JavaScript dependency (normative)
+
+- **Optional player embed:** **P-10** **does not** require **`replayt.player.init`** for **Shipped** if the page’s **sole**
+  teaching goal is **static** visualization from **`sessionData`**. If a **Builder** adds a **player**, all **replayt** usage
+  **must** follow **published** browser APIs only (**same** boundary as **P-03** / **P-09**); list **symbols** in a header
+  comment.
+- **CDN pin:** If **any** **`<script src=…replayt…>`** is present, it **must** satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (**`tests/test_docs_examples_replayt_pins.py`** when **Shipped**).
+
+### P-10 File placement (normative)
+
+- **Planned primary file:** **`docs/examples/click-heatmap-canvas.html`**. Renames **must** update this inventory row,
+  **`CHANGELOG`**, **`README.md`** layout, **Playwright** shipped list (when applicable), and **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** in the **same** change set.
+
+### P-10 Verification intent (Builder / Tester — not phase 2)
+
+- **Static HTML:** When **Shipped**, extend **`tests/test_examples.py`** with **light** contract markers (viewport / heatmap
+  comment, **`Tab order (handoff):`**, no session **`fetch(`** on the primary path, **`aria-label`** / **`aria-labelledby`** or
+  equivalent caption pattern). Add **`tests/test_docs_examples_replayt_pins.py`** coverage when a **replayt** script tag exists.
+- **Playwright:** When **Shipped** as a **root** **`docs/examples/*.html`**, add the file to the **Shipped** inventory consumed
+  by **`tests/playwright/test_static_html_examples_load.py`** (no **console** errors on load) — **same** policy as other **Shipped**
+  vanilla examples ([Static HTML examples: browser smoke (Playwright)](../DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)).
+- **Optional snapshots:** Visual regression (**Playwright** screenshots) is **optional** backlog unless **mission** / **CI**
+  policy changes; **smoke** load remains the **default** gate.
+- **Python:** If **non-demo** Python helpers are added under **`src/replayt_ux_showcase/`**, extend **`pytest`** / **coverage**
+  per [Demo module testing and replayt integration boundaries](../DESIGN_PRINCIPLES.md#demo-module-testing-and-replayt-integration-boundaries); **heatmap math** should stay **in-page** unless there is an explicit maintainer reason.
+
+### P-10 Builder acceptance checklist (implementation)
+
+**P-10** is **Spec only** until **`docs/examples/click-heatmap-canvas.html`** (or approved rename) **Shipped** with:
+
+1. Normative sections above implemented in the **HTML/JS** (or **SVG**) snippet.
+2. [Pattern inventory](#pattern-inventory) row **P-10** → **Shipped** with final filename.
+3. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** vanilla count → **7**; **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest updated.
+4. **`CHANGELOG`** **Unreleased** records the new example; **`README.md`** project layout lists the file.
+5. **`tests/test_examples.py`** markers + **`tests/test_docs_examples_replayt_pins.py`** when applicable; **Playwright** list when **Shipped** as root **`*.html`**.
+
+---
+
+## Backlog traceability: Click heatmap on static canvas (vanilla **P-10**)
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| **Distinct** from **P-09** (spatial density vs scrub-linked callouts) | [Relationship to P-01, P-05, P-09, and SESSION_SCHEMA](#relationship-to-p-01-p-05-p-09-and-session_schema) |
+| **`click`** **`x`/`y`** + viewport mapping | [P-10 Event selection and data](#p-10-event-selection-and-data-normative), [P-10 Stage and visualization](#p-10-stage-and-visualization-normative) |
+| **`SAMPLE_SESSION_DATA`** / **§1**-compatible fixture | [P-10 Event selection and data](#p-10-event-selection-and-data-normative), [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1 |
+| Offline / deterministic / **LLM**-safe primary path | [Relationship to P-01, P-05, P-09, and SESSION_SCHEMA](#relationship-to-p-01-p-05-p-09-and-session_schema) |
+| Accessible name + visible summary + **Tab order (handoff)** | [P-10 Accessibility and keyboard](#p-10-accessibility-and-keyboard-normative), [`keyboard-model.md`](../a11y/keyboard-model.md) |
+| **replayt** pin when script present; optional player | [P-10 replayt JavaScript dependency](#p-10-replayt-javascript-dependency-normative) |
+| **pytest** / **Playwright** when **Shipped** | [P-10 Verification intent](#p-10-verification-intent-builder--tester--not-phase-2) |
 
 ---
 

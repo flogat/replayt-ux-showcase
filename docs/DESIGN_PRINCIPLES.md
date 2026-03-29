@@ -29,6 +29,7 @@ is tracked separately in code and CHANGELOG):
 | **Figma design kit** (library access, variable → **`rux-*`** mapping, change process, interim **JSON** export) | [Design kit (Figma) and token export](#design-kit-figma-and-token-export), [`docs/design-kit/README.md`](design-kit/README.md) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 | **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
+| **Click heatmap / static canvas** (session **`click`** **`x`/`y`** density on viewport-sized stage; **Spec** until **`click-heatmap-canvas.html`** ships) | **[P-10](examples/PATTERNS.md#p-10--click-heatmap-on-static-canvas-session-click-coordinates)** (**Spec only**), [`SESSION_SCHEMA.md` §1](examples/SESSION_SCHEMA.md#1-showcase-session-fixture-canonical), [`keyboard-model.md`](a11y/keyboard-model.md), [Backlog traceability: Click heatmap **P-10**](#backlog-traceability-click-heatmap-on-static-canvas-vanilla-p-10) |
 | **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
 | **Session fixture** (`SAMPLE_SESSION_DATA` ↔ **`docs/examples`**) | [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [examples/PATTERNS.md — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), [`docs/demo.md`](demo.md) |
 | **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
@@ -789,7 +790,8 @@ copy the pattern; “CI” means automated verification exists.
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**–**P-05** and **P-09** **Shipped**; **P-09** is **`event-overlay.html`**), plus **framework** subtrees
+(**P-01**–**P-05** and **P-09** **Shipped**; **P-09** is **`event-overlay.html`**; **P-10** **click heatmap** is **Spec only**
+until **`click-heatmap-canvas.html`** ships), plus **framework** subtrees
 (**P-06** **React**, **P-07** **Vue**, **P-08** **Svelte** — all **Shipped**),
 each with normative acceptance criteria in **`docs/examples/PATTERNS.md`**. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
@@ -977,6 +979,28 @@ and **[offline / deterministic fixture](#offline-deterministic-fixture-page-for-
 | **MISSION** / **compat** / **README** | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)**, **[`README.md`](../README.md)** | Vanilla count **6** when **P-09** **Shipped** |
 
 **Shipped (phase 3):** **`docs/examples/event-overlay.html`**, **P-09** **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** vanilla count **6**, **`tests/test_examples.py`** markers, **`tests/test_docs_examples_replayt_pins.py`**, **`demo.py`** / **`docs/demo.md`** overlay teaching line + **`tests/test_demo.py`**, **CHANGELOG** **Unreleased**, **[`README.md`](../README.md)** and **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** digest updated.
+
+#### Backlog traceability: Click heatmap on static canvas (vanilla **P-10**)
+
+**Scope:** **[P-10](examples/PATTERNS.md#p-10--click-heatmap-on-static-canvas-session-click-coordinates)** in **`docs/examples/PATTERNS.md`** (planned primary file **`docs/examples/click-heatmap-canvas.html`** — **Spec only** until **Shipped**).
+
+**Normalized user story:** As an integrator, I want a **vanilla** example that plots **session `click` coordinates** on a
+**viewport-sized static stage** (**canvas** or **SVG**) as a **heatmap** / **density** view, reusing **`SAMPLE_SESSION_DATA`**
+(or a **§1**-compatible trimmed literal), with **accessible** naming, **visible** explanatory copy, and **documented** **tab order** —
+**without** duplicating **P-09**’s **scrub-linked overlay lane** as the primary teaching surface.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| **P-10** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-10** | **Spec only** today; **Shipped**: **`click-heatmap-canvas.html`** (or approved rename) on disk; inventory → **Shipped** |
+| **`click`** **`x`/`y`** + viewport mapping + aggregation | **P-10** [Event selection](examples/PATTERNS.md#p-10-event-selection-and-data-normative), [Stage and visualization](examples/PATTERNS.md#p-10-stage-and-visualization-normative) | Code review; **`tests/test_examples.py`** markers when **Shipped** |
+| Offline / deterministic **`sessionData`** (preferred) | **P-10** [Relationship to P-01, P-05, P-09, and SESSION_SCHEMA](examples/PATTERNS.md#relationship-to-p-01-p-05-p-09-and-session_schema) | No session **`fetch`** on primary path; determinism like **P-05** |
+| **Accessible** stage name + visible summary + **Tab order (handoff)** | **P-10** [Accessibility and keyboard](examples/PATTERNS.md#p-10-accessibility-and-keyboard-normative), **[`keyboard-model.md`](a11y/keyboard-model.md)** | Code review; contract strings when **Shipped** |
+| **replayt** script pin (when present); optional player | **P-10** [replayt JavaScript dependency](examples/PATTERNS.md#p-10-replayt-javascript-dependency-normative) | **`tests/test_docs_examples_replayt_pins.py`** when a pin exists |
+| **Playwright** smoke + **MISSION** / **compat** / **README** | **P-10** [Verification intent](examples/PATTERNS.md#p-10-verification-intent-builder--tester--not-phase-2), **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** | Add root **`*.html`** to **Shipped** inventory when **Shipped**; vanilla count **7** |
+
+**Spec (phase 2):** **P-10** row + normative sections in **`docs/examples/PATTERNS.md`**; cross-links in **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/SESSION_SCHEMA.md`**, and this doc.
+
+**Shipped (phase 3 target):** **`docs/examples/click-heatmap-canvas.html`**, **P-10** → **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** vanilla count **7**, **`tests/test_examples.py`** + pin tests + **Playwright** list, **CHANGELOG** **Unreleased**, **`README.md`** and **`docs/compat.md`** digest updated.
 
 ---
 
