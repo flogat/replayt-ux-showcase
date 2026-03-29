@@ -105,8 +105,8 @@ boundary rows appear here.
 Normative spec for copy-paste **HTML** and **Markdown** under **`docs/examples/`**: any **explicit** **replayt** version
 pin shown to integrators MUST stay inside the supported consumer range declared on the **`replayt`** line in
 **`[project].dependencies`** (same PEP 508 story as [Replayt and Python matrix](#replayt-and-python-matrix) and
-[Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain)). **Implementation** (pytest module, regex/heuristics,
-**CHANGELOG** when behavior ships) is **Builder** work.
+[Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain)). **Enforcement:** **`tests/test_docs_examples_replayt_pins.py`**
+via default **`pytest`** discovery (**CI** included). When detection rules or pins change, update **CHANGELOG** **Unreleased** in the same change set.
 
 #### Scope (files)
 
@@ -194,7 +194,7 @@ not mocked **replayt** internals.
 | Demo subprocess and data-shape checks | **`tests/`** per **`docs/demo.md`** (including in-process calls so **pytest-cov** traces **`demo.py`**) |
 | **replayt** pin, **dev** pins, and design-principles structure | **`tests/test_design_principles_contract.py`** (extend if new spec rows require it) |
 | **replayt** import surface in **`demo.py`** | **`tests/test_demo.py`** asserts the module source does not import the **`replayt`** package (stdlib-only demo) |
-| **Target (Builder):** **docs/examples** **replayt** pins vs **`pyproject.toml`** | **`tests/test_docs_examples_replayt_pins.py`** (recommended name; may live beside other contract tests if small) |
+| **docs/examples** **replayt** pins vs **`pyproject.toml`** | **`tests/test_docs_examples_replayt_pins.py`** |
 
 ### Backlog traceability: Add unit/integration tests for demo
 
@@ -219,20 +219,18 @@ integration boundaries, and runs in **CI** with coverage and explicit **dev** to
 CDN or package pins and fail when any pin falls outside the PEP 508 range declared in **`pyproject.toml`**, so
 integrator-facing snippets stay aligned with [DESIGN_PRINCIPLES](#design-principles) and **`docs/compat.md`**.
 
-| Backlog acceptance criterion | Where specified | How verified (target) |
+| Backlog acceptance criterion | Where specified | How verified |
 | ---------------------------- | --------------- | ------------------------ |
-| **Scan scope** | [Scope (files)](#scope-files) | Tests enumerate **`docs/examples/**/*.html`** and **`docs/examples/**/*.md`**. |
-| **Detection rules** | [What counts as a “pin” (detection)](#what-counts-as-a-pin-detection) | Implementation matches the table; documented in the test module docstring if simplified. |
+| **Scan scope** | [Scope (files)](#scope-files) | **`tests/test_docs_examples_replayt_pins.py`** enumerates **`docs/examples/**/*.html`** and **`docs/examples/**/*.md`**. |
+| **Detection rules** | [What counts as a “pin” (detection)](#what-counts-as-a-pin-detection) | Implementation matches the table; probe-grid simplifications are documented in the test module docstring. |
 | **Assertion vs `pyproject.toml`** | [Acceptance (assertion)](#acceptance-assertion) | Each detected pin satisfies or is subsumed by the **`replayt`** specifier from **`[project].dependencies`**. |
 | **Documented exceptions** | [Opt-out (documented exceptions)](#opt-out-documented-exceptions) | Snippets with **`<!-- replayt-examples:pin-exempt -->`** (and optional **`reason=`**) are skipped per rules above. |
 | **Range changes** | [Acceptance (assertion)](#acceptance-assertion) | Same change set: **`pyproject.toml`**, matrices, affected examples, tests, **CHANGELOG** **Unreleased**. |
 
-**Builder checklist (phase 3):**
+**Maintainer checklist:**
 
-1. Add **`tests/test_docs_examples_replayt_pins.py`** (recommended) using **`packaging`** (already used in **`tests/test_design_principles_contract.py`**) — no new **dev** dependency required unless you choose a different stack and update [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline).
-2. Wire the module into default **`pytest`** discovery so **CI** runs it after **`pip install -e ".[dev]"`** (no change to **`[tool.pytest.ini_options]`** required unless you add markers).
-3. Add a **Traceability** row in this file’s [Traceability to automated checks](#traceability-to-automated-checks) if the filename differs from **`test_docs_examples_replayt_pins.py`**.
-4. Record the new contract under **CHANGELOG** **Unreleased**.
+1. When extending detection rules or **`docs/examples/`** pins, update **`tests/test_docs_examples_replayt_pins.py`** (patterns, probe grid, or **`_EXTRA_PROBE_VERSIONS`**) and this section if the normative table changes, in one change set with **CHANGELOG** **Unreleased**.
+2. Renaming the test module requires updating [Traceability to automated checks](#traceability-to-automated-checks) and **`docs/compat.md`** in the same change set.
 
 ---
 
