@@ -2,7 +2,7 @@
 
 **Audience:** Designers maintaining a **Figma** library aligned with this repository’s **`rux-*`** semantic tokens; integrators who need a machine-readable token snapshot when no public **Figma** URL exists yet.
 
-**Canonical code/playbook tokens:** [`docs/playbook/tokens.md`](../playbook/tokens.md) — spacing, typography, and color tables; **T1–T3** acceptance there is enforced by **`tests/test_playbook_docs.py`**. This document adds **Figma**-side process, variable naming expectations, and **`design-tokens.json`** export rules. **`tests/test_design_kit_docs.py`** locks **F1–F8** structure, cross-links, and JSON shape in **CI**.
+**Canonical code/playbook tokens:** [`docs/playbook/tokens.md`](../playbook/tokens.md) — spacing, typography, and color tables; **T1–T5** acceptance there is enforced by **`tests/test_playbook_docs.py`**. This document adds **Figma**-side process, variable naming expectations, and **`design-tokens.json`** export rules. **`tests/test_design_kit_docs.py`** locks **F1–F8** structure, cross-links, and JSON shape in **CI**.
 
 ## Relationship to the playbook
 
