@@ -453,12 +453,12 @@ allowed) — **without** implying this repository publishes a **React** or **sho
 
 - **React:** Target **React 18** (`react` / `react-dom` ^18) — aligns with [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix).
 - **Bundler:** **Preferred** delivery: **Vite** (`npm create vite@latest` style) with a short README path: install, `npm run dev`, expected URL. **Allowed:** a concise **esbuild** (or similar) subsection in **`docs/examples/react/README.md`** for integrators who skip Vite.
-- **Script loading:** Either (a) **pinned** **CDN** `<script>` in **`index.html`** that loads **`replayt`**’s browser bundle before the app bundle, or (b) **npm** dependency on **`replayt`** and import from the package path documented by **replayt** for the pinned version. Any **explicit** **replayt** version in **`docs/examples/react/*.{html,md}`** must satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (**`tests/test_docs_examples_replayt_pins.py`** once files exist).
+- **Script loading:** Either (a) **pinned** **CDN** `<script>` in **`index.html`** that loads **`replayt`**’s browser bundle before the app bundle, or (b) **npm** dependency on **`replayt`** and import from the package path documented by **replayt** for the pinned version. Any **explicit** **replayt** version in **`docs/examples/react/*.{html,md}`** must satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (**`tests/test_docs_examples_replayt_pins.py`**).
 - **Repository boundary:** Files live only under **`docs/examples/react/`** (plus cross-links from **README** / this catalog). Do **not** add a second canonical snippet tree at the repo root; optional root **`package.json`** remains the **maintainer** bundler recipe per **[`build.md`](build.md)**, not a substitute for **`react/`**.
 
 ### P-06 README and folder layout (normative)
 
-- **`docs/examples/react/README.md`** (Builder **must** add when moving **P-06** to **Shipped**):
+- **`docs/examples/react/README.md`** (**Shipped** **P-06** must include):
   - **Copy-paste** orientation: what to copy into an existing app vs run as a standalone mini-project.
   - **Version pins:** **replayt** semver (npm and/or CDN) **inside** the PEP 508 band in **`pyproject.toml`**; **React 18** range; link to **[`docs/FRONTEND_SUPPLY_CHAIN.md`](../FRONTEND_SUPPLY_CHAIN.md)** for CDN vs bundled tradeoffs.
   - **Runbook:** `npm install`, `npm run dev` (or equivalent), and any prerequisite (**Node** version) in one place.
