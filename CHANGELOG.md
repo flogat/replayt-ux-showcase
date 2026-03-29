@@ -116,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Phase **8** CI fix (*Tailwind CSS integrator snippet for player chrome*): **`ruff format`** on **`tests/playwright/test_static_html_examples_load.py`** (wrap **`_CONSOLE_WARNING_ALLOWLIST`** tuple) so **`ruff format --check .`** passes in **CI** (failed run **23704015467**).
 - `tests/test_changelog_release_policy_docs.py`: **ruff format** (line wrap) and **LF** line endings so **`ruff format --check`** / Linux CI stay consistent (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
 - `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Second UI pattern: event overlay / heatmap on static canvas* — **P-10** contract tests).
 

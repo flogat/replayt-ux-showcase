@@ -62,7 +62,10 @@ def test_shipped_root_html_inventory_matches_allowlist() -> None:
 # add ``(filename, substring)`` entries and a one-line rationale in a comment above.
 # P-11 basic-player-tailwind.html: Tailwind Play CDN logs this by design; HTML already warns integrators.
 _CONSOLE_WARNING_ALLOWLIST: tuple[tuple[str, str], ...] = (
-    ("basic-player-tailwind.html", "cdn.tailwindcss.com should not be used in production"),
+    (
+        "basic-player-tailwind.html",
+        "cdn.tailwindcss.com should not be used in production",
+    ),
 )
 
 
