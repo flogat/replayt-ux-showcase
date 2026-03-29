@@ -51,7 +51,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
-| **`docs/examples/`** **P-01** (`basic-player.html`) loads under **HTTP** in headless **Chromium** with documented **DOM** / stability checks | **Planned** — [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests); **Builder** adds **`pytest`** (e.g. **pytest-playwright**), workflow job(s), and extends this table when shipped |
+| **`docs/examples/`** **P-01** (`basic-player.html`) loads under **HTTP** in headless **Chromium** with documented **DOM** / stability checks | **`tests/docs_examples_playwright/test_basic_player.py`**; **`.github/workflows/ci.yml`** job **`docs-examples-playwright`** (**`playwright install --with-deps chromium`**, **`pytest`** with **`--no-cov`** and **`--browser chromium`**) — [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests) |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -87,7 +87,7 @@ unless the test is being retired on purpose.
 | **`docs/examples/`** | Static HTML/JS (and future framework snippets) that integrators copy | Imply they are supported npm packages unless explicitly published as such |
 | **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
-| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); optional **Playwright** smoke job(s) when [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests) is **shipped**; future matrix jobs as needed | Store long-lived tokens (read-only `contents` is the default contract) |
+| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate on the non-browser **`tests/`** tree via **`--ignore=tests/docs_examples_playwright`**), job **`docs-examples-playwright`** for [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); future matrix jobs as needed | Store long-lived tokens (read-only `contents` is the default contract) |
 
 **Dependency direction:** showcase code and tests **→** **replayt** (PyPI). Demos may document how integrators pull
 **replayt** in their own apps; this repo does not re-export **replayt** as a different product.
@@ -265,9 +265,12 @@ work (phase **3**); this section is the contract the Builder and **Spec gate** u
   [Line coverage](#line-coverage-acceptance-80-on-demo)). **Playwright** smoke tests **must not** be counted toward that
   gate and **must not** weaken or remove **`[tool.pytest.ini_options]`** **`--cov`** / **`--cov-fail-under`** defaults
   for the main **`pytest`** job.
-- It is acceptable for the **Playwright** suite to live under **`tests/`** with **markers** or a **separate** **CI** step
-  that runs **`pytest`** with a narrow **`file_or_dir`** (or marker expression) so the **cov** **addopts** are not
-  applied to browser tests—**Builder** documents the exact invocation in **README** and **CHANGELOG** when shipped.
+- **Shipped layout:** **`tests/docs_examples_playwright/`** holds **Playwright** tests and loads **`pytest_playwright`**
+  only from that package’s **`conftest.py`**. The default **CI** **`pytest`** command uses **`--ignore=tests/docs_examples_playwright`**
+  so **`[tool.pytest.ini_options]`** coverage **addopts** apply only to the rest of **`tests/`**; the **`docs-examples-playwright`**
+  job runs **`pytest tests/docs_examples_playwright`** with **`--no-cov`** and **`--browser chromium`** (see **README**).
+- **Markers** (e.g. **`browser_smoke`**) remain optional for local filtering; they are **not** required when the **ignore**
+  + dedicated job pattern is used.
 
 ### Serving model (acceptance)
 
@@ -328,18 +331,18 @@ snippets do not regress silently, without changing the **`demo.py`** **pytest-co
 
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | ------------------------ |
-| **CI** runs headless smoke on **P-01** | [Serving model](#serving-model-acceptance), [Minimal smoke invariants](#minimal-smoke-invariants--basic-playerhtml-acceptance) | **`.github/workflows/ci.yml`** (or documented companion workflow) + green logs |
-| **HTTP** static root is **`docs/examples/`** | [Serving model](#serving-model-acceptance) | Test / job uses same root as **README** static-server story |
-| **Chromium** on **Linux** **CI** | [Browser matrix](#browser-matrix-acceptance), [Showcase stack matrix](#showcase-stack-matrix) | Default matrix row; **`playwright install`** step recorded |
-| **`demo.py`** **80%** gate unchanged | [Relationship to `demo.py` coverage](#relationship-to-demopy-coverage) | Main **pytest** job still uses **`[tool.pytest.ini_options]`**; browser suite isolated or marker-skipped for **cov** |
-| **README** documents contributor commands | [README](../README.md) | Install browsers + run smoke **pytest** invocation |
+| **CI** runs headless smoke on **P-01** | [Serving model](#serving-model-acceptance), [Minimal smoke invariants](#minimal-smoke-invariants--basic-playerhtml-acceptance) | Job **`docs-examples-playwright`** in **`.github/workflows/ci.yml`**; **`tests/docs_examples_playwright/test_basic_player.py`** |
+| **HTTP** static root is **`docs/examples/`** | [Serving model](#serving-model-acceptance) | Session fixture in **`tests/docs_examples_playwright/conftest.py`**; **README** static-server story |
+| **Chromium** on **Linux** **CI** | [Browser matrix](#browser-matrix-acceptance), [Showcase stack matrix](#showcase-stack-matrix) | **`python -m playwright install --with-deps chromium`** in **`docs-examples-playwright`** |
+| **`demo.py`** **80%** gate unchanged | [Relationship to `demo.py` coverage](#relationship-to-demopy-coverage) | **`test`** job: **`pytest tests --ignore=tests/docs_examples_playwright`** keeps **`[tool.pytest.ini_options]`**; **`docs-examples-playwright`** uses **`--no-cov`** |
+| **README** documents contributor commands | [README](../README.md) | **`playwright install chromium`** + **`pytest tests/docs_examples_playwright --no-cov --browser chromium`** |
 | **Pins** in **`pyproject.toml`** | [Dependencies and install path](#dependencies-and-install-path-acceptance), [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | PEP 508 lines + **CHANGELOG** **Unreleased** |
 
 **Builder checklist (phase 3):**
 
 1. Add dependencies, **`tests/`** module(s), and **`playwright install`** wiring; keep **cov** **addopts** on the default **`pytest`** path.
 2. Update [Traceability to automated checks](#traceability-to-automated-checks), **`docs/compat.md`** (**Verified in CI today** when claiming smoke runs), and [Showcase stack matrix](#showcase-stack-matrix) in the **same** change set as the workflow.
-3. Extend **`tests/test_design_principles_contract.py`** if maintainers want mechanical assertions on workflow shape (optional).
+3. **`tests/test_design_principles_contract.py`** asserts **`--ignore=tests/docs_examples_playwright`**, **`docs-examples-playwright`**, **`playwright install --with-deps chromium`**, and **`--no-cov`** on the browser job.
 4. Record under **CHANGELOG** **Unreleased**.
 
 ---
@@ -438,6 +441,8 @@ explicit version constraints on its line:
 | ------- | ---- |
 | **pytest** | Test runner |
 | **pytest-cov** | Line coverage and **`--cov-fail-under`** for **`src/replayt_ux_showcase/demo.py`** (via **`[tool.pytest.ini_options]`**) |
+| **pytest-playwright** | **`pytest`** integration for **Playwright** ( **`page`** fixture, **`--browser`**); used only under **`tests/docs_examples_playwright/`** so default **`pytest`** runs do not load the browser stack |
+| **playwright** | **Playwright** Python package; browser binaries installed via **`playwright install`** (see **README**) |
 | **ruff** | Lint/format (as adopted by the repo) |
 | **pip-audit** | Supply-chain / vulnerability checks in contributor workflows |
 
@@ -464,7 +469,7 @@ covered by the dependency contract tests.
 | ---------------------------- | --------------- | -------------------------- |
 | **`pip install -e .[dev]`** works | [Goals](#goals) and [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 1 | Contributor **README** quick start and CI use **`pip install -e ".[dev]"`** (quoted extras are reliable in **POSIX** shells; unquoted **`.[dev]`** matches backlog wording but may need quotes under **zsh** / some setups); `test_ci_installs_editable_with_dev_extras` asserts the workflow keeps that command |
 | **replayt** importable | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) item 2 | `tests/test_design_principles_contract.py` (`test_replayt_importable`) after install |
-| No loose direct deps | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) items 3–4 and [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same test module: every line in **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`** carries a non-empty PEP 508 specifier; **replayt** line must match [Replayt and Python matrix](#replayt-and-python-matrix); **`test_dev_optional_dependencies_match_baseline_package_set`** keeps **dev** to **pytest**, **pytest-cov**, **ruff**, **pip-audit** |
+| No loose direct deps | [Acceptance criteria (implementation)](#acceptance-criteria-implementation) items 3–4 and [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline) | Same test module: every line in **`[project].dependencies`**, **`[project.optional-dependencies].dev`**, and **`[build-system].requires`** carries a non-empty PEP 508 specifier; **replayt** line must match [Replayt and Python matrix](#replayt-and-python-matrix); **`test_dev_optional_dependencies_match_baseline_package_set`** keeps **dev** to **pytest**, **pytest-cov**, **pytest-playwright**, **playwright**, **ruff**, **pip-audit** |
 
 **Caret-style backlog wording (e.g. “^0.1” for **replayt**):** Express in **`pyproject.toml`** using PEP 508 only—see
 [PEP 508 vs caret-style wording](#pep-508-vs-caret-style-wording). The numeric range in **`pyproject.toml`** and the
@@ -476,7 +481,7 @@ matrix is authoritative, not npm **`^` / `~`**.
    **`test_replayt_dependency_matches_design_principles_matrix`** (lower bound and **`<0.5`**-style cap unless the
    matrix and tests are intentionally revised together).
 2. Keep **`[project.optional-dependencies].dev`** aligned with [Dev optional dependency set (baseline)](#dev-optional-dependency-set-baseline)
-   (**pytest**, **pytest-cov**, **ruff**, **pip-audit**). Adding, renaming, or dropping a tool requires updating this table,
+   (**pytest**, **pytest-cov**, **pytest-playwright**, **playwright**, **ruff**, **pip-audit**). Adding, renaming, or dropping a tool requires updating this table,
    **CHANGELOG**, and any workflow docs that mention the tool, in the same change set as **`pyproject.toml`**.
 3. After any pin or dev-set change, run **`pip install -e ".[dev]"`** and **`pytest`** on at least one **test** job
    **Python** from the matrix (for example **3.12**);
@@ -517,11 +522,11 @@ work unless a change here explicitly requires synchronized updates to **`.github
 | Job / concern | Requirement | Verified by (target) |
 | ------------- | ----------- | -------------------- |
 | **Install** | **`pip install -e ".[dev]"`** (quoted extras) on each **test** job **Python** version from [Replayt and Python matrix](#replayt-and-python-matrix) | `test_ci_installs_editable_with_dev_extras`; green CI logs |
-| **Tests** | Run **`python -m pytest`** from the repo root so **`[tool.pytest.ini_options]`** applies ( **`--cov=replayt_ux_showcase.demo`**, **`--cov-fail-under=80`**, etc.). Extra CLI flags (e.g. **`-q`**, **`--tb=short`**) are fine if they do **not** remove coverage options. **CI** MUST install **dev** extras so **pytest-cov** is available — a plain editable install **without** **`[dev]`** is **not** sufficient for the coverage gate. | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries); green **`test`** job |
+| **Tests** | Run **`python -m pytest tests`** from the repo root with **`--ignore=tests/docs_examples_playwright`** on the default **test** job so **`[tool.pytest.ini_options]`** (**`--cov=replayt_ux_showcase.demo`**, **`--cov-fail-under=80`**, etc.) applies only to the non-browser suite. Extra CLI flags (e.g. **`-q`**, **`--tb=short`**) are fine if they do **not** remove coverage options. **CI** MUST install **dev** extras so **pytest-cov** is available — a plain editable install **without** **`[dev]`** is **not** sufficient for the coverage gate. | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries); **`test_ci_main_pytest_ignores_playwright_package`**; green **`test`** job |
 | **Lint** | Run **`ruff check`** at the repository root (use **`pyproject.toml`** **`[tool.ruff]`** when present). If the repo adopts enforced formatting in CI, add **`ruff format --check`** in the same or a dedicated step. | Non-zero on violations; **Spec gate** treats missing **ruff** in CI as incomplete for this backlog |
 | **replayt** compatibility | **replayt** is resolved by the runtime install per **`[project].dependencies`**; contract tests and the **pytest** suite exercise pins, import smoke, and integration boundaries ([Demo module testing](#demo-module-testing-and-replayt-integration-boundaries), [Dependency pins](#dependency-pins-and-dev-toolchain)) | **`test_replayt_importable`**, **`test_replayt_dependency_matches_design_principles_matrix`**, and full **`pytest`** run in CI |
 | **Supply chain** | Keep **`pip-audit`** aligned with **`docs/DEPENDENCY_AUDIT.md`** (including documented **`--ignore-vuln`** entries that match the workflow). | Existing **`supply-chain`** (or equivalent) job |
-| **docs/examples** **Playwright** smoke | When [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests) is **shipped**, run headless **Chromium** against **`basic-player.html`** served from **`docs/examples/`** over **HTTP**; **non-zero** exit on failure | Dedicated job or documented workflow; **compat.md** **Verified in CI today** updated in the same change set |
+| **docs/examples** **Playwright** smoke | Run headless **Chromium** against **`basic-player.html`** served from **`docs/examples/`** over **HTTP**; **`pytest`** uses **`--no-cov`**; **non-zero** exit on failure | Job **`docs-examples-playwright`** in **`.github/workflows/ci.yml`**; **`test_ci_runs_docs_examples_playwright_smoke`** |
 
 ### README badges (acceptance)
 
@@ -584,7 +589,8 @@ the two differ.
   and [Showcase stack matrix](#showcase-stack-matrix). Integrators may rely on this range unless **CHANGELOG** narrows it.
 - **Verified in CI today** — Whatever the default **GitHub Actions** workflow actually installs and runs tests against.
   Today the **test** job uses **two** **Python** rows (**3.11** and **3.12**); each row resolves **one** **replayt**
-  version (**latest** satisfying the PEP 508 range at install time). That is **not** the same as “every **replayt**
+  version (**latest** satisfying the PEP 508 range at install time). The **`docs-examples-playwright`** job runs on **Python** **3.12**
+  only and does not add a second **replayt** resolution story (browser smoke loads **replayt** from **CDN** in the page). That is **not** the same as “every **replayt**
   minor in the range is regression-tested” until optional jobs pin additional **replayt** cells.
 - **No false claims** — Documentation (including **README**, this file, and **compat.md**) MUST NOT imply CI exercises
   matrix cells that are not implemented in **`.github/workflows/ci.yml`** (or documented follow-up jobs). When new rows
@@ -626,8 +632,8 @@ copy the pattern; “CI” means automated verification exists.
 
 | Stack | Supported (intent) | CI | Notes |
 | ----- | ------------------- | --- | ----- |
-| Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) **and**, when shipped, **[Playwright smoke](#docs-examples-static-demos-playwright-smoke-tests)** on **`basic-player.html`** (**P-01**) | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
-| Headless browser smoke (**Playwright**) | Yes — **Chromium** on **Linux** **CI** for **P-01** | **Planned** until **Builder** ships workflow + tests; then required on default **PR** **CI** unless **README** / **compat.md** document a deliberate **dispatch-only** exception | **Firefox** / **WebKit** optional follow-up when matrix rows are added; see [Browser matrix](#browser-matrix-acceptance) under **Playwright** spec |
+| Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) **and** **[Playwright smoke](#docs-examples-static-demos-playwright-smoke-tests)** on **`basic-player.html`** (**P-01**) via **`tests/docs_examples_playwright/`** | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
+| Headless browser smoke (**Playwright**) | Yes — **Chromium** on **Linux** **CI** for **P-01** | Job **`docs-examples-playwright`** in **`.github/workflows/ci.yml`** (**Python** **3.12**, **`playwright install --with-deps chromium`**) | **Firefox** / **WebKit** optional follow-up when matrix rows are added; see [Browser matrix](#browser-matrix-acceptance) under **Playwright** spec |
 | Optional **npm** bundler preview | Yes (documented) — **[`docs/examples/build.md`](examples/build.md)** | Not required in default **CI** (pytest-first) | Root **`package.json`** with **`"private": true`**; **Vite** *or* **esbuild**; **not** an implied public **npm** package for this repo |
 | React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
@@ -746,7 +752,7 @@ What integrators and maintainers may rely on or extend:
 | **Integrators** | **replayt** APIs used in examples (imports, session/event shapes) | Governed by **replayt** semver and this repo’s stated supported range |
 | **Integrators** | **`replayt_ux_showcase`** entrypoints and helpers described in README or package docs as stable | SemVer for behavior; breaking CLI or import paths follow [Deprecation and removal](#deprecation-and-removal) |
 | **Maintainers** | New pytest coverage and optional CI matrix dimensions | Internal to repo; must keep logs and exit codes obvious ([Observable automation](#principles)) |
-| **Maintainers** | Headless **Playwright** smoke for **`docs/examples/`** (see [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests)) | Until **shipped**, absent from default **CI**; when added, must match **HTTP** serving + **Chromium** baseline in that spec |
+| **Maintainers** | Headless **Playwright** smoke for **`docs/examples/`** (see [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests)) | Default **PR** **CI** job **`docs-examples-playwright`**; must keep **HTTP** root **`docs/examples/`**, **Chromium** baseline, and isolation from **`demo.py`** **pytest-cov** **addopts** per that spec |
 | **Maintainers** | Optional **`docs/reference-documentation/`** snapshots | Contributor convenience only; not a substitute for upstream docs |
 
 **Non–extension points:** Undocumented imports from **replayt**, private modules, or scraping this repo’s CI logs as

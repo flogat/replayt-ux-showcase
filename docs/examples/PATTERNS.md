@@ -109,8 +109,8 @@ Shared checklist: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**
 
 **Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`** (CDN pin vs **`pyproject.toml`**) and
 **`tests/test_examples.py`** (example files on disk plus light **P-02** contract strings). Headless **Playwright** smoke for
-**`basic-player.html`** (**P-01**) is specified in [docs/examples static demos: Playwright smoke tests](../DESIGN_PRINCIPLES.md#docs-examples-static-demos-playwright-smoke-tests)
-and tracked in the [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix) (*Headless browser smoke* row); **Builder** implements **CI** per that spec.
+**`basic-player.html`** (**P-01**) lives in **`tests/docs_examples_playwright/test_basic_player.py`** (spec:
+[docs/examples static demos: Playwright smoke tests](../DESIGN_PRINCIPLES.md#docs-examples-static-demos-playwright-smoke-tests); **CI** job **`docs-examples-playwright`**).
 
 ---
 

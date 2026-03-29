@@ -16,7 +16,7 @@ This project builds on **[replayt](https://pypi.org/project/replayt/)**. Read
 
 Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Normative requirements (tests with the **pytest-cov** gate, **ruff**, **replayt** install path, supply chain, badges) are in **[docs/DESIGN_PRINCIPLES.md — GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow)**.
 
-**Playwright smoke (static `docs/examples/` demos):** Spec and acceptance criteria live in **[docs/DESIGN_PRINCIPLES.md — docs/examples static demos: Playwright smoke tests](docs/DESIGN_PRINCIPLES.md#docs-examples-static-demos-playwright-smoke-tests)** (backlog: headless **Chromium** on **`basic-player.html`**, **HTTP** static root, **no** change to the **`demo.py`** coverage gate). When implemented, **README** will document the exact **`pip`** / **`playwright install`** / **`pytest`** commands alongside **CI**; until then there is no second test entrypoint.
+**Playwright smoke (static `docs/examples/` demos):** Headless **Chromium** checks **`basic-player.html`** (**P-01**) over **HTTP** with root **`docs/examples/`** — see **`tests/docs_examples_playwright/`** and **[docs/DESIGN_PRINCIPLES.md — docs/examples static demos: Playwright smoke tests](docs/DESIGN_PRINCIPLES.md#docs-examples-static-demos-playwright-smoke-tests)**. **CI** job **`docs-examples-playwright`** runs after **`pip install -e ".[dev]"`** and **`python -m playwright install --with-deps chromium`**, then **`python -m pytest tests/docs_examples_playwright -q --no-cov --browser chromium`**. The main **`test`** job runs **`python -m pytest tests --ignore=tests/docs_examples_playwright`** so the **`demo.py`** **pytest-cov** gate is unchanged.
 
 ## Reference documentation
 
@@ -30,10 +30,12 @@ python -m venv .venv
 source .venv/bin/activate
 # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-pytest
+python -m playwright install chromium
+python -m pytest tests --ignore=tests/docs_examples_playwright
+python -m pytest tests/docs_examples_playwright --no-cov --browser chromium
 ```
 
-Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). The **dev** extra pulls in **pytest-cov**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. Use **`python -m pytest`** from the repo root to match **CI** (same **`[tool.pytest.ini_options]`** as **`pytest`**).
+Run the first **`pytest`** line from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). **`--ignore=tests/docs_examples_playwright`** matches the main **CI** **`test`** job and keeps **Playwright** off the **cov** **addopts** path. The **dev** extra pulls in **pytest-cov**, **playwright**, and **pytest-playwright**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. The second **`pytest`** line runs **P-01** smoke only; it needs **`playwright install chromium`** once per machine (**Linux** **CI** uses **`install --with-deps chromium`**). A bare **`pytest`** at the repo root still discovers **`tests/docs_examples_playwright`** and applies **cov** **addopts** to that session—use the two explicit commands above for a **CI**-aligned loop.
 
 **Tests and coverage policy** (demo module, **replayt** boundaries, **dev** pins) live in
 **[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **[docs/demo.md](docs/demo.md)** defines the console demo contract.
@@ -69,8 +71,8 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/a11y/keyboard-model.md` | Shared **keyboard / focus** checklist for player and timeline embeds (tab order, scrubber keys, **Escape**) |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
-| `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract |
+| `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract; **`tests/docs_examples_playwright/`** — **Playwright** smoke for **`basic-player.html`** (**run with `--no-cov`**, see **Quick start**) |
 | `pyproject.toml` | Package metadata, dependencies, **pytest**/**ruff** config |
-| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**) |
+| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov** on **`tests/`** minus **`docs_examples_playwright`**, job **`docs-examples-playwright`**, **ruff**, **pip-audit**) |
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
 | `.gitignore` | Ignores `path/` (doc placeholders), `.orchestrator/`, `.cursor/skills/`, and `AGENTS.md` (local tooling) |
