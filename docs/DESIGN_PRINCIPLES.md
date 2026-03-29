@@ -17,6 +17,7 @@ is tracked separately in code and CHANGELOG):
 | Demo **pytest** coverage and **replayt** boundary tests | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries) |
 | **docs/examples** replayt pins vs **`pyproject.toml`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) |
 | **Front-end** CDN vs bundled **replayt**, optional **SRI**, **npm**/**Vite** notes | [Frontend supply chain (JavaScript / CDN)](#frontend-supply-chain-javascript--cdn), [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
+| Optional **npm** workspace / **Vite** or **esbuild** local preview (**not** a published package) | [`docs/examples/build.md`](examples/build.md), [Module and directory boundaries](#module-and-directory-boundaries), [Showcase stack matrix](#showcase-stack-matrix) |
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
@@ -45,8 +46,9 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | CI installs with **`pip install -e ".[dev]"`** (quoted extras) per contributor entrypoint | Same |
 | **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
 | **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |
-| explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)) |
+| explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)); includes **`docs/examples/build.md`** when present |
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
+| Root **`package.json`** (optional **npm** bundler recipe) | **Not** asserted in **CI** today; when shipped, MUST follow [`docs/examples/build.md`](examples/build.md) (**`private`**, pytest-first **CI**); **npm** **`replayt`** semver MUST stay inside the **`pyproject.toml`** band (manual review; **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`**) |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
@@ -63,7 +65,10 @@ unless the test is being retired on purpose.
    change set as the pin or CI update.
 2. **Single home for copy-paste demos** — New static examples live under **`docs/examples/`** with clear filenames
    (e.g. `basic-player.html`). Framework-specific trees (e.g. `docs/examples/react/`) are introduced only when a
-   pattern ships; avoid parallel unofficial copies at repo root.
+   pattern ships; avoid parallel unofficial copies at repo root. An **optional** repository-root **`package.json`**
+   (**`"private": true`**) may exist **only** as a **maintainer** bundler recipe for **local preview**, documented in
+   **[`docs/examples/build.md`](examples/build.md)** — not as a second canonical snippet tree or an implied **npm**
+   publication (see [Module and directory boundaries](#module-and-directory-boundaries)).
 3. **Single automation surface for Python** — Importable code and CLIs live under **`src/replayt_ux_showcase/`** only.
    Do not add a second package name or duplicate entrypoints without a deprecation path.
 4. **Upstream boundary** — Integrate **replayt** via its **published public API** (see PyPI release notes / upstream
@@ -78,6 +83,7 @@ unless the test is being retired on purpose.
 | **`src/replayt_ux_showcase/`** | Python package surface (`import replayt_ux_showcase`), console demos, test helpers that exercise replayt through supported APIs | Become a second “core” for capture/replay; depend on unreleased or git-pinned replayt without an explicit maintainer decision recorded in CHANGELOG |
 | **`docs/`** | Mission, principles, demo specs, copy-paste examples, playbook-oriented markdown | Hold secrets, credentials, or environment-specific endpoints checked into git |
 | **`docs/examples/`** | Static HTML/JS (and future framework snippets) that integrators copy | Imply they are supported npm packages unless explicitly published as such |
+| **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
 | **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); future matrix jobs as needed | Store long-lived tokens (read-only `contents` is the default contract) |
 
@@ -275,6 +281,21 @@ aligned with the **README** / **`pyproject.toml`** compatibility story and disti
 
 **Builder checklist:** Link **README** / **design principles** (phase **2** spec); **`tests/test_frontend_supply_chain_doc.py`**
 (phase **3**) locks **A1–A5** structure and links. Optional follow-up backlogs may add **SRI** byte checks or **npm** CI — **not** required here.
+
+### Backlog traceability: Optional npm workspace or build recipe without publishing a package
+
+**Normalized user story:** As maintainer, I want a **documented optional path** (root **`package.json`** marked **`private`**
+plus **Vite** or **esbuild**) to bundle **replayt** from **npm** for **local preview** only, while **CI** stays
+**pytest-first** and the repo does **not** claim a **supported npm package** unless explicitly published.
+
+| Backlog acceptance criterion | Where specified | How verified |
+| ---------------------------- | --------------- | ------------ |
+| **Spec + acceptance criteria** | [`docs/examples/build.md`](examples/build.md) (**C1**–**C4**, **B1**–**B8**) | **Spec gate** / review |
+| **Boundary: not a published npm surface** | [Module and directory boundaries](#module-and-directory-boundaries); **build.md** [Explicit non-goals](#explicit-non-goals-module-boundary) | **Spec gate**; **Builder** + **CHANGELOG** if publication intent ever changes |
+| **CI pytest-first** | **build.md** deliverable **B7**; [GitHub Actions CI workflow](#github-actions-ci-workflow) | **Spec gate** today; **workflow** diff only if a **future** backlog adds optional **npm** jobs |
+| **Pin alignment** | **build.md** [Single compatibility story](#single-compatibility-story-pins); [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** on **`docs/examples/build.md`**; **`package.json`** semver reviewed when shipped |
+
+**Builder checklist (phase 3):** Add **`package.json`** + minimal bundler config per **B1**–**B8**; link from **README**; **CHANGELOG** **Unreleased**; keep **`.github/workflows/ci.yml`** on **Python** **pytest** + **ruff** + **pip-audit** unless a separate backlog adds **npm** automation.
 
 ---
 
@@ -511,6 +532,7 @@ copy the pattern; “CI” means automated verification exists.
 | Stack | Supported (intent) | CI | Notes |
 | ----- | ------------------- | --- | ----- |
 | Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) plus any future file/smoke tests | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
+| Optional **npm** bundler preview | Yes (documented) — **[`docs/examples/build.md`](examples/build.md)** | Not required in default **CI** (pytest-first) | Root **`package.json`** with **`"private": true`**; **Vite** *or* **esbuild**; **not** an implied public **npm** package for this repo |
 | React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
 | Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |

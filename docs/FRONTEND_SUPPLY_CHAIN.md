@@ -76,15 +76,18 @@ separate backlogs.
 ## Bundling alternative (npm + Vite, webpack, etc.)
 
 Instead of a runtime CDN `<script>`, integrators may **`npm install replayt`** (or **pnpm** / **yarn**) and **`import`**
-the player through **Vite**, **webpack**, **Rollup**, or similar.
+the player through **Vite**, **esbuild**, **webpack**, **Rollup**, or similar.
 
+- **Repository-local optional recipe:** Maintainers may add a **private** root **`package.json`** and a **Vite** or **esbuild**
+  workflow for **local preview** only — normative spec **[`docs/examples/build.md`](examples/build.md)** (**CI** stays
+  **pytest-first**; this is **not** a published **npm** product unless explicitly released).
 - **Semver alignment:** Choose an **npm** semver range **compatible** with the showcase’s **PyPI**-declared band (see
   [PEP 508 vs caret-style wording](DESIGN_PRINCIPLES.md#pep-508-vs-caret-style-wording) for mapping **caret**/**tilde**
   mental models to numeric bounds). The **`pyproject.toml`** line remains the **authoritative** supported range for
   **this** repository’s story; **npm** ranges in **your** app should not advertise versions **outside** that policy.
 - **Lockfiles:** **`package-lock.json`** / **`pnpm-lock.yaml`** / etc. live in **integrator** repos. This repo’s
   **`docs/examples/`** tree does **not** require an npm lockfile **unless** a shipped pattern introduces a **build-step**
-  demo (future backlog).
+  demo (future backlog) or the optional **[`docs/examples/build.md`](examples/build.md)** recipe commits one per **B6**.
 - **CI scope:** Default **GitHub Actions** does **not** install **npm** deps or run **`npm audit`** on **replayt**;
   integrators should run **npm** supply-chain tooling in their own pipelines when they bundle.
 

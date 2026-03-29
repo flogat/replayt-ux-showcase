@@ -59,6 +59,7 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
 | `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
+| `docs/examples/build.md` | Optional **npm** + **Vite** / **esbuild** local bundler spec (**private** **`package.json`**, **pytest-first** **CI**); not an implied public **npm** package |
 | `docs/examples/fixture-replay.html` | **P-05** deterministic offline fixture for reviewers / **LLM** harnesses (**Shipped** â€” **`docs/examples/PATTERNS.md`**) |
 | `docs/examples/PATTERNS.md` | Canonical UI pattern inventory (mission **5+** tracking, per-pattern acceptance criteria) |
 | `docs/a11y/keyboard-model.md` | Shared **keyboard / focus** checklist for player and timeline embeds (tab order, scrubber keys, **Escape**) |

@@ -5,7 +5,7 @@ This file is the **canonical inventory** for distinct, copy-paste **vanilla HTML
 a single place to check **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code
 lands.
 
-**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds).
+**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID).
 
 ## Pattern inventory
 
