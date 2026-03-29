@@ -102,5 +102,9 @@ The backlog **Document CDN vs bundled replayt with SRI and supply-chain notes** 
 | **A4** | **README.md** and **`docs/DESIGN_PRINCIPLES.md`** link here (project layout + **Frontend supply chain** section) so contributors find the guidance next to the **README** compatibility pointers. |
 | **A5** | **CHANGELOG** **Unreleased** records this documentation addition. |
 
+**Automated checks (phase 3):** **`tests/test_frontend_supply_chain_doc.py`** enforces **A1–A4** (sections, keywords,
+links) and **A5** (an **Unreleased** mention of this doc). **SRI** hash correctness for real `<script>` tags stays manual
+/ optional future work.
+
 **Explicit non-goals (this backlog):** Require **SRI** on every example; add **npm** jobs to **CI**; vendor **replayt**
 into this repo.

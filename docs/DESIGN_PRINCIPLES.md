@@ -44,6 +44,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
 | **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)) |
+| **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, and cross-links (**A1–A4** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
@@ -270,8 +271,8 @@ aligned with the **README** / **`pyproject.toml`** compatibility story and disti
 | **Align with single compatibility story** | [Single change set when replayt minors move](FRONTEND_SUPPLY_CHAIN.md#single-change-set-when-replayt-minors-move); [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** for in-range **CDN** pins; manual review for **SRI** / prose |
 | **Python supply chain called out separately** | [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) (opening sections + **[DEPENDENCY_AUDIT.md](DEPENDENCY_AUDIT.md)**) | Same |
 
-**Builder checklist:** Link **README** / **design principles** (done in phase **2** spec); optional follow-up backlogs
-may add **SRI** checks or **npm** CI — **not** required here.
+**Builder checklist:** Link **README** / **design principles** (phase **2** spec); **`tests/test_frontend_supply_chain_doc.py`**
+(phase **3**) locks **A1–A5** structure and links. Optional follow-up backlogs may add **SRI** byte checks or **npm** CI — **not** required here.
 
 ---
 
