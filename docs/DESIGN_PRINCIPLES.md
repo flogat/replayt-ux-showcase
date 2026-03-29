@@ -60,7 +60,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T5**, **A1–A5**, **H1–H5**) | `tests/test_playbook_docs.py` |
 | **`CONTRIBUTING.md`**, [Changelog, semver, and release notes](#changelog-semver-and-release-notes) headings and semver tables, pins ↔ **DESIGN_PRINCIPLES** table, **CHANGELOG** **Unreleased** mention | `tests/test_changelog_release_policy_docs.py` |
-| **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | `tests/test_design_kit_docs.py` (sections **F1–F8**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
+| **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies, backlog **BC1–BC4** + shipped examples / component inventory | `tests/test_design_kit_docs.py` (sections **F1–F8**, **BC1–BC4**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape, **DESIGN_PRINCIPLES** fragment links); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | Static **HTML** examples: **Playwright** load smoke (no **console** errors on initial load; **Chromium**-first matrix) | **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`**; **`tests/playwright/test_static_html_examples_load.py`**; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE**; `tests/test_design_principles_contract.py` (`test_ci_examples_playwright_smoke_job_matches_spec`) |
@@ -455,23 +455,24 @@ plus **Vite** or **esbuild**) to bundle **replayt** from **npm** for **local pre
 
 ## Design kit (Figma) and token export
 
-Normative spec for the backlog item **Figma design kit stub: tokens export + link from docs**. **Figma** variable names and export tooling are **not** duplicated inside [`tokens.md`](playbook/tokens.md); that file stays the **CSS / Tailwind** contract. **[`docs/design-kit/README.md`](design-kit/README.md)** owns **library access**, **duplication**, **Figma → `rux-*` mapping**, **change requests**, and the interim **`design-tokens.json`** shape.
+Normative spec for the backlog item **Figma design kit stub** (tokens + component list). **Figma** variable names and export tooling are **not** duplicated inside [`tokens.md`](playbook/tokens.md); that file stays the **CSS / Tailwind** contract. **[`docs/design-kit/README.md`](design-kit/README.md)** owns **library access**, **duplication**, **Figma → `rux-*` mapping**, **change requests**, the interim **`design-tokens.json`** shape, **which shipped examples wire `--rux-*` today**, and the **component inventory** (player chrome, timeline, event list / overlay lane) aligned with [`component-anatomy.md`](playbook/component-anatomy.md).
 
 **Single semantic story:** [`tokens.md`](playbook/tokens.md) semantic names (**`rux-*`**) are authoritative. **Figma** variables MUST map **to** those names (see **F3** in the design-kit README). If playbook tokens are renamed, update **`tokens.md`**, the **Figma** mapping (or **JSON** export), and **CHANGELOG** in one change set.
 
-### Backlog traceability: Figma design kit stub (tokens export + link from docs)
+### Backlog traceability: Figma design kit stub (tokens + component list)
 
-**Normalized user story:** As a designer or integrator, I want a documented path to the **Figma** library (or a duplicate), a clear map from **Figma** variables to playbook **`rux-*`** tokens, instructions to request token changes, and—when no public **Figma** URL exists—a checked-in **JSON** export as the interim source of truth.
+**Normalized user story:** As a designer or integrator, I want a documented path to the **Figma** library (or a duplicate), a clear map from **Figma** variables to playbook **`rux-*`** tokens and **`--rux-*`** CSS variables used in examples, instructions to request token changes, a **component inventory** (player chrome, timeline, event list / overlay lane) tied to playbook anatomy, and—when no public **Figma** URL exists—a checked-in **JSON** export as the interim source of truth.
 
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | --------------------- |
-| **Obtain / duplicate library** | [`docs/design-kit/README.md`](design-kit/README.md) — **F1**, **F2** | `tests/test_design_kit_docs.py` |
-| **Variables map to playbook tokens** | Same — **F3**; canonical rows in [`tokens.md`](playbook/tokens.md) | Same |
+| **Obtain / duplicate library** | [`docs/design-kit/README.md`](design-kit/README.md) — **F1**, **F2**; **BC1** | `tests/test_design_kit_docs.py` |
+| **Variables map to playbook tokens** | Same — **F3**; canonical rows in [`tokens.md`](playbook/tokens.md); **BC2**, **BC4** | Same |
 | **Request changes** | Same — **F4** | Same |
-| **Interim JSON when no public URL** | Same — **F5**, [JSON export schema](design-kit/README.md#json-export-schema-interim-source-of-truth) | Same; **file** **`docs/design-kit/design-tokens.json`** present when maintainers declare no public link |
+| **Interim JSON when no public URL** | Same — **F5**, [JSON export schema](design-kit/README.md#json-export-schema-interim-source-of-truth); **BC1** | Same; **file** **`docs/design-kit/design-tokens.json`** present when maintainers declare no public link |
+| **Examples ↔ token wiring + component inventory** | Same — [Shipped HTML examples and semantic CSS variables](design-kit/README.md#shipped-html-examples-and-semantic-css-variables), [Component inventory](design-kit/README.md#component-inventory-player-chrome-timeline-event-list); **BC3**, **BC4** | **`tests/test_design_kit_docs.py`** — **BC1–BC4** table rows, shipped-examples + component-inventory sections and cross-links; **BC2** (full **`rux-*`** semantics in **F3** + **`design-tokens.json`**) same module |
 | **Discoverable from repo home / playbook** | Same — **F7**, **F8**; [`docs/playbook/README.md`](playbook/README.md) cross-link | Same |
 
-**Shipped (phase 3):** **F1–F8** prose in **`docs/design-kit/README.md`**, **`design-tokens.json`** as interim export (**F5**), root **[`README.md`](../README.md)** / playbook index links, **`tests/test_design_kit_docs.py`**, **CHANGELOG** **Unreleased**.
+**Shipped (phase 3):** **F1–F8** prose in **`docs/design-kit/README.md`**, **`design-tokens.json`** as interim export (**F5**), backlog **BC1–BC4** table, root **[`README.md`](../README.md)** / playbook index links, **`tests/test_design_kit_docs.py`** (including **BC** + deep-link contract), **CHANGELOG** **Unreleased**.
 
 ---
 

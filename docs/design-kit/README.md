@@ -10,6 +10,40 @@
 - **This folder:** Documents how **Figma** variables (or styles) map **onto** those semantics, how to obtain or duplicate the library, and how to request changes.
 - **Component regions:** Use [`component-anatomy.md`](../playbook/component-anatomy.md) for timeline/overlay structure; the design kit SHOULD use frame/layer naming that cross-references that doc where helpful.
 
+## Shipped HTML examples and semantic CSS variables
+
+Integrators copy from **`docs/examples/`**; the design kit MUST stay aligned with how those pages express **`--rux-*`** when they wire tokens.
+
+| Pattern ID | Example (entry HTML) | Token story today |
+| ---------- | -------------------- | ----------------- |
+| **P-01** | [`basic-player.html`](../examples/basic-player.html) | **Canonical** `:root` map: **`--rux-space-{2,4,8}`**, **`--rux-font-sans`**, **`--rux-color-{surface,surface-muted,border,text,primary}`**, plus **`--replayt-primary: var(--rux-color-primary)`** for the embedded player theme. Matches the “Canonical **`--rux-*`** usage” table in [`tokens.md`](../playbook/tokens.md). |
+| **P-02**–**P-10**, framework rows | Other shipped **`*.html`** / **`docs/examples/*/`** trees | **Not required** to duplicate the full **`--rux-*`** scale in the same change set as playbook updates ([`tokens.md`](../playbook/tokens.md) **T3**). When a pattern adopts semantic tokens, use **F3** names in **Figma** and the same **`semantic` / `cssVar` / `value`** triple you would emit in **`design-tokens.json`**. |
+
+**Engineering mapping (design → code):** Designers pick **Figma** paths from **F3**; developers set CSS custom properties (or **Tailwind** `theme.extend` per **`tokens.md`**) to the resolved values in **`design-tokens.json`** **`value`** (and optional **`valueDark`**). The **P-01** snippet is the reference for “minimal player chrome” wiring.
+
+## Component inventory (player chrome, timeline, event list)
+
+Use this inventory to structure **Figma** pages/components so comps match the shared anatomy in [`component-anatomy.md`](../playbook/component-anatomy.md) and shipped patterns in [`PATTERNS.md`](../examples/PATTERNS.md).
+
+| Design-kit component | What it covers | Playbook / anatomy anchor | Primary pattern references |
+| -------------------- | -------------- | ------------------------- | -------------------------- |
+| **Player chrome** | Surround for **`#player`**, instructions strip, borders/radii, primary surfaces | [`component-anatomy.md`](../playbook/component-anatomy.md) §3 (**P-01**, **P-02**, **P-04**) | **P-01** minimal shell, **P-02** metadata bar, **P-04** embed shell |
+| **Timeline** | Scrubber track, thumb, time readout, context label | [`component-anatomy.md`](../playbook/component-anatomy.md) §1 (timeline / scrubber strip) + scrubber **states** table | **P-03** [`timeline-scrubber.html`](../examples/timeline-scrubber.html), **P-06**–**P-08** framework parity |
+| **Event list / overlay lane** | Event rows, scrub-linked markers, callouts, optional roving focus | [`component-anatomy.md`](../playbook/component-anatomy.md) §2 (overlays, event callouts) | **P-09** [`event-overlay.html`](../examples/event-overlay.html) |
+
+**Figma organization (recommended):** One page (or section) per row above; use slash-style component names that echo **F3** collections (**`RUX/…`**) for tokens applied to those frames. Do not invent parallel color/spacing names—extend **`tokens.md`** + **F3** + **`design-tokens.json`** in one maintainer change set when new semantics are needed.
+
+## Backlog acceptance criteria (stub: tokens + component list)
+
+These criteria make the backlog item **testable in review** alongside **F1–F8** (enforced in **CI** via **`tests/test_design_kit_docs.py`** where noted).
+
+| # | Criterion | Verification |
+| --- | --------- | ------------ |
+| **BC1** | **Library or interim export** — Designers know how to get a **Figma** library **or**, when no public file exists, use **`design-tokens.json`** as the machine-readable source (**F1**, **F5**). | **F1** / **F5** prose + file present |
+| **BC2** | **Full semantic coverage** — Every **`rux-*`** spacing, typography, and color semantic in [`tokens.md`](../playbook/tokens.md) appears in the **F3** table and in **`design-tokens.json`** **`tokens[]`**. | **`tests/test_design_kit_docs.py`** |
+| **BC3** | **Component inventory** — This README names **player chrome**, **timeline**, and **event list / overlay lane** and ties each to **`component-anatomy.md`** + at least one **P-*** pattern (table above). | Doc review (**Spec gate**) |
+| **BC4** | **Design → code path** — Describes mapping **Figma** variables → **`--rux-*`** (via **F3** + JSON) and points to **P-01** as the minimal CSS wiring example. | **F3**, **Shipped examples** section, **`tokens.md`** |
+
 ## Acceptance criteria (F1–F8)
 
 | # | Criterion |

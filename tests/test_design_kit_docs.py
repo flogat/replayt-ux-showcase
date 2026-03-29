@@ -1,8 +1,9 @@
 """Contract tests for docs/design-kit/ (Figma stub + interim token export).
 
-Locks **F1–F8** section markers, cross-links, **`design-tokens.json`** shape, and
-full coverage of playbook semantics from **`docs/playbook/tokens.md`**. See
-**DESIGN_PRINCIPLES** — traceability to automated checks.
+Locks **F1–F8** section markers, cross-links, **`design-tokens.json`** shape, full
+coverage of playbook semantics from **`docs/playbook/tokens.md`**, and backlog
+**BC1–BC4** rows (library vs **JSON**, semantics, component inventory, design→code
+path + **P-01** reference). See **DESIGN_PRINCIPLES** — traceability to automated checks.
 """
 
 from __future__ import annotations
@@ -73,6 +74,12 @@ def test_design_kit_readme_f_labels_in_acceptance_table() -> None:
         assert f"| F{n} |" in text, f"missing acceptance row for F{n}"
 
 
+def test_design_kit_readme_backlog_bc_rows() -> None:
+    text = _DESIGN_KIT_README.read_text(encoding="utf-8")
+    for n in range(1, 5):
+        assert f"| **BC{n}** |" in text, f"missing backlog acceptance row BC{n}"
+
+
 def test_design_kit_readme_cross_links_f7() -> None:
     text = _DESIGN_KIT_README.read_text(encoding="utf-8")
     assert "[`docs/playbook/README.md`](../playbook/README.md)" in text
@@ -139,3 +146,39 @@ def test_readme_quick_start_links_design_kit() -> None:
 def test_changelog_unreleased_mentions_design_kit_contract_tests() -> None:
     unreleased = _unreleased_changelog_slice()
     assert "test_design_kit_docs.py" in unreleased
+
+
+def test_design_kit_readme_shipped_examples_section() -> None:
+    text = _DESIGN_KIT_README.read_text(encoding="utf-8")
+    assert "## Shipped HTML examples and semantic CSS variables" in text
+    assert "[`basic-player.html`](../examples/basic-player.html)" in text
+    assert "**P-01**" in text
+    assert "**T3**" in text
+    assert "Engineering mapping" in text
+
+
+def test_design_kit_readme_component_inventory_section() -> None:
+    text = _DESIGN_KIT_README.read_text(encoding="utf-8")
+    assert "## Component inventory (player chrome, timeline, event list)" in text
+    assert "**Player chrome**" in text
+    assert "**Timeline**" in text
+    assert "**Event list / overlay lane**" in text
+    assert "[`component-anatomy.md`](../playbook/component-anatomy.md)" in text
+    assert "[`PATTERNS.md`](../examples/PATTERNS.md)" in text
+    assert "[`timeline-scrubber.html`](../examples/timeline-scrubber.html)" in text
+    assert "[`event-overlay.html`](../examples/event-overlay.html)" in text
+
+
+def test_design_principles_design_kit_fragment_links_match_readme_headings() -> None:
+    """DESIGN_PRINCIPLES deep-links use GitHub-style anchors; README headings must exist."""
+    readme = _DESIGN_KIT_README.read_text(encoding="utf-8")
+    principles = (REPO_ROOT / "docs" / "DESIGN_PRINCIPLES.md").read_text(
+        encoding="utf-8"
+    )
+    assert "design-kit/README.md#shipped-html-examples-and-semantic-css-variables" in principles
+    assert (
+        "design-kit/README.md#component-inventory-player-chrome-timeline-event-list"
+        in principles
+    )
+    assert "## Shipped HTML examples and semantic CSS variables" in readme
+    assert "## Component inventory (player chrome, timeline, event list)" in readme
