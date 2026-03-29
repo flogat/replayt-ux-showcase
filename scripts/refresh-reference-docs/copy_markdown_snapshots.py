@@ -16,6 +16,19 @@ import tomllib
 from pathlib import Path
 
 
+def _validated_tree_segment(raw: str, option: str) -> str:
+    """Reject absolute paths and '..' so --subdir/--version cannot escape docs/reference-documentation/."""
+    s = raw.strip()
+    if not s:
+        raise SystemExit(f"{option} must be non-empty.")
+    p = Path(s)
+    if p.is_absolute():
+        raise SystemExit(f"{option} must not be an absolute path: {raw!r}")
+    if ".." in p.parts:
+        raise SystemExit(f"{option} must not contain '..': {raw!r}")
+    return s
+
+
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description=(
@@ -114,7 +127,17 @@ def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     repo_root = _resolve_repo_root(args.repo_root)
     version = args.version if args.version is not None else _default_replayt_version()
-    dest_root = repo_root / "docs" / "reference-documentation" / args.subdir / version
+    subdir = _validated_tree_segment(args.subdir, "--subdir")
+    version_seg = _validated_tree_segment(version, "--version")
+    ref_anchor = (repo_root / "docs" / "reference-documentation").resolve()
+    dest_root = (ref_anchor / subdir / version_seg).resolve()
+    try:
+        dest_root.relative_to(ref_anchor)
+    except ValueError:
+        raise SystemExit(
+            "Refuses to write outside docs/reference-documentation/ "
+            f"(resolved destination {dest_root} is not under {ref_anchor})."
+        ) from None
 
     md_files = _iter_markdown_files(args.source)
     if not md_files:

@@ -8,10 +8,13 @@ committed upstream copies).
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import textwrap
 from pathlib import Path
+
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 _REF_README = REPO_ROOT / "docs" / "reference-documentation" / "README.md"
@@ -164,3 +167,84 @@ def test_copy_markdown_snapshots_errors_when_no_markdown(tmp_path: Path) -> None
         text=True,
     )
     assert proc.returncode == 1
+
+
+def _minimal_repo(tmp_path: Path) -> Path:
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "replayt-ux-showcase"
+            version = "0.0.0"
+            """
+        ).strip(),
+        encoding="utf-8",
+    )
+    (tmp_path / "docs" / "reference-documentation").mkdir(parents=True)
+    src = tmp_path / "upstream"
+    src.mkdir()
+    (src / "x.md").write_text("x", encoding="utf-8")
+    return src
+
+
+def test_copy_markdown_snapshots_rejects_parent_dir_in_subdir(tmp_path: Path) -> None:
+    src = _minimal_repo(tmp_path)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(_SCRIPT),
+            "--repo-root",
+            str(tmp_path),
+            "--source",
+            str(src),
+            "--subdir",
+            "..",
+            "--version",
+            "v",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
+    assert ".." in (proc.stderr + proc.stdout)
+
+
+def test_copy_markdown_snapshots_rejects_parent_dir_in_version(tmp_path: Path) -> None:
+    src = _minimal_repo(tmp_path)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(_SCRIPT),
+            "--repo-root",
+            str(tmp_path),
+            "--source",
+            str(src),
+            "--version",
+            "../v",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX absolute path join semantics")
+def test_copy_markdown_snapshots_rejects_absolute_subdir(tmp_path: Path) -> None:
+    src = _minimal_repo(tmp_path)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(_SCRIPT),
+            "--repo-root",
+            str(tmp_path),
+            "--source",
+            str(src),
+            "--subdir",
+            "/etc",
+            "--version",
+            "v",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
