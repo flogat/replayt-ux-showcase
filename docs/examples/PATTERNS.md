@@ -2,7 +2,7 @@
 
 This file is the **canonical inventory** for distinct, copy-paste integrator examples under `docs/examples/`: **vanilla
 HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**; **Vue** — **P-07**; **Svelte**
-— **P-08**). It supports the mission
+— **P-08**). **P-09** is the **vanilla** teaching example for **event overlays** (**Shipped** as **`event-overlay.html`**). It supports the mission
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
@@ -23,8 +23,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-06** | [`react/`](react/) ([`README.md`](react/README.md), [`src/App.jsx`](react/src/App.jsx)) | **Shipped** | **React 18** timeline player: same **`sessionData`** / **`replayt.player.init`** contract as **P-01**, timeline scrub UX aligned with **P-03**; **Vite**-first (or **esbuild** notes); **not** an npm-published package. |
 | **P-07** | [`vue/`](vue/) ([`README.md`](vue/README.md), [`src/App.vue`](vue/src/App.vue)) | **Shipped** | **Vue 3** minimal timeline player: same **replayt-facing** data and init contract as **P-01**, scrubber parity with **P-03** / **P-06**; **static-build**-friendly (**`npm run build`**); **not** an npm-published package from this repo. |
 | **P-08** | [`svelte/`](svelte/) ([`README.md`](svelte/README.md), [`src/App.svelte`](svelte/src/App.svelte)) | **Shipped** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
+| **P-09** | [`event-overlay.html`](event-overlay.html) | **Shipped** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
 
-**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05** and **P-09** are shipped (**6** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -676,3 +677,111 @@ and [P-07 Limitations note](#p-07-limitations-note-normative), substituting **Sv
 | **Not** a published npm package | [P-08 Svelte and tooling](#p-08-svelte-and-tooling-normative) |
 | **Keyboard / focus** | [P-08 sessionData, replayt surface, a11y, limitations](#p-08-sessiondata-replayt-surface-a11y-limitations-normative) |
 | Traceability in design principles | [Backlog traceability: Vue and Svelte minimal player examples](../DESIGN_PRINCIPLES.md#backlog-traceability-vue-and-svelte-minimal-player-examples) |
+
+---
+
+## P-09 — Event overlay lane (scrub, hover tooltips, keyboard)
+
+### User story
+
+As an integrator, I want a **copy-paste vanilla** page that shows an **event overlay** pattern: a **timeline scrubber**
+(or equivalent seek control) **linked** to **per-event callouts** (labels, tooltips, or a small inspector strip) so
+operators see **which event** corresponds to the current scrub position, with **pointer hover** affordances **and**
+**keyboard** access—using only **published** **`replayt`** browser APIs and a **`sessionData`** story safe for **reviewers**
+and **automation agents** per **[LLM boundaries](../DESIGN_PRINCIPLES.md#llm-boundaries)**.
+
+### Relationship to existing patterns and playbook
+
+- **P-01** / **P-03**: Reuse the **same** **`sessionData` root** (`events` + `metadata`) and **P-03**-style **scrub /
+  seek** behavior (throttling, final seek on commit, documented event ordering). **P-09** **layers overlay / callout
+  UI** on top; it **must not** redefine the init contract.
+- **P-05**: For **determinism** and **LLM** / harness friendliness, the **preferred** delivery uses **inlined synthetic
+  `sessionData`** (fixed timestamps, ids, strings)—same spirit as **P-05**—so the page is **teachable** without network
+  session fetch. An **alternate** subsection that uses **async** acquisition **must** follow **P-04** norms (skeleton,
+  error, retry, live region) and **must** remain **secret-free**; do **not** combine non-deterministic model output with
+  the primary teaching path unless clearly labeled **out of scope** for default CI scrapers.
+- **Playbook:** Overlay **regions**, **z-index**, and **modal vs non-modal** vocabulary **must** align with
+  **[`docs/playbook/component-anatomy.md`](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**.
+- **A11y:** Shared checklist **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)** — tab order, scrubber keys,
+  **Escape**, optional **roving** list for many focusable event rows (see **§2** there).
+
+### P-09 Overlay UX (normative)
+
+- **Scrub-linked highlight:** Moving the scrubber / playhead **must** update which event (or time bucket) is treated as
+  **current**—visually distinct **selected** or **active** state on the corresponding **marker** or **row** in the overlay
+  lane (not only a static list).
+- **Hover tooltips (pointer):** **At least one** non-empty **tooltip, popover, or title-like callout** **must** appear on
+  **hover** (or **pointer over**) for an event marker **or** list row, showing **human-readable** event summary (e.g. type
+  + time). **Must not** rely on hover **alone** for the only copy of critical safety text—keep a **visible** label or
+  **focus-visible** path (see below).
+- **Keyboard / focus:** Operators **must** be able to **tab** to **interactive** overlay controls (markers, list rows, or
+  a single composite with **roving** focus). **Focus** on an event **must** surface the **same class of information** as
+  hover (e.g. show callout on **`focus`**, not only on **`mouseenter`**). **Escape** **must** dismiss **dismissible**
+  layers (popover / non-modal inspector) per **[keyboard-model §4](../a11y/keyboard-model.md#4-escape)**; document
+  **focus return** to the **activator** in-snippet.
+- **Tab order (handoff):** Include a short **“Tab order (handoff):”** comment block: recommended default **scrubber →
+  overlay lane / event list → player container** (adjust only with documented rationale, consistent with
+  **[keyboard-model §1](../a11y/keyboard-model.md#1-tab-order-default-dom-order)**).
+
+### P-09 Data and offline / LLM boundary (normative)
+
+- **Primary path (preferred for Ship):** **`sessionData`** from an **inline** literal or **static** assignment in the
+  same file—**no** `fetch` / **XHR** / **WebSocket** / **EventSource** for the **session payload** (same forbidden list as
+  **P-05** [sessionData and offline boundary](#p-05-sessiondata-and-offline-boundary-normative) for **session** I/O).
+- **Determinism:** No `Date.now()`, `new Date()`, `Math.random()`, or environment-derived values **inside `sessionData`**
+  or in **harness-scraped** visible strings meant to be stable across runs (mirror **P-05** [Determinism](#p-05-determinism-normative)).
+- **Forbidden:** Secrets, live **LLM** calls, or non-reproducible **model** paths in the **default** teaching surface
+  (**P-05** [Forbidden behaviors](#p-05-forbidden-behaviors-normative) by reference).
+- **Minimum events:** Include **enough** non-trivial **`events`** (suggest **≥ 5**) so scrubbing visibly changes the
+  active callout (empty-only demos are **not** **Shipped** for **P-09**).
+
+### P-09 replayt JS surface and pin (normative)
+
+- **Published API only:** **`replayt.player.init`** (or documented equivalent for the pinned version) plus any **seek**
+  helpers **listed explicitly** in a header or comment block—same boundary as **P-03**.
+- **CDN pin:** **`<script src=…>`** **must** satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (**`tests/test_docs_examples_replayt_pins.py`** once the file exists).
+- **Primary filename:** **`docs/examples/event-overlay.html`** unless a naming collision forces a rename; if renamed,
+  update this inventory row, **CHANGELOG** **Unreleased**, and cross-links in the same change set.
+
+### Optional demo.py console hook (normative intent, optional deliverable)
+
+Cross-surface vocabulary lives in **[`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed)**.
+When the Builder implements this backlog **and** chooses the optional hook:
+
+- **`demo.py`** remains **stdlib-only** and **offline** (no **replayt** import, no network, no **LLM** calls)—existing
+  **[`docs/demo.md`](../demo.md)** acceptance table is unchanged unless extended **additively**.
+- **Allowed:** Extra **`[replayt-demo]`** log lines or ASCII annotations that **name** overlay concepts (**active event**,
+  **tooltip** / **callout**, **scrub alignment**) using **`SAMPLE_SESSION_DATA`**—**deterministic** ordering only.
+- **Verification:** Extend **`docs/demo.md`** test-plan rows **in the same change set** as code; **pytest** updates are
+  **Builder** / **Tester** scope (phase **3** / **4**), not this spec.
+
+### P-09 Builder acceptance checklist (implementation)
+
+**P-09** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin tests aligned when this pattern changes.
+
+1. **`docs/examples/event-overlay.html`** implements the normative sections above.
+2. [Pattern inventory](#pattern-inventory) lists **P-09** as **Shipped** with the correct filename.
+3. **CHANGELOG** **Unreleased** records the example; **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**
+   vanilla count is **6** shipped (**P-01**–**P-05**, **P-09**).
+4. **`tests/test_docs_examples_replayt_pins.py`** scans the **`*.html`**; **`tests/test_examples.py`** includes file-presence
+   and **light contract markers**—scrub + overlay tab-order comment, determinism / no session **`fetch(`** on the primary path,
+   **Limitations** note aligned with **P-03**, **replayt** symbol list.
+5. **[`README.md`](../../README.md)** project layout row for **`event-overlay.html`** is **Shipped**.
+6. **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest mentions **P-09** as **Shipped**.
+
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-09**.
+
+---
+
+## Backlog traceability: Event overlay vanilla example + optional demo.py hook
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| Registered **vanilla** pattern **P-09** + planned filename | [Pattern inventory](#pattern-inventory), [P-09 replayt JS surface and pin](#p-09-replayt-js-surface-and-pin-normative) |
+| Scrub-linked overlay / callout behavior | [P-09 Overlay UX](#p-09-overlay-ux-normative) |
+| Hover **and** keyboard-equivalent disclosure | [P-09 Overlay UX](#p-09-overlay-ux-normative) |
+| **Escape** + focus return for dismissible layers | [P-09 Overlay UX](#p-09-overlay-ux-normative), [`keyboard-model.md` §4](../a11y/keyboard-model.md#4-escape) |
+| **LLM** / offline **`sessionData`** (preferred inline fixture) | [P-09 Data and offline / LLM boundary](#p-09-data-and-offline--llm-boundary-normative), [LLM boundaries](../DESIGN_PRINCIPLES.md#llm-boundaries) |
+| **Published** replayt JS only + PEP 508 **CDN** pin | [P-09 replayt JS surface and pin](#p-09-replayt-js-surface-and-pin-normative) |
+| Optional **`demo.py`** narrative hook | [Optional demo.py console hook](#optional-demopy-console-hook-normative-intent-optional-deliverable), [`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed) |
+| **MISSION** / **compat** / **README** when **Shipped** | [P-09 Builder acceptance checklist](#p-09-builder-acceptance-checklist-implementation) |

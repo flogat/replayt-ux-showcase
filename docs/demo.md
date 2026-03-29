@@ -31,10 +31,13 @@ Integrators ship **web** embeds that spend real time in **loading**, **failure**
 | **Ready** (valid session, init OK) | **`[replayt-demo]`** timeline logs and ASCII progress snapshot | **P-01** / **P-04** after successful init; **React** parity: **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** (**Shipped** — [`docs/examples/react/`](examples/react/)) |
 | **Failure** (fetch/init/payload) | Unrecoverable errors propagate; **WARN** for bad events continues | **P-04** — visible error + **retry** where recoverable |
 | **Retry** | N/A in static demo | **P-04** — focusable control |
+| **Event overlay** (scrub-linked **active event**, hover / focus **callouts**) | **`[replayt-demo] Overlay teaching`** line names the **active event** type at a fixed scrub snapshot (**6.0s**) using the same “last event at or before playhead” rule as **[`event-overlay.html`](examples/event-overlay.html)** | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**Shipped** — **`event-overlay.html`**); playbook overlay regions: **[component-anatomy §2](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)** |
 
 **Builder alignment:** **[P-04](examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery)** ships as
 [`embed-container-states.html`](examples/embed-container-states.html); keep this table accurate when web copy or console
-demo behavior changes. Optional stretch (separate backlog unless combined): simulate phased console output (e.g. log
+demo behavior changes. **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** ships
+[`event-overlay.html`](examples/event-overlay.html); console **`demo.py`** includes the overlay teaching line documented here and in **`tests/test_demo.py`**.
+Optional stretch (separate backlog unless combined): simulate phased console output (e.g. log
 lines that name **loading → ready** or **failed**)—must remain **offline** and **deterministic** per
 **`docs/DESIGN_PRINCIPLES.md`** → [LLM boundaries](DESIGN_PRINCIPLES.md#llm-boundaries).
 
@@ -132,9 +135,11 @@ Behavioral cases below are implemented under **`tests/`** (see module docstring)
 |------|-------------|----------|
 | `test_demo_runs` | Subprocess: `subprocess.run([sys.executable, "-m", "replayt_ux_showcase.demo"], capture_output=True)` | `returncode == 0` |
 | `test_exports` | Import check: `from replayt_ux_showcase import render_console_timeline, SAMPLE_SESSION_DATA` | Both symbols present; `len(SAMPLE_SESSION_DATA["events"]) in range(10, 16)` |
-| `test_output_format` | Output contains expected log lines | Combined stdout/stderr contains both `[replayt-demo]` and `"Rendering demo timeline"` |
+| `test_output_format` | Subprocess output shape | Combined stdout/stderr contains `[replayt-demo]`, `"Rendering demo timeline"`, **`Overlay teaching`**, and **`event-overlay.html`** |
 | `test_event_count` | Validate event count in sample data | `10 <= len(SAMPLE_SESSION_DATA["events"]) <= 15` |
 | `test_event_types` | Validate event types | All events have `type` in `('click', 'scroll', 'keypress', 'resize', 'mousemove')` |
+| `test_render_console_timeline_in_process` | In-process timeline + overlay logs (coverage) | caplog includes core timeline lines and **`Overlay teaching`** |
+| `test_overlay_teaching_when_no_event_before_scrub` | Overlay branch when scrub precedes first event | caplog includes **no event at or before playhead** |
 
 ### Coverage gate (see design principles)
 
