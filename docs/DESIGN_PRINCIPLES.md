@@ -16,6 +16,7 @@ is tracked separately in code and CHANGELOG):
 | **replayt** / dev-tool pins and “no loose deps” | [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) |
 | Demo **pytest** coverage and **replayt** boundary tests | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries) |
 | **docs/examples** replayt pins vs **`pyproject.toml`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) |
+| **Front-end** CDN vs bundled **replayt**, optional **SRI**, **npm**/**Vite** notes | [Frontend supply chain (JavaScript / CDN)](#frontend-supply-chain-javascript--cdn), [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
@@ -43,6 +44,8 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
 | **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)) |
+| **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
+| Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -155,6 +158,10 @@ non-empty line that would otherwise be scanned (single `<script src=…>`, singl
 Maintainers MUST keep **`reason=`** meaningful for reviewers. Human-readable explanation in prose above the snippet is
 encouraged but **does not** replace the comment for CI.
 
+**CDN delivery, optional SRI, bundlers:** See [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) and
+[Frontend supply chain (JavaScript / CDN)](#frontend-supply-chain-javascript--cdn) for **jsDelivr**-style URLs,
+**Subresource Integrity**, and **npm**/**Vite** alternatives aligned with this pin contract.
+
 ### Line coverage (acceptance: 80%+ on demo)
 
 - **Metric:** CPython **line** coverage for **`src/replayt_ux_showcase/demo.py`** only (not the whole package tree),
@@ -232,6 +239,40 @@ integrator-facing snippets stay aligned with [DESIGN_PRINCIPLES](#design-princip
 
 1. When extending detection rules or **`docs/examples/`** pins, update **`tests/test_docs_examples_replayt_pins.py`** (patterns, probe grid, or **`_EXTRA_PROBE_VERSIONS`**) and this section if the normative table changes, in one change set with **CHANGELOG** **Unreleased**.
 2. Renaming the test module requires updating [Traceability to automated checks](#traceability-to-automated-checks) and **`docs/compat.md`** in the same change set.
+
+---
+
+## Frontend supply chain (JavaScript / CDN)
+
+Normative detail for loading **replayt**’s **npm**-published browser bundle via **CDN** (e.g. **jsDelivr**, as in
+**`docs/examples/basic-player.html`**), optional **Subresource Integrity** (**SRI**), and **bundlers** (**Vite**,
+**webpack**, and similar) is in **[`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md)**.
+
+**Single compatibility story:** **`[project].dependencies`** **`replayt`** (PEP 508) remains the **authoritative**
+supported range for **both** Python and **front-end** pins. When support moves, update **`pyproject.toml`**, matrices
+in **this document**, **`docs/compat.md`**, **`docs/examples/`** CDN segments (and any example **SRI** hashes), **tests**
+if pin rules change, and **CHANGELOG** **Unreleased** **together** (see [One way to do it](#one-way-to-do-it-canonical-patterns)).
+
+**Python vs JS tooling:** **`pip-audit`** covers the **editable** **Python** install only; it does **not** replace
+**CDN** trust decisions or **`npm audit`** in integrator pipelines — see **`docs/FRONTEND_SUPPLY_CHAIN.md`** and
+**[`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md)**.
+
+### Backlog traceability: Document CDN vs bundled replayt with SRI and supply-chain notes
+
+**Normalized user story:** As integrator or maintainer, I want a short, canonical doc that explains **when** to pin
+**CDN** URLs for **replayt**’s browser bundle, **optional SRI**, and **npm**/**bundler** delivery as an alternative,
+aligned with the **README** / **`pyproject.toml`** compatibility story and distinct from **Python** **`pip-audit`**.
+
+| Backlog acceptance criterion | Where specified | How verified |
+| ---------------------------- | --------------- | ------------ |
+| **CDN pinning guidance** | [`docs/FRONTEND_SUPPLY_CHAIN.md` — CDN delivery](FRONTEND_SUPPLY_CHAIN.md#cdn-delivery-eg-jsdelivr) | **Spec gate** / review |
+| **Optional SRI** | [Subresource Integrity (SRI)](FRONTEND_SUPPLY_CHAIN.md#subresource-integrity-sri) | Same |
+| **Bundling alternative** | [Bundling alternative](FRONTEND_SUPPLY_CHAIN.md#bundling-alternative-npm--vite-webpack-etc) | Same |
+| **Align with single compatibility story** | [Single change set when replayt minors move](FRONTEND_SUPPLY_CHAIN.md#single-change-set-when-replayt-minors-move); [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** for in-range **CDN** pins; manual review for **SRI** / prose |
+| **Python supply chain called out separately** | [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) (opening sections + **[DEPENDENCY_AUDIT.md](DEPENDENCY_AUDIT.md)**) | Same |
+
+**Builder checklist:** Link **README** / **design principles** (phase **2** spec); **`tests/test_frontend_supply_chain_doc.py`**
+(phase **3**) locks **A1–A5** structure and links. Optional follow-up backlogs may add **SRI** byte checks or **npm** CI — **not** required here.
 
 ---
 
