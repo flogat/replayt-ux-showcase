@@ -8,7 +8,7 @@ in `docs/DESIGN_PRINCIPLES.md`. If anything here disagrees with that document, *
 
 | Dimension | Supported (policy) | Verified in CI today | Notes |
 | --------- | ------------------ | -------------------- | ----- |
-| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` (PEP 508 in `pyproject.toml`) | **One explicit `replayt-version` matrix coordinate per listed pin**, on **each** **Python** row — see [CI exercise row inventory](#ci-exercise-row-inventory) (**EX-311-RT-0-1-0**, …) | **Policy** still allows any version in the PEP 508 range; **CI** proves **0.1.0**, **0.2.0**, and **0.4.25** on **3.11** and **3.12** via **`pip install -e ".[dev]" -c`** (constraint file). Other releases in-range are **policy-only** until added to the matrix and inventory in the same change set. |
+| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` (PEP 508 in `pyproject.toml`) | **PR / push gate:** **One explicit `replayt-version` matrix coordinate per listed pin**, on **each** **Python** row — see [CI exercise row inventory](#ci-exercise-row-inventory) (**EX-311-RT-0-1-0**, …). **Optional (scheduled / manual only):** [floating minor-line smoke](#optional-replayt-minor-line-float-job-spec) — **not** part of the default **push**/**pull_request** gate until implemented in **`.github/workflows/ci.yml`**. | **Policy** still allows any version in the PEP 508 range; **CI** proves **0.1.0**, **0.2.0**, and **0.4.25** on **3.11** and **3.12** via **`pip install -e ".[dev]" -c`** (constraint file). Other releases in-range are **policy-only** until added to the matrix and inventory in the same change set. **Floating latest patch** within a chosen minor (e.g. **0.2.x**) is a separate, opt-in signal — see [Optional replayt minor-line float job (spec)](#optional-replayt-minor-line-float-job-spec). |
 | **Python** | `requires-python` (currently **≥ 3.11**) | **One explicit matrix row per** **Python** × **replayt** combination — inventory IDs **EX-311-*** and **EX-312-*** in [CI exercise row inventory](#ci-exercise-row-inventory) | Extra interpreters need new **`strategy.matrix`** entries, inventory rows, design principles / contract tests, and **CHANGELOG** in the same change set. |
 | **Vanilla examples** (`docs/examples/`) | Intended copy-paste surface per [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix); **replayt** pins must sit inside the same PEP 508 range as `pyproject.toml` | **Bundled** — **`tests/test_docs_examples_replayt_pins.py`** runs inside every **test** matrix cell ([CI exercise rows](DESIGN_PRINCIPLES.md#ci-exercise-rows-matrix-jobs-and-best-effort)); see **EX-EXAMPLES-PINS** in [CI exercise row inventory](#ci-exercise-row-inventory) | Optional **Playwright** load smoke (**Shipped** root **`*.html`** only): **`jobs.examples-playwright-smoke`** in **`ci.yml`** (**EX-PLAYWRIGHT-SMOKE**). Spec: [Static HTML examples: browser smoke (Playwright)](DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright). Intentional out-of-range demos use `<!-- replayt-examples:pin-exempt -->` per design principles. **CDN** / **SRI** / bundlers: [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md). Optional **npm** preview: [`docs/examples/build.md`](examples/build.md). |
 
@@ -73,6 +73,27 @@ a claim to best-effort — then **remove** or relabel the row).
 **`tests/test_docs_examples_replayt_pins.py`**. Optional repository-root bundler preview per **`docs/examples/build.md`**
 remains **local** unless a future backlog adds workflow jobs.
 
+### Optional replayt minor-line float job (spec)
+
+**Backlog:** *Optional CI matrix job: second replayt semver line* — multi-version confidence **without** widening the default **PR** gate.
+
+**Intent:** In addition to the **exact** pins in **`jobs.test`**, maintainers want an **optional** workflow job that resolves **replayt** to the **latest patch** on a **single chosen minor line** still inside **`replayt>=0.1.0,<0.5.0`** (illustrative default: **0.2.x** via a constraint such as **`replayt>=0.2.0,<0.3.0`**). That catches upstream **patch** releases that the pinned **0.2.0** cell does not exercise.
+
+**Triggers (normative):** MUST use **`schedule`** (maintainers pick a cadence, e.g. weekly **UTC**) **and** **`workflow_dispatch`**. MUST **NOT** run on **`push`** or **`pull_request`** unless a separate maintainer decision and **CHANGELOG** entry explicitly widen the gate.
+
+**Python:** At least **one** supported interpreter (recommended: **3.12**, aligned with other lightweight jobs).
+
+**Install:** Editable **`pip install -e ".[dev]"`** with a **constraint file** (or equivalent **PEP 508** constraint) that bounds **replayt** to the chosen minor line and stays inside **`pyproject.toml`**. After install, assert **`replayt.__version__`** satisfies the same bounds (no silent drift to **0.3+**).
+
+**Commands (narrow smoke — normative minimum):**
+
+1. **Import smoke:** `python -c "import replayt; import replayt_ux_showcase"` (or equivalent one-liner proving both packages import).
+2. **Demo subprocess:** `python -m replayt_ux_showcase.demo` exits **0** with output consistent with **`docs/demo.md`** (same bar as **`tests/test_demo.py`** subprocess cases: success exit and **`[replayt-demo]`**-prefixed timeline lines).
+
+**Explicitly out of scope for this job** (keeps runtime off the **PR** critical path): **`ruff`**, full **`python -m pytest tests`** with **`[tool.pytest.ini_options]`** **cov** gate, **`tests/test_replayt_public_api_boundary.py`**, **`tests/test_docs_examples_replayt_pins.py`**, **Playwright**, **`pip-audit`**. Maintainers MAY optionally run a **pytest** subset with **`--no-cov`** and **`--override-ini="addopts="`** (same escape hatch as **`jobs.examples-playwright-smoke`**) **only** if it stays limited to demo subprocess tests and does not pull in the full contract suite.
+
+**Inventory and docs (when Builder ships the job):** Add a dedicated **`docs/compat.md`** [CI exercise row inventory](#ci-exercise-row-inventory) row (proposed stable ID **`EX-REPLAYT-MINOR-FLOAT`**) and extend **`tests/test_design_principles_contract.py`** if the project asserts the new job mechanically. Update [Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix), [Supported vs tested](DESIGN_PRINCIPLES.md#supported-vs-tested-replayt-and-python), and this page’s **Verified in CI today** cells **in the same change set** as **`.github/workflows/ci.yml`**.
+
 ## Vanilla UI pattern catalog
 
 **Mission:** ≥ **5** distinct vanilla patterns under **`docs/examples/`** (see [MISSION.md — Pattern coverage tracking](MISSION.md#pattern-coverage-tracking)).
@@ -92,8 +113,9 @@ remains **local** unless a future backlog adds workflow jobs.
 | **Showcase Python vs replayt** | **EX-REPLAYT-PY-API** — bundled in **pytest** on every **test** cell | **`src/replayt_ux_showcase/**/*.py`** import surface checked against **`replayt.__all__`** for the matrix pin. |
 | **Lint / supply chain** | **ruff** inside each **test** row; **`pip-audit`** in **EX-SUPPLY-CHAIN** | Failures block merge when those steps are required. |
 | **Vanilla HTML load smoke** | **`jobs.examples-playwright-smoke`** — **Chromium** only; **EX-PLAYWRIGHT-SMOKE** | **`tests/playwright/test_static_html_examples_load.py`**; local run: [README — Optional Playwright smoke](../README.md#optional-playwright-smoke-static-html-examples). |
+| **replayt** minor-line float (optional) | *Spec until shipped* — **`schedule`** + **`workflow_dispatch`** only; see [Optional replayt minor-line float job (spec)](#optional-replayt-minor-line-float-job-spec) | **Not** on default **PR** runs; when implemented, integrators get **latest patch** confidence for one minor line (e.g. **0.2.x**) alongside exact matrix pins |
 
-**Future matrix rows:** When maintainers add or change **replayt** pins in **`ci.yml`**, update this inventory, **Verified in CI today** in **`docs/DESIGN_PRINCIPLES.md`**, and **`tests/test_design_principles_contract.py`** in the **same** change set.
+**Future matrix rows:** When maintainers add or change **replayt** pins in **`ci.yml`**, update this inventory, **Verified in CI today** in **`docs/DESIGN_PRINCIPLES.md`**, and **`tests/test_design_principles_contract.py`** in the **same** change set. When the optional float job ships, add inventory row **`EX-REPLAYT-MINOR-FLOAT`** (or the ID chosen in **DESIGN_PRINCIPLES**) in that same change set.
 
 ## Deprecation policy (summary)
 
