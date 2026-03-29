@@ -58,7 +58,7 @@ If the list is **non-interactive** (read-only log), keep rows **non-focusable** 
 
 ## 3. Scrubber / seek control (sliders)
 
-**Native `<input type="range">`** (used in **P-03**):**
+**Native `<input type="range">`** (used in **P-03**):
 
 - **Tab** focuses the slider.
 - **Arrow Left/Right** (and **Up/Down** in many UAs) **nudge** the value by `step`.
