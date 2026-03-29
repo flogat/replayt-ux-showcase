@@ -6,7 +6,7 @@ HTML/JS** files (default path) and **registered framework subtrees** (**React** 
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
-**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Design-to-code playbook](../playbook/README.md) (tokens, component anatomy, printable handoff checklist), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID), [Changelog, semver, and release notes](../DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (**`CHANGELOG.md`** **Unreleased** bullets when **Shipped** patterns or mission counts move).
+**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [**Session fixture schema (canonical)**](SESSION_SCHEMA.md) (`SAMPLE_SESSION_DATA` / **P-01** alignment), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Design-to-code playbook](../playbook/README.md) (tokens, component anatomy, printable handoff checklist), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID), [Changelog, semver, and release notes](../DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (**`CHANGELOG.md`** **Unreleased** bullets when **Shipped** patterns or mission counts move).
 
 **Release notes:** When a row here moves to **Shipped** (or you add a new **P-xx** consumers will track), update **`CHANGELOG.md`** **`[Unreleased]`** in the **same change set** as this file, **`docs/MISSION.md`** (pattern table), and **`docs/compat.md`** (vanilla catalog) when that digest lists the pattern—see [Unreleased: pattern coverage and mission tracking](../DESIGN_PRINCIPLES.md#unreleased-pattern-coverage-and-mission-tracking).
 
@@ -17,7 +17,7 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 
 | ID | Artifact | Status | Summary |
 | -- | -------- | ------ | ------- |
-| **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note. |
+| **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note; session **fixture** keys must align with [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1 after backlog *Normalize session schema…* (**Builder**). |
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
 | **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
 | **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
@@ -28,6 +28,23 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-09** | [`event-overlay.html`](event-overlay.html) | **Shipped** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
 
 **Mission trajectory:** **P-01** through **P-05** and **P-09** are shipped (**6** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. Additional patterns stay **future** backlogs until registered in this table first.
+
+---
+
+## Canonical session fixture (cross-surface)
+
+**Normative doc:** [`docs/examples/SESSION_SCHEMA.md`](SESSION_SCHEMA.md).
+
+- **§1 Showcase session fixture** is the **same** object family as **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`** and
+  the **`SAMPLE_SESSION_DATA`** block in **[`docs/demo.md`](../demo.md)** (**`start_ts`**, **`viewport.w` / `h`**, **`duration`**,
+  **`events[].ts`** in **seconds**).
+- **§2 `replayt.player.init` wire shape** covers **camelCase** / **ms** fields where the browser API differs; use a **pure
+  adapter** (see **`docs/examples/react/README.md`**) instead of inventing a third naming scheme.
+- **§3–§5** describe **legacy** placeholders (**`basic-player.html`** today), **Builder** acceptance, and the **pytest**
+  drift guard (**phase 3**).
+
+When **P-01**/**P-02**/**P-03** prose says “same `sessionData` as **P-01**,” distinguish **fixture canonical** (§1) from
+**init wire** (§2) if both appear in one file.
 
 ---
 
@@ -44,7 +61,11 @@ already pass to the player as in **P-01**.
 - **Same root shape** as [`basic-player.html`](basic-player.html): an object with at least:
   - **`events`** — array (may be empty in the snippet; real apps pass replayt event arrays).
   - **`metadata`** — object.
-- **P-01 baseline keys** inside `metadata` (from `basic-player.html`): `startTs`, `viewport` (`width`, `height`).
+- **Showcase fixture baseline** (cross-surface with **`SAMPLE_SESSION_DATA`**): see [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1
+  — **`metadata.start_ts`**, **`metadata.viewport.w` / `h`**, **`metadata.duration`**, **`events[].ts`** (seconds). Until
+  **P-01** migrates, shipped **P-02** may still use **`startTs`** / **`viewport.width` / `height`** for **init** and
+  chrome; **Builder** should converge on §1 for the **fixture** story and document §2 adapters where **`init`** requires
+  ms/camelCase.
 - **Extensions for P-02** (additive; must not break P-01 copies):
   - **`metadata.sessionId`** — string, human-readable stable id for the session row in the chrome.
   - **`metadata.durationMs`** — non-negative number, **session duration in milliseconds**, shown in the bar (preferred;
@@ -66,7 +87,7 @@ After the integrator has finished loading (not during the loading placeholder), 
 
 | Field | Source | Rule |
 | ----- | ------ | ---- |
-| Viewport | `metadata.viewport.width` × `metadata.viewport.height` | **Required** after load. If missing, show **error state** (not an empty bar pretending success). |
+| Viewport | **`metadata.viewport.w` × `metadata.viewport.h`** (canonical per [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1), or legacy **`width` × `height`** until removed | **Required** after load. If missing, show **error state** (not an empty bar pretending success). |
 | Session id | `metadata.sessionId` | **Required** after load for this pattern. If missing, show **error state** (integrators must supply for this demo’s contract). |
 | Duration | `metadata.durationMs` | **Required** after load. If missing, show **error state**. Format for display: human-readable (e.g. `m:ss` or `H:MM:SS` for long sessions) — exact formatting is implementation detail as long as it is consistent and documented in the snippet comments. |
 
@@ -169,7 +190,8 @@ documents a deliberate, additive extension in-snippet.
   state **“integrators should verify against replayt release notes for their pin”** and implement **defensive ordering**
   (e.g. sort once before building the time range) **in the example** so the demo is stable.
 - **Time range:** The snippet **must** document which **timestamp(s)** define scrubber min/max and playhead position
-  (e.g. first/last event time, `metadata.startTs` + duration, or API described in comments). Ambiguous mapping is not
+  (e.g. first/last event time, **`metadata.start_ts`** + **`metadata.duration`** in seconds for fixture parity, or **ms**
+  **`metadata.startTs`** + **`metadata.durationMs`** after adapter — see [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md)). Ambiguous mapping is not
   acceptable for **Shipped**—pick one approach and document it.
 
 ### Scrub / seek interactions (normative)
@@ -446,7 +468,11 @@ allowed) — **without** implying this repository publishes a **React** or **sho
 
 ### `sessionData` and event shapes (normative)
 
-- **Root shape:** Same as **P-01**: an object with **`events`** (array) and **`metadata`** (object). Use the same field names illustrated in [`basic-player.html`](basic-player.html) (`metadata.startTs`, `metadata.viewport.width` / `height`) unless the Builder documents an **additive** extension; do **not** invent a parallel schema.
+- **Root shape:** Same as **P-01**: an object with **`events`** (array) and **`metadata`** (object). **Fixture field names**
+  for parity with **`SAMPLE_SESSION_DATA`** **must** follow [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1 (**`start_ts`**,
+  **`viewport.w` / `h`**, **`duration`**, **`events[].ts`**). The object passed to **`replayt.player.init`** may use the
+  **init wire** shape (§2) after a **pure** adapter — same pattern as shipped **`adaptConsoleSessionToReplaytMs`**; do **not**
+  invent a third parallel schema.
 - **Event payloads:** Event objects should be **compatible** with the **schema-level** story in **[`docs/demo.md`](../demo.md#replayt-primitives-usage)** and **replayt** docs for the pinned version (types such as `click`, `scroll`, `keypress`, etc.). The shipped snippet should include **enough non-empty `events`** to exercise the scrubber (not an empty array as the only shipped state).
 - **Synthetic vs live:** A **static** literal in source (recommended for copy-paste stability) or a clearly marked placeholder for `fetch` is acceptable; if the snippet uses **`fetch`**, it **must** remain a **documented** public HTTP pattern (no private replayt endpoints), consistent with **P-04** spirit for errors (user-visible failure path documented in README or in-app).
 - **P-06 console parity (optional checked-in shape):** The **React** tree may keep a literal matching **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`** (**`events[].ts`** in seconds, **`metadata.duration`**, **`metadata.viewport.w` / `h`**, **`metadata.start_ts`**). **`replayt.player.init`** still expects **P-01**-style ms fields; document a **pure** adapter and any wall-clock anchor in **`docs/examples/react/README.md`**. Normative detail: [P-06 — Console sample parity (SAMPLE_SESSION_DATA)](#p-06--console-sample-parity-sample_session_data).
@@ -795,3 +821,15 @@ When the Builder implements this backlog **and** chooses the optional hook:
 | **Published** replayt JS only + PEP 508 **CDN** pin | [P-09 replayt JS surface and pin](#p-09-replayt-js-surface-and-pin-normative) |
 | Optional **`demo.py`** narrative hook | [Optional demo.py console hook](#optional-demopy-console-hook-normative-intent-optional-deliverable), [`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed) |
 | **MISSION** / **compat** / **README** when **Shipped** | [P-09 Builder acceptance checklist](#p-09-builder-acceptance-checklist-implementation) |
+
+---
+
+## Backlog traceability: Normalize session schema examples (Python demo ↔ **P-01**)
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| Canonical JSON / field names for **`SAMPLE_SESSION_DATA`** parity | [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1–§2, [Canonical session fixture](#canonical-session-fixture-cross-surface) |
+| **`basic-player.html`** placeholder + comments align with §1 | [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §3–§4 |
+| **pytest** drift guard vs Python fixture | [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §5 |
+| **P-02** / **P-03** / **P-06** cross-links | [P-02 `sessionData` contract](#sessiondata-contract-compatibility-with-p-01), [P-03 time range](#sessiondata-and-events-normative), [P-06 `sessionData` and event shapes](#sessiondata-and-event-shapes-normative) |
+| Design principles + **compat** digest | [`docs/DESIGN_PRINCIPLES.md`](../DESIGN_PRINCIPLES.md#backlog-traceability-normalize-session-schema-examples-python-demo-and-basic-playerhtml), [`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog) |

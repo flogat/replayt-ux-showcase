@@ -45,7 +45,7 @@ lines that name **loading → ready** or **failed**)—must remain **offline** a
 
 This demo exercises replayt concepts at the **data schema level** (session/events), not the runtime level:
 
-- **Session schema**: `SAMPLE_SESSION_DATA` follows replayt's session format with `events[]` and `metadata`
+- **Session schema**: `SAMPLE_SESSION_DATA` follows replayt's session format with `events[]` and `metadata`. **Normative field names and a copy-paste JSON fixture** for integrators: [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md).
 - **Event types**: Implements core replayt event types (`click`, `scroll`, `keypress`, `resize`, `mousemove`)
 - **Timeline rendering**: Demonstrates how integrators visualize replayt session data
 
@@ -63,7 +63,9 @@ __all__ = ["render_console_timeline", "SAMPLE_SESSION_DATA"]
 
 ### `SAMPLE_SESSION_DATA: dict[str, Any]`
 
-Canonical mock session (~30s, 12 events). Must match replayt session schema:
+Canonical mock session (~30s, 12 events). Must match replayt session schema. **Do not drift** from
+[`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md) §1 without updating that doc, **`demo.py`**, and the
+**session schema contract test** (see **SESSION_SCHEMA** §5 — **Builder** phase).
 
 ```python
 {

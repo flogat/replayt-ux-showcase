@@ -29,6 +29,7 @@ is tracked separately in code and CHANGELOG):
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 | **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
 | **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
+| **Session fixture** (`SAMPLE_SESSION_DATA` ↔ **`docs/examples`**) | [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [examples/PATTERNS.md — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), [`docs/demo.md`](demo.md) |
 | **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
 
 ### Traceability to automated checks
@@ -53,6 +54,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
 | **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)); includes **`docs/examples/build.md`** when present |
+| **`basic-player.html`** (and scoped peers) stay aligned with **`SAMPLE_SESSION_DATA`** for canonical keys | **Target (Builder):** drift guard per [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md) §5 — **not** in default **CI** until implemented; see [Backlog traceability: Normalize session schema examples](#backlog-traceability-normalize-session-schema-examples-python-demo-and-basic-playerhtml) |
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T5**, **A1–A5**, **H1–H5**) | `tests/test_playbook_docs.py` |
 | **`CONTRIBUTING.md`**, [Changelog, semver, and release notes](#changelog-semver-and-release-notes) headings and semver tables, pins ↔ **DESIGN_PRINCIPLES** table, **CHANGELOG** **Unreleased** mention | `tests/test_changelog_release_policy_docs.py` |
@@ -847,6 +849,26 @@ replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#
 | **`replayt`** pins in subtree **`*.html`**, **`*.md`**, **`*.vue`**, **`*.svelte`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** |
 | **MISSION** / **README** / **compat** digest | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`README.md`](../README.md)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** | **Shipped** rows when examples land |
 | Directory boundary: **not** a published npm package | [Module and directory boundaries](#module-and-directory-boundaries); **P-07** / **P-08** | **`private`**: **true**; no misleading **scope** name |
+
+#### Backlog traceability: Normalize session schema examples (Python demo and basic-player.html)
+
+**Scope:** [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [`docs/examples/basic-player.html`](examples/basic-player.html) (**P-01**), related rows in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** (**P-02**, **P-03**, **P-06** cross-links), **[`docs/demo.md`](demo.md)**, optional follow-up on **P-02** viewport normalization.
+
+**Normalized user story:** As an integrator, I want **one documented JSON shape** that matches the **Python** console
+demo (`SAMPLE_SESSION_DATA`) and the **minimal** vanilla player example, so I do not copy conflicting field names
+(**`start_ts`** vs **`startTs`**, **`viewport.w`/`h`** vs **`width`/`height`**, **`ts`** vs ad hoc timestamps). As a
+maintainer, I want **CI** to catch drift between **`basic-player.html`** and **`demo.py`**.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| Canonical doc for §1 fixture + §2 **init** wire notes | **[`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md)** | Spec / review (**phase 2** **Shipped** in spec tree) |
+| **`basic-player.html`** sample **`sessionData`** uses §1 keys; **`init`** adapter documented if needed | **SESSION_SCHEMA** §2–§4, [P-01](examples/PATTERNS.md#pattern-inventory) | Code review + **pytest** |
+| **pytest** drift guard (**`SAMPLE_SESSION_DATA`** vs registered HTML) | **SESSION_SCHEMA** §5 | New or extended **`tests/test_*.py`** in default **`pytest`** |
+| **PATTERNS** / **demo.md** / **compat** cross-links | [PATTERNS — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), **demo.md**, **compat.md** | Spec gate |
+| **CHANGELOG** **Unreleased** when copy-paste contract changes | [Changelog, semver, and release notes](#changelog-semver-and-release-notes) | **`CONTRIBUTING.md`** |
+
+**Spec note (phase 2):** **`SESSION_SCHEMA.md`** and catalog updates **land in spec**; **`basic-player.html`** edits,
+adapter wiring, and **pytest** are **phase 3 (Builder)** unless a later workflow phase assigns them.
 
 #### Backlog traceability: Event overlay pattern (vanilla **P-09** + optional `demo.py` hook)
 
