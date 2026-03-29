@@ -157,6 +157,7 @@ def test_ci_replayt_minor_float_job_matches_spec() -> None:
     assert "replayt_ux_showcase.demo" in text
     assert "[replayt-demo]" in text
     assert "Rendering demo timeline" in text
+    assert "event-overlay.html" in text
 
 
 def test_ci_installs_editable_with_dev_extras() -> None:

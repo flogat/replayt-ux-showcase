@@ -47,6 +47,11 @@ jobs:
           )
           assert r.returncode == 0, r.stderr
           out = r.stdout + r.stderr
-          for needle in ("[replayt-demo]", "Rendering demo timeline", "Overlay teaching"):
+          for needle in (
+              "[replayt-demo]",
+              "Rendering demo timeline",
+              "Overlay teaching",
+              "event-overlay.html",
+          ):
               assert needle in out, f"missing {needle!r} in demo output"
           PY

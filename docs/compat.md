@@ -67,7 +67,7 @@ a new **job** or **matrix** combination (or when demoting a claim to best-effort
 | **EX-REPLAYT-PY-API** | (bundled) | Runs inside every **`jobs.test`** matrix cell via **pytest** | **`tests/test_replayt_public_api_boundary.py`** — showcase **`*.py`** vs **`replayt.__all__`** / private **`replayt._*`** paths |
 | **EX-SUPPLY-CHAIN** | `jobs.supply-chain` | `ubuntu-latest`, **Python 3.12** (setup-python) | Editable dev install (**replayt** resolves to latest in-range, not matrix-pinned) + **`pip-audit`** per **`docs/DEPENDENCY_AUDIT.md`** |
 | **EX-PLAYWRIGHT-SMOKE** | `jobs.examples-playwright-smoke` | **Python 3.12**, **`replayt==0.4.25`** via **`-c`** constraint file (same pattern as **`jobs.test`**) | **`pip install -e ".[dev]" -c`**, **`python -m playwright install chromium --with-deps`**, then **`python -m pytest tests/playwright`** with **`--override-ini="addopts="`**, **`--no-cov`**, **`--browser chromium`** — loads **Shipped** root **`docs/examples/*.html`** over loopback **HTTP**; see **`tests/playwright/test_static_html_examples_load.py`** |
-| **EX-REPLAYT-MINOR-FLOAT** | `jobs.replayt-minor-float-smoke` in **`.github/workflows/replayt-minor-float.yml`** | **`schedule`** + **`workflow_dispatch`** only (**not** **push**/**pull_request**); **Python 3.12** | **`pip install -e ".[dev]" -c`** with **`replayt>=0.2.0,<0.3.0`**; assert **`replayt.__version__`** in **0.2.x**; **`import replayt`**, **`import replayt_ux_showcase`**; **`python -m replayt_ux_showcase.demo`** subprocess ( **`[replayt-demo]`** output bar per **`tests/test_demo.py`**) — **no** **ruff**, full **pytest** **cov** gate, **Playwright**, or **`pip-audit`** |
+| **EX-REPLAYT-MINOR-FLOAT** | `jobs.replayt-minor-float-smoke` in **`.github/workflows/replayt-minor-float.yml`** | **`schedule`** + **`workflow_dispatch`** only (**not** **push**/**pull_request**); **Python 3.12** | **`pip install -e ".[dev]" -c`** with **`replayt>=0.2.0,<0.3.0`**; assert **`replayt.__version__`** in **0.2.x**; **`import replayt`**, **`import replayt_ux_showcase`**; **`python -m replayt_ux_showcase.demo`** subprocess (output bar per **`tests/test_demo.py`** **`test_output_format`**, including **`event-overlay.html`**) — **no** **ruff**, full **pytest** **cov** gate, **Playwright**, or **`pip-audit`** |
 
 **Not listed as exercise rows:** optional **npm** `dev`/`build` for **Vue** / **Svelte** subtrees under **`docs/examples/`**
 (pytest does not run those scripts); **replayt** pins in those trees are still checked by **EX-EXAMPLES-PINS** via
@@ -91,7 +91,7 @@ remains **local** unless a future backlog adds workflow jobs.
 **Commands (narrow smoke):**
 
 1. **Import smoke:** `python -c "import replayt; import replayt_ux_showcase"`.
-2. **Demo subprocess:** `python -m replayt_ux_showcase.demo` exits **0** with output matching **`tests/test_demo.py`** expectations (**`[replayt-demo]`**, timeline / overlay teaching lines).
+2. **Demo subprocess:** `python -m replayt_ux_showcase.demo` exits **0** with output matching **`tests/test_demo.py`** **`test_output_format`** (**`[replayt-demo]`**, timeline / overlay teaching lines, **`event-overlay.html`**).
 
 **Out of scope for this job:** **`ruff`**, full **`pytest`** with **cov** gate, **`tests/test_replayt_public_api_boundary.py`**, **`tests/test_docs_examples_replayt_pins.py`**, **Playwright**, **`pip-audit`**.
 

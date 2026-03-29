@@ -70,7 +70,8 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Optional **replayt** minor-line float job (**latest patch** within one minor, import + demo subprocess only) | **`.github/workflows/replayt-minor-float.yml`** — **`jobs.replayt-minor-float-smoke`**; **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**; `tests/test_design_principles_contract.py` (`test_ci_replayt_minor_float_job_matches_spec`); normative spec: [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), **`docs/compat.md`** [Optional replayt minor-line float job (spec)](compat.md#optional-replayt-minor-line-float-job-spec) |
 
 The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
-**`.github/workflows/ci.yml`** and any **companion** workflow files named there (for example **`replayt-minor-float.yml`**)
+**`.github/workflows/ci.yml`** and with any companion workflow file that has an inventory row (for example **`replayt-minor-float.yml`**
+for **EX-REPLAYT-MINOR-FLOAT**)
 per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
 **`test_compat_ci_exercise_inventory_ids_match_ci_matrix`** / **`test_ci_replayt_minor_float_job_matches_spec`** (same change set as workflow or inventory edits — see
 [Backlog traceability: Expand compatibility matrix with explicit CI matrix job per row](#backlog-traceability-expand-compatibility-matrix-with-explicit-ci-matrix-job-per-row)).
