@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*Second UI pattern: event overlay / heatmap on static canvas*): register vanilla pattern **P-10** — **click heatmap on static canvas** / session **`click`** **`x`/`y`** density on a viewport-sized stage, **`SAMPLE_SESSION_DATA`** / **[`SESSION_SCHEMA.md`](docs/examples/SESSION_SCHEMA.md)** §1 alignment, offline + determinism + a11y (**`aria-label`** / caption, **Tab order (handoff)**), optional **`replayt`** script, verification intent for **`pytest`** markers + **Playwright** when **Shipped** — in **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md)**; cross-links in **[`docs/MISSION.md`](docs/MISSION.md)**, **[`docs/compat.md`](docs/compat.md)**, **[`docs/examples/SESSION_SCHEMA.md`](docs/examples/SESSION_SCHEMA.md)**, **[`docs/DESIGN_PRINCIPLES.md`](docs/DESIGN_PRINCIPLES.md)** (traceability row + backlog table). **Current inventory:** **Shipped** — see **### Added** (`click-heatmap-canvas.html`).
+
 ### Added
 
+- Phase **3** Builder (*Second UI pattern: event overlay / heatmap on static canvas*): **`docs/examples/click-heatmap-canvas.html`** (**P-10** **Shipped**) — viewport-sized **`<canvas>`** binned **click** heatmap (**§1**-style **`sessionData`**, 2D histogram + box blur, no session **`fetch`**), **`aria-labelledby`** + visible summary, **Tab order (handoff)** + **`focus-visible`** on controls; **`tests/test_examples.py`** contract markers; **`tests/playwright/test_static_html_examples_load.py`** **Shipped** root HTML set; **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md)** inventory + trajectory (**7** vanilla); **[`docs/MISSION.md`](docs/MISSION.md)**, **[`docs/compat.md`](docs/compat.md)**, **[`README.md`](README.md)**, **[`docs/DESIGN_PRINCIPLES.md`](docs/DESIGN_PRINCIPLES.md)** (**P-10** traceability), **[`docs/examples/SESSION_SCHEMA.md`](docs/examples/SESSION_SCHEMA.md)** **Related** line.
 - Phase **3** (*CI smoke: load static HTML examples with Playwright*): **`pytest-playwright`** in **`[project.optional-dependencies].dev`**; **`tests/playwright/test_static_html_examples_load.py`** — loopback **HTTP** server rooted at **`docs/examples/`**, **Chromium** load checks for **Shipped** root **`*.html`** (inventory guard + **console** / **`pageerror`** / **warning** policy); **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`** (**Python 3.12**, **`replayt==0.4.25`**, **`playwright install chromium --with-deps`**, **`pytest`** without the **demo** **cov** gate); **`[tool.pytest.ini_options]`** **`-m "not playwright"`** so default **`pytest`** skips browser tests; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE** and **CI matrix coverage** row; **`docs/DESIGN_PRINCIPLES.md`**, **`README.md`**, **`CONTRIBUTING.md`**, **`tests/test_design_principles_contract.py`** updated for the job and **dev** baseline.
 
 ### Documentation
@@ -106,7 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `tests/test_changelog_release_policy_docs.py`: **ruff format** (line wrap) and **LF** line endings so **`ruff format --check`** / Linux CI stay consistent (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
-- `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Offline deterministic fixture page for LLM and reviewer workflows*).
+- `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Second UI pattern: event overlay / heatmap on static canvas* — **P-10** contract tests).
 
 ## [0.2.0] - 2026-03-28
 

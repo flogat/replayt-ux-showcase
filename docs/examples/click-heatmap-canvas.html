@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<!--
+  P-10 — Click heatmap on static canvas (session click x/y density).
+  Event filter: only type === 'click' with numeric x and y are plotted; other event types are ignored for this layer.
+
+  Heatmap algorithm (design–engineering handoff):
+  - Viewport: metadata.viewport.w × metadata.viewport.h matches the canvas backing-store size (1:1 pixel mapping from session x/y).
+  - Aggregation: 2D histogram with 40×40 px bins covering the viewport. Each click increments one bin.
+  - Density cue: 3×3 box blur on bin counts, then normalize by the maximum count. Cells are filled with a blue→red gradient
+    (HSL); higher normalized values read as hotter. This is binned aggregation + smoothing, not a raw scatter plot.
+
+  Tab order (handoff):
+  1. Skip to main content
+  2. Link — keyboard / focus checklist (docs/a11y/keyboard-model.md)
+  3. Button — toggle high-contrast heatmap palette (same data, alternate colors for review)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P-10 — Click heatmap (viewport-mapped canvas)</title>
+  <style>
+    :root {
+      font-family: system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    body {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    .skip {
+      position: absolute;
+      left: -9999px;
+      z-index: 100;
+      padding: 0.5rem 1rem;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+    }
+    .skip:focus {
+      left: 1rem;
+      top: 1rem;
+    }
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    .stage-wrap {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 0.75rem;
+      background: #fafafa;
+      overflow: auto;
+    }
+    #click-heatmap-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      vertical-align: top;
+    }
+    .summary {
+      max-width: 48rem;
+      margin-top: 0.75rem;
+      color: #374151;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#heatmap-main">Skip to main content</a>
+
+  <header>
+    <h1 id="heatmap-title">Click density heatmap for session viewport</h1>
+    <p class="summary" id="heatmap-caption">
+      Recorded <code>click</code> events from inlined <code>sessionData</code> are aggregated into a binned heatmap on a
+      canvas sized to <code>metadata.viewport</code>. Brighter / warmer colors mean more clicks landed in that region of
+      the viewport (after binning and light smoothing). This page does not fetch session payloads over the network; data is
+      synthetic and stable for reviewers and automation. For focus and keyboard expectations when you fork this pattern, see
+      <a href="../a11y/keyboard-model.md">docs/a11y/keyboard-model.md</a>.
+    </p>
+  </header>
+
+  <div class="toolbar">
+    <a href="../a11y/keyboard-model.md">Keyboard and focus checklist</a>
+    <button type="button" id="heatmap-toggle-contrast" aria-pressed="false">
+      Use high-contrast heatmap palette
+    </button>
+  </div>
+
+  <main id="heatmap-main">
+    <div class="stage-wrap">
+      <canvas
+        id="click-heatmap-canvas"
+        role="img"
+        aria-labelledby="heatmap-title"
+        aria-describedby="heatmap-caption"
+      ></canvas>
+    </div>
+    <p class="summary" id="heatmap-stats" aria-live="polite"></p>
+  </main>
+
+  <script>
+    /*
+     * Fixture: aligned with replayt_ux_showcase.demo.SAMPLE_SESSION_DATA (§1 keys) plus extra click events near
+     * existing coordinates so overlapping bins are visible (P-10 minimum density demo).
+     */
+    const sessionData = {
+      events: [
+        { type: 'click', ts: 1.0, x: 100, y: 200 },
+        { type: 'click', ts: 1.15, x: 108, y: 198 },
+        { type: 'click', ts: 1.25, x: 102, y: 205 },
+        { type: 'scroll', ts: 5.0, dy: 300 },
+        { type: 'keypress', ts: 8.5, key: 'a' },
+        { type: 'resize', ts: 12.0, w: 1920, h: 1080 },
+        { type: 'click', ts: 15.0, x: 500, y: 300 },
+        { type: 'click', ts: 15.15, x: 508, y: 298 },
+        { type: 'click', ts: 15.25, x: 495, y: 310 },
+        { type: 'scroll', ts: 18.0, dy: -150 },
+        { type: 'keypress', ts: 22.0, key: 'Enter' },
+        { type: 'click', ts: 25.0, x: 800, y: 600 },
+        { type: 'scroll', ts: 27.5, dy: 200 },
+        { type: 'mousemove', ts: 28.0, x: 900, y: 700 },
+        { type: 'click', ts: 29.0, x: 950, y: 750 },
+        { type: 'scroll', ts: 29.5, dy: 50 },
+      ],
+      metadata: {
+        start_ts: 0.0,
+        viewport: { w: 1920, h: 1080 },
+        duration: 30.0,
+      },
+    };
+
+    const BIN = 40;
+
+    function collectClicks(data) {
+      const out = [];
+      for (const ev of data.events || []) {
+        if (ev.type !== 'click') continue;
+        const x = ev.x;
+        const y = ev.y;
+        if (typeof x !== 'number' || typeof y !== 'number') continue;
+        if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+        out.push({ x, y });
+      }
+      return out;
+    }
+
+    function boxBlur2D(grid, cols, rows) {
+      const next = new Float32Array(cols * rows);
+      for (let gy = 0; gy < rows; gy++) {
+        for (let gx = 0; gx < cols; gx++) {
+          let sum = 0;
+          let n = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              const nx = gx + dx;
+              const ny = gy + dy;
+              if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+              sum += grid[ny * cols + nx];
+              n++;
+            }
+          }
+          next[gy * cols + gx] = sum / n;
+        }
+      }
+      return next;
+    }
+
+    function drawHeatmap(canvas, clicks, viewportW, viewportH, highContrast) {
+      canvas.width = viewportW;
+      canvas.height = viewportH;
+      const ctx = canvas.getContext('2d');
+      const cols = Math.ceil(viewportW / BIN);
+      const rows = Math.ceil(viewportH / BIN);
+      const grid = new Float32Array(cols * rows);
+
+      for (const { x, y } of clicks) {
+        const gx = Math.min(cols - 1, Math.max(0, Math.floor(x / BIN)));
+        const gy = Math.min(rows - 1, Math.max(0, Math.floor(y / BIN)));
+        grid[gy * cols + gx] += 1;
+      }
+
+      const smooth = boxBlur2D(grid, cols, rows);
+      let maxV = 0;
+      for (let i = 0; i < smooth.length; i++) {
+        if (smooth[i] > maxV) maxV = smooth[i];
+      }
+      if (maxV <= 0) maxV = 1;
+
+      ctx.fillStyle = '#f3f4f6';
+      ctx.fillRect(0, 0, viewportW, viewportH);
+
+      for (let gy = 0; gy < rows; gy++) {
+        for (let gx = 0; gx < cols; gx++) {
+          const t = smooth[gy * cols + gx] / maxV;
+          if (t <= 0) continue;
+          let hue;
+          let light;
+          let sat;
+          if (highContrast) {
+            hue = 270 - t * 270;
+            sat = 100;
+            light = 30 + t * 45;
+          } else {
+            hue = 240 - t * 240;
+            sat = 85;
+            light = 35 + t * 30;
+          }
+          ctx.fillStyle = `hsl(${hue} ${sat}% ${light}% / ${0.35 + t * 0.65})`;
+          ctx.fillRect(gx * BIN, gy * BIN, BIN, BIN);
+        }
+      }
+    }
+
+    const canvas = document.getElementById('click-heatmap-canvas');
+    const statsEl = document.getElementById('heatmap-stats');
+    const toggle = document.getElementById('heatmap-toggle-contrast');
+    const vp = sessionData.metadata.viewport;
+    const vw = vp.w;
+    const vh = vp.h;
+    const clicks = collectClicks(sessionData);
+
+    let highContrast = false;
+
+    function paint() {
+      drawHeatmap(canvas, clicks, vw, vh, highContrast);
+      statsEl.textContent =
+        `Plotted ${clicks.length} click events on a ${vw}×${vh} viewport canvas (${BIN}px bins, smoothed).`;
+    }
+
+    paint();
+
+    toggle.addEventListener('click', () => {
+      highContrast = !highContrast;
+      toggle.setAttribute('aria-pressed', highContrast ? 'true' : 'false');
+      paint();
+    });
+  </script>
+</body>
+</html>
