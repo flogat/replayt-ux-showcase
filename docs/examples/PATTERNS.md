@@ -21,10 +21,10 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
 | **P-05** | [`fixture-replay.html`](fixture-replay.html) | **Shipped** | **Offline fixture** for **reviewers** and **LLM** harnesses: **inlined** synthetic **`sessionData`**, **no** runtime session fetch, **no** secrets, **no** live/stochastic model calls; pinned **replayt** player script only. |
 | **P-06** | [`react/`](react/) ([`README.md`](react/README.md), [`src/App.jsx`](react/src/App.jsx)) | **Shipped** | **React 18** timeline player: same **`sessionData`** / **`replayt.player.init`** contract as **P-01**, timeline scrub UX aligned with **P-03**; **Vite**-first (or **esbuild** notes); **not** an npm-published package. |
-| **P-07** | [`vue/`](vue/) (planned: **`README.md`**, **`src/*.vue`**, **Vite** entry) | **Spec only** | **Vue 3** minimal timeline player: same **replayt-facing** data and init contract as **P-01**, scrubber parity with **P-03** / **P-06**; **static-build**-friendly (**`npm run build`**); **not** an npm-published package from this repo. |
-| **P-08** | [`svelte/`](svelte/) (planned: **`README.md`**, **`src/*.svelte`**, **Vite** entry) | **Spec only** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
+| **P-07** | [`vue/`](vue/) ([`README.md`](vue/README.md), [`src/App.vue`](vue/src/App.vue)) | **Shipped** | **Vue 3** minimal timeline player: same **replayt-facing** data and init contract as **P-01**, scrubber parity with **P-03** / **P-06**; **static-build**-friendly (**`npm run build`**); **not** an npm-published package from this repo. |
+| **P-08** | [`svelte/`](svelte/) ([`README.md`](svelte/README.md), [`src/App.svelte`](svelte/src/App.svelte)) | **Shipped** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
 
-**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** is a **shipped** **framework** subtree; **P-07** / **P-08** are **registered** (**Spec only**) until the Builder lands **`docs/examples/vue/`** and **`docs/examples/svelte/`**. Framework examples do not change the vanilla count. Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -549,7 +549,7 @@ symbols only; list them in a **file header** or top-of-SFC comment block.
   with **P-06** esbuild notes (CDN **`script`** before app bundle).
 - **Script loading:** Same options as **P-06** — pinned **CDN** `<script>` in **`index.html`** before the app bundle,
   **or** **npm** `replayt` import per upstream docs for the pinned version. Any **explicit** **replayt** version in
-  **`docs/examples/vue/*.{html,md,vue}`** inside demonstrator snippets must satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (future **`tests/test_docs_examples_replayt_pins.py`** coverage once files exist).
+  **`docs/examples/vue/*.{html,md,vue}`** inside demonstrator snippets must satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (**`tests/test_docs_examples_replayt_pins.py`**).
 - **DOM container:** The element passed as **`container`** to **`replayt.player.init`** **must** be a **real** DOM node
   (e.g. Vue **`ref`** to a mount-target **`div`**, **`onMounted`** / **`watch`** lifecycle for init and teardown
   documented in README or comments).
@@ -580,20 +580,17 @@ matching **replayt** JS version.
 
 ### P-07 Builder acceptance checklist (implementation)
 
-**P-07** is **Spec only** until the following are **Shipped**; then mark the inventory row **Shipped** and complete:
+**P-07** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, pin tests, and **`tests/test_examples.py`** aligned when this pattern changes.
 
 1. **`docs/examples/vue/`** exists with **`README.md`** meeting [P-07 README and folder layout](#p-07-readme-and-folder-layout-normative).
 2. Vue source implements **`sessionData`** + **`replayt.player.init`** and **P-03**-aligned scrubber behavior per [Relationship to P-01, P-03, and P-06](#relationship-to-p-01-p-03-and-p-06).
 3. [Pattern inventory](#pattern-inventory) lists **P-07** as **Shipped** with correct paths.
-4. **`tests/test_docs_examples_replayt_pins.py`** scans new **`*.html`**, **`*.md`**, and **Vue SFC** only if/when the
-  test module is extended to include **`*.vue`** in scope; until then, **manual** / **Spec gate** review of pins in
-  **`index.html`** and README. **`tests/test_examples.py`** — add file-presence and light contract markers when the
-  Builder ships (mirror **P-06**).
+4. **`tests/test_docs_examples_replayt_pins.py`** scans **`*.html`**, **`*.md`**, and **`*.vue`** under **`docs/examples/`**; **`tests/test_examples.py`** includes file-presence and light **P-07** contract markers (mirror **P-06**).
 5. **CHANGELOG** **Unreleased** records the example; **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**
-   framework row for **Vue** → **Shipped**.
-6. **[`README.md`](../../README.md)** project layout mentions **`docs/examples/vue/`**.
+   framework row for **Vue** is **Shipped**.
+6. **[`README.md`](../../README.md)** project layout mentions **`docs/examples/vue/`** as **Shipped**.
 
-**Automated checks (when shipped):** **`tests/test_docs_examples_replayt_pins.py`** on scoped files; **`tests/test_examples.py`** markers — **Builder** phase.
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-07**.
 
 ---
 
@@ -654,16 +651,16 @@ and [P-07 Limitations note](#p-07-limitations-note-normative), substituting **Sv
 
 ### P-08 Builder acceptance checklist (implementation)
 
-**P-08** is **Spec only** until **Shipped**; then:
+**P-08** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, pin tests, and **`tests/test_examples.py`** aligned when this pattern changes.
 
 1. **`docs/examples/svelte/`** + **`README.md`** per [P-08 README and folder layout](#p-08-readme-and-folder-layout-normative).
 2. Svelte source meets **P-01** / **P-03** / **P-06** intent per [Relationship to P-01, P-03, P-06, and P-07](#relationship-to-p-01-p-03-p-06-and-p-07).
-3. [Pattern inventory](#pattern-inventory) → **Shipped**.
-4. Pin tests + **`tests/test_examples.py`** when implemented (mirror **P-06** / **P-07**).
-5. **CHANGELOG** + **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** (**Svelte** row **Shipped**).
-6. **[`README.md`](../../README.md)** project layout row for **`docs/examples/svelte/`**.
+3. [Pattern inventory](#pattern-inventory) lists **P-08** as **Shipped** with correct paths.
+4. **`tests/test_docs_examples_replayt_pins.py`** scans **`*.svelte`** with **`*.html`** / **`*.md`** where applicable; **`tests/test_examples.py`** includes **P-08** file-presence and contract markers.
+5. **CHANGELOG** **Unreleased** + **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** (**Svelte** row **Shipped**).
+6. **[`README.md`](../../README.md)** project layout row for **`docs/examples/svelte/`** as **Shipped**.
 
-**Automated checks (when shipped):** same strategy as **P-07** [P-07 Builder acceptance checklist](#p-07-builder-acceptance-checklist-implementation).
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-08**.
 
 ---
 

@@ -129,8 +129,8 @@ via default **`pytest`** discovery (**CI** included). When detection rules or pi
 
 #### Scope (files)
 
-- **Include:** every **`*.html`** and **`*.md`** file under **`docs/examples/`**, recursively (future
-  **`docs/examples/react/`**-style trees included automatically).
+- **Include:** every **`*.html`**, **`*.md`**, **`*.vue`**, and **`*.svelte`** file under **`docs/examples/`**, recursively
+  (framework subtrees such as **`docs/examples/react/`**, **`vue/`**, **`svelte/`** are included automatically).
 - **Ignore:** other paths (e.g. **`docs/demo.md`**, **`README.md`**) unless a later backlog expands the contract.
 
 #### What counts as a “pin” (detection)
@@ -244,7 +244,7 @@ integrator-facing snippets stay aligned with [DESIGN_PRINCIPLES](#design-princip
 
 | Backlog acceptance criterion | Where specified | How verified |
 | ---------------------------- | --------------- | ------------------------ |
-| **Scan scope** | [Scope (files)](#scope-files) | **`tests/test_docs_examples_replayt_pins.py`** enumerates **`docs/examples/**/*.html`** and **`docs/examples/**/*.md`**. |
+| **Scan scope** | [Scope (files)](#scope-files) | **`tests/test_docs_examples_replayt_pins.py`** enumerates **`docs/examples/**/*.{html,md,vue,svelte}`**. |
 | **Detection rules** | [What counts as a “pin” (detection)](#what-counts-as-a-pin-detection) | Implementation matches the table; probe-grid simplifications are documented in the test module docstring. |
 | **Assertion vs `pyproject.toml`** | [Acceptance (assertion)](#acceptance-assertion) | Each detected pin satisfies or is subsumed by the **`replayt`** specifier from **`[project].dependencies`**. |
 | **Documented exceptions** | [Opt-out (documented exceptions)](#opt-out-documented-exceptions) | Snippets with **`<!-- replayt-examples:pin-exempt -->`** (and optional **`reason=`**) are skipped per rules above. |
@@ -570,14 +570,14 @@ copy the pattern; “CI” means automated verification exists.
 | Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) plus any future file/smoke tests | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
 | Optional **npm** bundler preview | Yes (documented) — **[`docs/examples/build.md`](examples/build.md)** | Not required in default **CI** (pytest-first) | Root **`package.json`** with **`"private": true`**; **Vite** *or* **esbuild**; **not** an implied public **npm** package for this repo |
 | React | **^18**; **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/react/`** (**Shipped**) | Optional browser automation later; **pytest** pin contract covers **`docs/examples/react/*.{html,md}`** today | Copy-paste subtree + **README** per **P-06**; **not** a published npm package from this repo |
-| Vue | **^3**; **[P-07](examples/PATTERNS.md#p-07--vue-3-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/vue/`** (**Spec only** until **Builder** ships) | Pin contract will cover **`docs/examples/vue/*.{html,md}`** when files land; optional **`*.vue`** scan is a **Builder** follow-up | Same boundary as **P-06**: **Vite** + **`@vitejs/plugin-vue`**, **`private`** subtree **`package.json`**, **not** a published npm product |
-| Svelte | **^4**; **[P-08](examples/PATTERNS.md#p-08--svelte-4-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/svelte/`** (**Spec only** until **Builder** ships) | Same as **Vue** row when sources exist | **Vite** + **`@sveltejs/vite-plugin-svelte`**; same **npm** / directory-boundary rules as **P-06** |
+| Vue | **^3**; **[P-07](examples/PATTERNS.md#p-07--vue-3-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/vue/`** (**Shipped**) | **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/vue/*.{html,md,vue}`** | Same boundary as **P-06**: **Vite** + **`@vitejs/plugin-vue`**, **`private`** subtree **`package.json`**, **not** a published npm product |
+| Svelte | **^4**; **[P-08](examples/PATTERNS.md#p-08--svelte-4-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/svelte/`** (**Shipped**) | Pin contract covers **`docs/examples/svelte/*.{html,md,svelte}`** | **Vite** + **`@sveltejs/vite-plugin-svelte`**; same **npm** / directory-boundary rules as **P-06** |
 
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**–**P-05**), plus registered **framework** subtrees (**P-06** **React**, **Shipped**; **P-07** **Vue** and **P-08**
-**Svelte**, **Spec only** until implemented), each with shipped vs spec-only status and normative acceptance criteria. The mission
+(**P-01**–**P-05**), plus **framework** subtrees (**P-06** **React**, **P-07** **Vue**, **P-08** **Svelte** — all **Shipped**),
+each with normative acceptance criteria in **`docs/examples/PATTERNS.md`**. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
 **[`docs/compat.md` — Vanilla UI pattern catalog](compat.md#vanilla-ui-pattern-catalog)**.
 
@@ -714,13 +714,13 @@ replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#
 
 | Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
 | ---------------------------- | --------------- | --------------------------------------- |
-| **P-07** / **P-08** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-07**, **P-08** | **Spec only** until trees land; then **Shipped** + inventory row updates |
+| **P-07** / **P-08** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-07**, **P-08** | **Shipped**: **`docs/examples/vue/`** and **`docs/examples/svelte/`** + README per checklists |
 | **`sessionData`** + **`replayt.player.init`** parity with **P-01** | **P-07** / **P-08** sections (by reference to **P-06** / **P-01**) | Code review |
 | Scrubber UX aligned with **P-03** / **P-06** | **P-07** / **P-08** relationship sections | Code review |
 | **Vite**-first, **static-build**-friendly | **P-07** [Vue and tooling](examples/PATTERNS.md#p-07-vue-and-tooling-normative), **P-08** [Svelte and tooling](examples/PATTERNS.md#p-08-svelte-and-tooling-normative) | README runbook; `npm run build` documented |
 | **Published** replayt JS only; explicit symbols | **P-07** / **P-08** replayt surface sections | Code review |
 | **README**: copy-paste, pins, runbook, non-goal | **P-07** / **P-08** README and folder layout sections | **Spec gate** / review |
-| **`replayt`** pins in subtree **`*.html`**, **`*.md`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** when files exist; optional **`.vue`** / **`.svelte`** extension per **P-07** / **P-08** Builder checklists |
+| **`replayt`** pins in subtree **`*.html`**, **`*.md`**, **`*.vue`**, **`*.svelte`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** |
 | **MISSION** / **README** / **compat** digest | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`README.md`](../README.md)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** | **Shipped** rows when examples land |
 | Directory boundary: **not** a published npm package | [Module and directory boundaries](#module-and-directory-boundaries); **P-07** / **P-08** | **`private`**: **true**; no misleading **scope** name |
 

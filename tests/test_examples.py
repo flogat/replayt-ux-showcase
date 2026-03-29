@@ -178,3 +178,106 @@ def test_p06_react_links_keyboard_model():
     needle = "keyboard-model.md"
     assert needle in readme, "react/README.md should link keyboard-model.md"
     assert needle in app, "react/src/App.jsx should link keyboard-model.md"
+
+
+def test_vue_timeline_player_p07_files_exist():
+    """P-07 ships under docs/examples/vue/ (see docs/examples/PATTERNS.md)."""
+    base = REPO_ROOT / "docs/examples/vue"
+    for rel in (
+        "README.md",
+        "package.json",
+        "index.html",
+        "vite.config.js",
+        "src/main.js",
+        "src/App.vue",
+    ):
+        path = base / rel
+        assert path.is_file(), f"P-07 file missing: {path}"
+
+
+def test_vue_timeline_player_p07_contract_markers():
+    """Light contract: P-03 parity strings, replayt init, tab order, limitations, scrub id, CDN pin (P-07)."""
+    app = (REPO_ROOT / "docs/examples/vue/src/App.vue").read_text(encoding="utf-8")
+    assert "Event ordering (P-03):" in app
+    assert "requestAnimationFrame" in app
+    assert "Limitations" in app
+    assert 'id="timeline-scrubber-vue"' in app
+    assert "Tab order (handoff):" in app
+    assert "applySeekMs" in app
+    assert "durationMs" in app and "metadata" in app
+    assert "replayt.player.init" in app
+    idx = (REPO_ROOT / "docs/examples/vue/index.html").read_text(encoding="utf-8")
+    assert "cdn.jsdelivr.net/npm/replayt@" in idx
+
+
+def test_vue_timeline_player_readme_private_and_runbook():
+    """README states non-goal and documents install + dev server (P-07)."""
+    text = (REPO_ROOT / "docs/examples/vue/README.md").read_text(encoding="utf-8")
+    assert "Not an npm package" in text or "not published" in text.lower()
+    assert "npm install" in text
+    assert "npm run dev" in text
+    assert "npm run build" in text
+    assert "FRONTEND_SUPPLY_CHAIN.md" in text
+
+
+def test_p07_vue_links_keyboard_model():
+    """P-07 subtree references the shared keyboard / focus checklist."""
+    readme = (REPO_ROOT / "docs/examples/vue/README.md").read_text(encoding="utf-8")
+    app = (REPO_ROOT / "docs/examples/vue/src/App.vue").read_text(encoding="utf-8")
+    needle = "keyboard-model.md"
+    assert needle in readme, "vue/README.md should link keyboard-model.md"
+    assert needle in app, "vue/src/App.vue should link keyboard-model.md"
+
+
+def test_svelte_timeline_player_p08_files_exist():
+    """P-08 ships under docs/examples/svelte/ (see docs/examples/PATTERNS.md)."""
+    base = REPO_ROOT / "docs/examples/svelte"
+    for rel in (
+        "README.md",
+        "package.json",
+        "index.html",
+        "vite.config.js",
+        "svelte.config.js",
+        "src/main.js",
+        "src/App.svelte",
+    ):
+        path = base / rel
+        assert path.is_file(), f"P-08 file missing: {path}"
+
+
+def test_svelte_timeline_player_p08_contract_markers():
+    """Light contract: P-03 parity strings, replayt init, tab order, limitations, scrub id, CDN pin (P-08)."""
+    app = (REPO_ROOT / "docs/examples/svelte/src/App.svelte").read_text(
+        encoding="utf-8"
+    )
+    assert "Event ordering (P-03):" in app
+    assert "requestAnimationFrame" in app
+    assert "Limitations" in app
+    assert 'id="timeline-scrubber-svelte"' in app
+    assert "Tab order (handoff):" in app
+    assert "applySeekMs" in app
+    assert "durationMs" in app and "metadata" in app
+    assert "replayt.player.init" in app
+    idx = (REPO_ROOT / "docs/examples/svelte/index.html").read_text(encoding="utf-8")
+    assert "cdn.jsdelivr.net/npm/replayt@" in idx
+
+
+def test_svelte_timeline_player_readme_private_and_runbook():
+    """README states non-goal and documents install + dev server (P-08)."""
+    text = (REPO_ROOT / "docs/examples/svelte/README.md").read_text(encoding="utf-8")
+    assert "Not an npm package" in text or "not published" in text.lower()
+    assert "npm install" in text
+    assert "npm run dev" in text
+    assert "npm run build" in text
+    assert "FRONTEND_SUPPLY_CHAIN.md" in text
+
+
+def test_p08_svelte_links_keyboard_model():
+    """P-08 subtree references the shared keyboard / focus checklist."""
+    readme = (REPO_ROOT / "docs/examples/svelte/README.md").read_text(encoding="utf-8")
+    app = (REPO_ROOT / "docs/examples/svelte/src/App.svelte").read_text(
+        encoding="utf-8"
+    )
+    needle = "keyboard-model.md"
+    assert needle in readme, "svelte/README.md should link keyboard-model.md"
+    assert needle in app, "svelte/src/App.svelte should link keyboard-model.md"

@@ -1,6 +1,8 @@
 """Contract tests: integrator-facing replayt pins under docs/examples/ stay in pyproject range.
 
 Normative spec: docs/DESIGN_PRINCIPLES.md — Vanilla examples: integrator-facing replayt pins.
+Scans **HTML**, **Markdown**, **Vue SFC**, and **Svelte** sources under **docs/examples/** for CDN **replayt@…** segments
+and inline PEP 508-style **replayt** requirement fragments.
 
 Intersection / subset rule (PEP 508 snippets)
     Full range algebra is optional. This module uses a **probe grid** of :class:`packaging.version.Version`
@@ -229,7 +231,7 @@ def _iter_example_files() -> list[Path]:
     if not EXAMPLES_ROOT.is_dir():
         return []
     found: list[Path] = []
-    for pattern in ("*.html", "*.md"):
+    for pattern in ("*.html", "*.md", "*.vue", "*.svelte"):
         found.extend(EXAMPLES_ROOT.rglob(pattern))
     return sorted({p.resolve() for p in found if p.is_file()})
 
@@ -247,11 +249,13 @@ def test_docs_examples_replayt_pins_match_pyproject() -> None:
 
 
 def test_contract_scans_expected_example_files() -> None:
-    """Guardrail: keep at least the known vanilla example under scan (scope regression)."""
+    """Guardrail: keep at least the known vanilla + framework examples under scan (scope regression)."""
     paths = {p.relative_to(REPO_ROOT) for p in _iter_example_files()}
     assert Path("docs/examples/basic-player.html") in paths, (
         f"expected docs/examples/basic-player.html in scan set, got {sorted(paths)!r}"
     )
+    assert Path("docs/examples/vue/index.html") in paths
+    assert Path("docs/examples/svelte/index.html") in paths
 
 
 def test_pin_exempt_skips_following_cdn_line(tmp_path: Path) -> None:

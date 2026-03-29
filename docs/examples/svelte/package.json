@@ -1,0 +1,21 @@
+{
+  "name": "ux-showcase-examples-svelte-p08",
+  "private": true,
+  "description": "Copy-paste Svelte 4 timeline player example; not published to npm. See README.md.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "svelte": "^4.2.19"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
+    "vite": "^5.4.11"
+  }
+}
