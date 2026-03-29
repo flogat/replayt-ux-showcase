@@ -80,7 +80,7 @@ reintroduce a second “canonical” shape that disagrees with **`SAMPLE_SESSION
 
 ---
 
-## 3. Shipped examples (P-01 and P-02)
+## 3. Shipped examples (P-01, P-02, and P-11)
 
 [`basic-player.html`](basic-player.html) (**P-01**) keeps §1 in the **`rux-showcase-session-fixture`** JSON block and runs a
 small **adapter** before **`replayt.player.init`** when the pinned player expects §2 (see §2 and the inline comments).
@@ -88,9 +88,9 @@ small **adapter** before **`replayt.player.init`** when the pinned player expect
 **[`player-session-metadata-bar.html`](player-session-metadata-bar.html)** (**P-02**) uses **`durationMs`**, **`startTs`**, and
 related fields in the mocked async payload for the chrome bar; **viewport** reads **`w` / `h`** first, then **`width` / `height`**. Point integrators at §1 when describing **console** or **Python** parity.
 
-**P-01** fixture bytes are checked against **`SAMPLE_SESSION_DATA`** in CI (§5). **P-02** documents the viewport fallback next to the sample.
+**[`basic-player-tailwind.html`](basic-player-tailwind.html)** (**P-11**) is the **Tailwind** layout twin of **P-01**: same §1 **`rux-showcase-session-fixture`** bytes, same adapter + **`replayt.player.init`** path — see [P-11](PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity).
 
-**P-11** (**[`basic-player-tailwind.html`](basic-player-tailwind.html)** — **Spec only** in [`PATTERNS.md`](PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity) until shipped) **must** reuse the **same** **`rux-showcase-session-fixture`** bytes as **P-01** when the file lands; add its path to **`_FIXTURE_HTML_FILES`** in **`tests/test_session_schema_examples.py`** in the **same** change set as the **Shipped** HTML.
+**P-01** / **P-11** fixture JSON is checked against **`SAMPLE_SESSION_DATA`** in CI (§5). **P-02** documents the viewport fallback next to the sample.
 
 ---
 
@@ -115,6 +115,6 @@ and asserts **`json.loads`** equality with **`replayt_ux_showcase.demo.SAMPLE_SE
 
 The module docstring records this **structured extraction** choice (§4 in an earlier spec also mentioned substring guards as an alternative).
 
-**Scope:** **P-01** (**`basic-player.html`**) is registered today. Add paths to **`_FIXTURE_HTML_FILES`** when more HTML files adopt the same embed pattern and **byte-identical** §1 fixture (**P-11** **`basic-player-tailwind.html`** when **Shipped**, **P-02**, **P-09**, etc.); keep parsing rules maintainable.
+**Scope:** **P-01** (**`basic-player.html`**) and **P-11** (**`basic-player-tailwind.html`**) are registered. Add paths to **`_FIXTURE_HTML_FILES`** when more HTML files adopt the same embed pattern and **byte-identical** §1 fixture (**P-02**, **P-09**, etc., if they adopt this block); keep parsing rules maintainable.
 
 **Traceability:** [Design principles — backlog traceability](../DESIGN_PRINCIPLES.md#backlog-traceability-normalize-session-schema-examples-python-demo-and-basic-playerhtml).

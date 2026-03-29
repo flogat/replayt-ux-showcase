@@ -11,10 +11,11 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXAMPLES_ROOT = REPO_ROOT / "docs" / "examples"
 
-# Shipped root ``*.html`` per ``docs/examples/PATTERNS.md`` (P-01–P-05, P-09, P-10).
+# Shipped root ``*.html`` per ``docs/examples/PATTERNS.md`` (P-01–P-05, P-09–P-11).
 SHIPPED_ROOT_HTML = frozenset(
     {
         "basic-player.html",
+        "basic-player-tailwind.html",
         "player-session-metadata-bar.html",
         "timeline-scrubber.html",
         "embed-container-states.html",

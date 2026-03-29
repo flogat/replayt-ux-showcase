@@ -5,7 +5,7 @@ HTML/JS** files (default path) and **registered framework subtrees** (**React** 
 — **P-08**). **P-09** is the **vanilla** teaching example for **event overlays** (**Shipped** as **`event-overlay.html`**).
 **P-10** is the **vanilla** pattern for **click heatmap / density on a static viewport-sized stage** (**Shipped** as
 **[`click-heatmap-canvas.html`](click-heatmap-canvas.html)** — see [P-10 — Click heatmap on static canvas](#p-10--click-heatmap-on-static-canvas-session-click-coordinates)). **P-11** is the **vanilla**
-**Tailwind CSS** layout twin of **P-01** (**Spec only** until **`basic-player-tailwind.html`** ships — see [P-11 — Basic player chrome (Tailwind CSS layout parity)](#p-11--basic-player-chrome-tailwind-css-layout-parity)). This catalog supports the mission
+**Tailwind CSS** layout twin of **P-01** (**Shipped** as **[`basic-player-tailwind.html`](basic-player-tailwind.html)** — see [P-11 — Basic player chrome (Tailwind CSS layout parity)](#p-11--basic-player-chrome-tailwind-css-layout-parity)). This catalog supports the mission
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
@@ -30,9 +30,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-08** | [`svelte/`](svelte/) ([`README.md`](svelte/README.md), [`src/App.svelte`](svelte/src/App.svelte)) | **Shipped** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
 | **P-09** | [`event-overlay.html`](event-overlay.html) | **Shipped** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
 | **P-10** | [`click-heatmap-canvas.html`](click-heatmap-canvas.html) | **Shipped** | **Click heatmap on static canvas (or SVG)**: map **`click`** events’ **`x`/`y`** onto a **viewport-sized** stage; **density** / aggregation visualization; **`SAMPLE_SESSION_DATA`**-aligned **§1** literal (with extra **click** samples for visible hotspots); **accessible** name + focus order per normative section below — **distinct** from **P-09** (no requirement to duplicate scrub-linked callout lane as the primary teaching goal). |
-| **P-11** | [`basic-player-tailwind.html`](basic-player-tailwind.html) (planned) | **Spec only** | **Tailwind CSS** layout parity with **P-01**: same **`replayt.player.init`** path, §1 **`rux-showcase-session-fixture`** + adapter, instruction panel + player chrome via **utility classes**; copy-paste **Tailwind `content` / `@source`** paths documented — [normative section](#p-11--basic-player-chrome-tailwind-css-layout-parity). |
+| **P-11** | [`basic-player-tailwind.html`](basic-player-tailwind.html) | **Shipped** | **Tailwind CSS** layout parity with **P-01**: same **`replayt.player.init`** path, §1 **`rux-showcase-session-fixture`** + adapter, instruction panel + player chrome via **utility classes**; copy-paste **Tailwind `content` / `@source`** paths documented — [normative section](#p-11--basic-player-chrome-tailwind-css-layout-parity). |
 
-**Mission trajectory:** **P-01** through **P-05**, **P-09**, and **P-10** are shipped (**7** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-11** is registered as **Spec only** (Tailwind twin of **P-01**); when **`basic-player-tailwind.html`** ships, increment the **Shipped** vanilla count to **8** in this paragraph, **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**, and **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** in the **same** change set. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. **P-10** is **Shipped** as **`click-heatmap-canvas.html`** (**Playwright** inventory + **`tests/test_examples.py`** markers ship with the file). Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05**, **P-09**, **P-10**, and **P-11** are shipped (**8** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. **P-10** is **Shipped** as **`click-heatmap-canvas.html`**; **P-11** as **`basic-player-tailwind.html`** (**Playwright** inventory + **`tests/test_examples.py`** markers ship with the files). Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -1021,14 +1021,14 @@ When **Shipped**:
 
 ### P-11 Builder acceptance checklist (implementation)
 
-**P-11** is **Spec only** until the checklist below is satisfied; then flip the [inventory](#pattern-inventory) row to **Shipped**.
+**P-11** is **Shipped** when the checklist below is satisfied (inventory row **Shipped**, count **8**).
 
 1. **`docs/examples/basic-player-tailwind.html`** implements the normative sections above.
 2. [Pattern inventory](#pattern-inventory) lists **P-11** as **Shipped** with filename **`basic-player-tailwind.html`**.
-3. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** vanilla **Shipped** count becomes **8**; **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest lists **P-11** as **Shipped**.
+3. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** vanilla **Shipped** count is **8**; **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest lists **P-11** as **Shipped**.
 4. **`CHANGELOG`** **Unreleased** records the new example; **[`README.md`](../../README.md)** project layout row added if table lists sibling examples.
 5. **`tests/test_session_schema_examples.py`**, **`tests/test_examples.py`**, **`tests/playwright/test_static_html_examples_load.py`** updated per [P-11 Verification intent](#p-11-verification-intent-builder--tester--not-phase-2).
-6. **[`docs/examples/build.md`](build.md)** gains a **Tailwind** subsection **if** the **Shipped** snippet depends on a documented bundler (**optional** if Play CDN-only).
+6. **[`docs/examples/build.md`](build.md)** documents optional **Vite** / **Tailwind** maintainer paths when **P-11** uses Play CDN as the primary integrator story (**optional** bundler subsection already covers extensions).
 
 ---
 

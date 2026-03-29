@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt Basic Player Demo (Tailwind)</title>
+    <!-- P-11: Tailwind layout parity with basic-player.html (P-01); same fixture, adapter, replayt.player.init. -->
+    <!--
+      Tailwind content scanning (copy into your project so utilities are not purged):
+      - v3 tailwind.config content:
+          "./docs/examples/basic-player-tailwind.html"
+          "./src/**/*.{html,js}"   (when this file lives under src/)
+      - v4 in CSS:
+          @source "./docs/examples/basic-player-tailwind.html";
+          @source "./src/**/*.{html,js}";
+      - CLI: npx tailwindcss --content "./docs/examples/basic-player-tailwind.html" -i ./input.css -o ./output.css
+      All utility classes below are static in the markup (no safelist required for this snippet).
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        /* Semantic tokens — see docs/playbook/tokens.md (--rux-*). Layout uses Tailwind utilities on the body. */
+        :root {
+            --rux-space-2: 0.5rem;
+            --rux-space-4: 1rem;
+            --rux-space-8: 2rem;
+            --rux-font-sans: system-ui, sans-serif;
+            --rux-color-surface: #ffffff;
+            --rux-color-surface-muted: #f8f9fa;
+            --rux-color-border: #e0e0e0;
+            --rux-color-text: #111827;
+            --rux-color-primary: #007bff;
+            --replayt-primary: var(--rux-color-primary);
+        }
+    </style>
+</head>
+<body class="mx-auto max-w-6xl bg-white p-8 font-sans text-gray-900">
+    <h1 class="mb-4 text-3xl font-semibold">🔄 Basic Replayt Player</h1>
+    <p class="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+        <strong>Build note:</strong> This page uses the <strong>Tailwind Play CDN</strong> for copy-paste demos only —
+        not for production. For a local built CSS workflow (optional <strong>Vite</strong> + bundler), see
+        <a class="underline" href="build.md">docs/examples/build.md</a>.
+    </p>
+    <div class="mb-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <p><strong>Copy-paste ready:</strong> Embed in your app. Fetch <code>sessionData</code> from replayt backend API.</p>
+        <ul class="mt-2 list-disc pl-5">
+            <li>Offline fixture shape (console / Python parity): <a class="text-blue-600 underline" href="SESSION_SCHEMA.md">docs/examples/SESSION_SCHEMA.md</a> §1; same object as <code>replayt_ux_showcase.demo.SAMPLE_SESSION_DATA</code>.</li>
+            <li><code>replayt.player.init</code> often expects ms timestamps and camelCase metadata (§2 in that doc). This page keeps §1 in JSON below and adapts before <code>init</code>.</li>
+            <li>Theme: set <code>--rux-color-primary</code> (wired to <code>--replayt-primary</code> for the player); full scale in <a class="text-blue-600 underline" href="../playbook/tokens.md">docs/playbook/tokens.md</a>.</li>
+            <li>Extend: Add timeline scrubber via replayt events API.</li>
+            <li>Keyboard / focus handoff: see <a class="text-blue-600 underline" href="../a11y/keyboard-model.md">docs/a11y/keyboard-model.md</a> (tab order, scrubber keys, Escape).</li>
+        </ul>
+    </div>
+    <div id="player" class="h-[60vh] w-full rounded-lg border border-gray-300"></div>
+    <!--
+      Canonical showcase session (SESSION_SCHEMA §1) — byte-aligned with demo.py / docs/demo.md.
+      CI: tests/test_session_schema_examples.py parses this block and compares to SAMPLE_SESSION_DATA.
+    -->
+    <script type="application/json" id="rux-showcase-session-fixture">
+{
+  "events": [
+    {"type": "click", "ts": 1.0, "x": 100, "y": 200},
+    {"type": "scroll", "ts": 5.0, "dy": 300},
+    {"type": "keypress", "ts": 8.5, "key": "a"},
+    {"type": "resize", "ts": 12.0, "w": 1920, "h": 1080},
+    {"type": "click", "ts": 15.0, "x": 500, "y": 300},
+    {"type": "scroll", "ts": 18.0, "dy": -150},
+    {"type": "keypress", "ts": 22.0, "key": "Enter"},
+    {"type": "click", "ts": 25.0, "x": 800, "y": 600},
+    {"type": "scroll", "ts": 27.5, "dy": 200},
+    {"type": "mousemove", "ts": 28.0, "x": 900, "y": 700},
+    {"type": "click", "ts": 29.0, "x": 950, "y": 750},
+    {"type": "scroll", "ts": 29.5, "dy": 50}
+  ],
+  "metadata": {
+    "start_ts": 0.0,
+    "viewport": {"w": 1920, "h": 1080},
+    "duration": 30.0
+  }
+}
+    </script>
+    <script>
+        /** Wall-clock anchor (ms). Console sample uses relative seconds; init/scrub often need absolute ms. */
+        const ADAPTER_EPOCH_MS = 1704067200000;
+
+        /**
+         * §1 → replayt.player.init wire (SESSION_SCHEMA §2). Same idea as adaptConsoleSessionToReplaytMs in docs/examples/react/src/App.jsx.
+         */
+        function adaptConsoleSessionToReplaytMs(session, epochMs = ADAPTER_EPOCH_MS) {
+            const meta = session.metadata || {};
+            const startTsS = typeof meta.start_ts === 'number' ? meta.start_ts : 0;
+            const durationS = typeof meta.duration === 'number' ? meta.duration : null;
+            const vp = meta.viewport || {};
+            const w = vp.w ?? vp.width;
+            const h = vp.h ?? vp.height;
+            const startMs = epochMs + startTsS * 1000;
+            const durationMs = durationS != null ? durationS * 1000 : null;
+            const events = (session.events || []).map((ev) => {
+                const copy = { ...ev };
+                const tsS = ev.ts;
+                if (typeof tsS === 'number' && !Number.isNaN(tsS)) {
+                    copy.timestamp = startMs + tsS * 1000;
+                }
+                return copy;
+            });
+            const metadata = {
+                startTs: startMs,
+                ...(durationMs != null ? { durationMs } : {}),
+                ...(typeof w === 'number' && typeof h === 'number'
+                    ? { viewport: { width: w, height: h } }
+                    : {}),
+            };
+            return { events, metadata };
+        }
+
+        const consoleSessionFixture = JSON.parse(
+            document.getElementById('rux-showcase-session-fixture').textContent
+        );
+        const sessionDataForPlayer = adaptConsoleSessionToReplaytMs(consoleSessionFixture);
+
+        window.replayt?.player?.init({
+            container: document.getElementById('player'),
+            data: sessionDataForPlayer,
+            theme: 'light'
+        });
+    </script>
+</body>
+</html>

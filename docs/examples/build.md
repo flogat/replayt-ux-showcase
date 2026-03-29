@@ -92,8 +92,8 @@ upstream layout changes.
 
 ## Tailwind CSS (vanilla **P-11** companion)
 
-**Normative pattern:** **[`docs/examples/PATTERNS.md` — P-11](PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity)** (**`basic-player-tailwind.html`**).
+**Normative pattern:** **[`docs/examples/PATTERNS.md` — P-11](PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity)** (**`basic-player-tailwind.html`** — **Shipped**).
 
-- **Integrator default:** **P-11** is a **standalone** **`docs/examples/*.html`** snippet; **Tailwind** is documented **in the file** (Play CDN and/or built CSS) with explicit **`content` / `@source`** globs so class lists survive purge.
-- **Optional maintainer extension:** If **Shipped** **P-11** uses **Vite + Tailwind** (or **Tailwind CLI**) instead of Play CDN, document the **local** recipe **here** in a short subsection (or bullet list) while keeping **[Module and directory boundaries](../DESIGN_PRINCIPLES.md#module-and-directory-boundaries)** — root **`package.json`** stays **`private`**, **no** new **npm** **CI** job required by this note.
+- **Integrator default (shipped HTML):** **P-11** uses the **Tailwind Play CDN** in **`basic-player-tailwind.html`** for copy-paste demos only (see the visible build note in that file). **`content` / `@source`** globs are listed in an HTML comment there so class lists survive purge in a real build.
+- **Production / maintainer path:** Replace Play CDN with **built CSS** from **Vite + Tailwind** or **Tailwind CLI**, using the same globs; the repository-root **[Contributor quick path](#contributor-quick-path-informative--after-builder-ships-files)** (**`npm run build`**) can be extended locally — root **`package.json`** stays **`private`**, **no** new **npm** **CI** job required by this note (**[Module and directory boundaries](../DESIGN_PRINCIPLES.md#module-and-directory-boundaries)**).
 - **Pins:** Any **replayt** **npm** / CDN example lines added **here** stay inside **`pyproject.toml`** (**`tests/test_docs_examples_replayt_pins.py`** applies to this **Markdown** file).

@@ -17,7 +17,10 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-_FIXTURE_HTML_FILES = (REPO_ROOT / "docs/examples/basic-player.html",)
+_FIXTURE_HTML_FILES = (
+    REPO_ROOT / "docs/examples/basic-player.html",
+    REPO_ROOT / "docs/examples/basic-player-tailwind.html",
+)
 
 _FIXTURE_SCRIPT_RE = re.compile(
     r'<script\s+type=["\']application/json["\']\s+id=["\']rux-showcase-session-fixture["\']\s*>(.*?)</script>',
