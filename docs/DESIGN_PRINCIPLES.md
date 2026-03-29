@@ -195,7 +195,7 @@ Tests MUST cause **CI** to fail when integration boundaries or the demo contract
 | **Demo behavioral spec** | Observable behavior matches **`docs/demo.md`** | Subprocess **`python -m replayt_ux_showcase.demo`**, exports, log prefixes, sample data shape (see **`docs/demo.md`** test plan) |
 | **replayt Python API boundary** | Showcase code does not depend on private or undocumented **replayt** symbols | Lint/review plus tests: if **`demo.py`** (or other showcase modules under test) import **replayt**, imports MUST be restricted to **published** **`__all__`** / documented public surface; removing or renaming those symbols in a supported **replayt** release is an upstream semver concern—this repo adjusts pins and tests per [Migration paths](#migration-paths) |
 | Declared **replayt** range | Supported consumer range in **`pyproject.toml`** matches [Replayt and Python matrix](#replayt-and-python-matrix) | Contract tests on the **replayt** dependency line; optional smoke that **`import replayt`** succeeds after install (already part of contract tests today) |
-| **docs/examples** replayt pins | Integrator snippets do not advertise **replayt** versions outside the declared PEP 508 range | **`tests/test_docs_examples_replayt_pins.py`** (or equivalent) scans **`docs/examples/**/*.{html,md}`** per [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) |
+| **docs/examples** replayt pins | Integrator snippets do not advertise **replayt** versions outside the declared PEP 508 range | **`tests/test_docs_examples_replayt_pins.py`** (or equivalent) scans **`docs/examples/**/*.{html,md,vue,svelte}`** per [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) |
 
 “Integration” here means **tests run against the installed environment** (editable install + resolved **replayt**),
 not mocked **replayt** internals.
@@ -238,7 +238,7 @@ integration boundaries, and runs in **CI** with coverage and explicit **dev** to
 
 ### Backlog traceability: Contract test — examples reference replayt in supported semver range
 
-**Normalized user story:** As maintainer, I want **pytest** to scan **`docs/examples/**/*.{html,md}`** for **replayt**
+**Normalized user story:** As maintainer, I want **pytest** to scan **`docs/examples/**/*.{html,md,vue,svelte}`** for **replayt**
 CDN or package pins and fail when any pin falls outside the PEP 508 range declared in **`pyproject.toml`**, so
 integrator-facing snippets stay aligned with [DESIGN_PRINCIPLES](#design-principles) and **`docs/compat.md`**.
 
