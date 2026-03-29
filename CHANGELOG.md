@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- `docs/examples/PATTERNS.md`: **P-04** registered (**Spec only**) — embed container skeleton loading, user-visible failure, focusable **retry**, **`role="status"` / `aria-live`** announcement contract for operators and **automation agents**, **published** replayt JS only; backlog traceability for *Empty, loading, and failure states for the embed container* (backlog phase **2**, spec lead).
+- `docs/demo.md`: **Cross-surface operator story** table links web embed phases (**loading**, **ready**, **failure**, **retry**) to console demo behavior and **P-04** (same backlog, phase **2**).
+- `docs/DESIGN_PRINCIPLES.md`: vanilla catalog lists **P-04**; **Audience** row for **Automation agents** references **P-04** live-region scrape contract; backlog traceability subsection for the embed-container states item (same backlog, phase **2**).
+- `docs/MISSION.md`: **Spec-only** note for **P-04** under pattern coverage (same backlog, phase **2**).
+- `docs/compat.md`: digest mentions **P-04** **Spec only** (same backlog, phase **2**).
+
 ### Added
 
 - `docs/examples/timeline-scrubber.html`: **P-03** vanilla example — `sessionData.events` + `metadata` time range, defensive sort-by-timestamp comment, `requestAnimationFrame`-throttled scrub seeks with final commit on `change` / `pointerup`, optional `seekToMs` / `goto` seek hooks, visible **Limitations** note for CDN builds (backlog phase **3**, *Timeline scrubber strip example using replayt public events API*).
