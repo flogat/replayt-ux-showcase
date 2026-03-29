@@ -10,6 +10,9 @@ path/
 # Codex / agent instructions (local; not published)
 AGENTS.md
 
+# Node (optional maintainer bundler — package.json)
+node_modules/
+
 # Python
 __pycache__/
 *.py[cod]

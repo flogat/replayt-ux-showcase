@@ -1,0 +1,20 @@
+{
+  "name": "ux-showcase-examples-bundler",
+  "private": true,
+  "description": "Maintainer-only local bundler for replayt from npm; not published. See docs/examples/build.md.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node scripts/replayt-bundler-preview/build.mjs",
+    "dev": "node scripts/replayt-bundler-preview/build.mjs --watch",
+    "preview": "node scripts/replayt-bundler-preview/serve.mjs"
+  },
+  "dependencies": {
+    "replayt": ">=0.1.0 <0.5.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

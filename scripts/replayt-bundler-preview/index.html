@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>replayt bundler preview (maintainer)</title>
+</head>
+<body>
+  <p>Maintainer-only preview: bundled <code>replayt</code> from npm. See <code>docs/examples/build.md</code> in the repository.</p>
+  <div id="player"></div>
+  <script src="./bundle.iife.js"></script>
+  <script>
+    const el = document.getElementById("player");
+    if (window.replayt?.player?.init) {
+      window.replayt.player.init({
+        container: el,
+        data: { events: [], metadata: { startTs: 0, viewport: { width: 800, height: 600 } } },
+        theme: "light",
+      });
+    }
+  </script>
+</body>
+</html>
