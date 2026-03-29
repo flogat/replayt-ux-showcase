@@ -7,9 +7,40 @@
     <!-- Assume replayt player CDN; replace with npm/your bundle -->
     <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
     <style>
-        body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        #player { width: 100%; height: 60vh; border: 1px solid #e0e0e0; border-radius: 8px; }
-        .instructions { background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+        /* Semantic tokens — see docs/playbook/tokens.md (--rux-*). */
+        :root {
+            --rux-space-2: 0.5rem;
+            --rux-space-4: 1rem;
+            --rux-space-8: 2rem;
+            --rux-font-sans: system-ui, sans-serif;
+            --rux-color-surface: #ffffff;
+            --rux-color-surface-muted: #f8f9fa;
+            --rux-color-border: #e0e0e0;
+            --rux-color-text: #111827;
+            --rux-color-primary: #007bff;
+            /* replayt player reads --replayt-primary for theme tint */
+            --replayt-primary: var(--rux-color-primary);
+        }
+        body {
+            font-family: var(--rux-font-sans);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--rux-space-8);
+            background: var(--rux-color-surface);
+            color: var(--rux-color-text);
+        }
+        #player {
+            width: 100%;
+            height: 60vh;
+            border: 1px solid var(--rux-color-border);
+            border-radius: var(--rux-space-2);
+        }
+        .instructions {
+            background: var(--rux-color-surface-muted);
+            padding: var(--rux-space-4);
+            border-radius: var(--rux-space-2);
+            margin-bottom: var(--rux-space-4);
+        }
     </style>
 </head>
 <body>
@@ -17,7 +48,7 @@
     <div class="instructions">
         <p><strong>Copy-paste ready:</strong> Embed in your app. Fetch <code>sessionData</code> from replayt backend API.</p>
         <ul>
-            <li>Theme via CSS vars (e.g., <code>--replayt-primary: #007bff;</code>)</li>
+            <li>Theme: set <code>--rux-color-primary</code> (wired to <code>--replayt-primary</code> for the player); full scale in <a href="../playbook/tokens.md">docs/playbook/tokens.md</a>.</li>
             <li>Extend: Add timeline scrubber via replayt events API.</li>
             <li>Keyboard / focus handoff: see <a href="../a11y/keyboard-model.md">docs/a11y/keyboard-model.md</a> (tab order, scrubber keys, Escape).</li>
         </ul>

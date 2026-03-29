@@ -26,4 +26,4 @@
 2. Walk **component anatomy** in [`component-anatomy.md`](component-anatomy.md) so DOM order, layering, and z-index match the **keyboard model** and pattern **P-02** / **P-03** / **P-04** precedents.
 3. Run [`handoff-checklist.md`](handoff-checklist.md) (print or tick in review) before merge; file gaps as follow-ups with pattern IDs.
 
-**Builder note:** Phase **3** may add contract tests for playbook files if the project adopts automated doc structure checks; until then, **spec gate** / review verifies completeness per [DESIGN_PRINCIPLES — backlog traceability](../DESIGN_PRINCIPLES.md#backlog-traceability-design-to-code-handoff-playbook-checklist--tokens).
+**CI:** `tests/test_playbook_docs.py` keeps the four playbook files, acceptance row markers (**T1–T3**, **A1–A3**, **H1–H3**), and integrator entry-point links aligned with [DESIGN_PRINCIPLES — traceability to automated checks](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks).

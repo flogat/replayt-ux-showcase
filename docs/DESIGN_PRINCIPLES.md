@@ -49,6 +49,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)); includes **`docs/examples/build.md`** when present |
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
+| **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T3**, **A1–A3**, **H1–H3**) | `tests/test_playbook_docs.py` |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 
@@ -579,9 +580,9 @@ one checklist instead of re-negotiating accessibility per file.
 | Timeline + overlay anatomy | **[`docs/playbook/component-anatomy.md`](playbook/component-anatomy.md)** | Named regions; **P-03** / **P-06** and overlay modal vs popover; acceptance **A1**–**A3** in-file |
 | Printable checklist | **[`docs/playbook/handoff-checklist.md`](playbook/handoff-checklist.md)** | Sections **Accessibility**, **Loading**, **Error**; print instructions; acceptance **H1**–**H3** in-file |
 | README integrator link | **[`README.md`](../README.md#quick-start)** **Quick start** | Explicit link to **`docs/playbook/README.md`** |
-| Traceability | [Acceptance criteria (traceability)](#acceptance-criteria-traceability) row *Design-to-code handoff* | **Spec gate** / **Design gate**; optional **pytest** doc-presence tests in a **future** phase if maintainers adopt them |
+| Traceability | [Acceptance criteria (traceability)](#acceptance-criteria-traceability) row *Design-to-code handoff* | **`tests/test_playbook_docs.py`** (sections, acceptance markers, index links, **README** quick start, **DESIGN_PRINCIPLES** self-reference, **CHANGELOG** **Unreleased**); **Spec gate** / **Design gate** for prose quality |
 
-**Maintainer note:** Vanilla **`docs/examples/*.html`** files are **not** required to adopt **`--rux-*`** variables immediately; token adoption can land with pattern updates (**CHANGELOG** + pattern ID).
+**Maintainer note:** Vanilla examples are **not** required to adopt **`--rux-*`** in lockstep with the playbook; **P-01** **`basic-player.html`** demonstrates variables + **`--replayt-primary`** bridge. Further token adoption should ship with **CHANGELOG** + pattern ID.
 
 #### Offline deterministic fixture page for LLM and reviewer workflows
 
