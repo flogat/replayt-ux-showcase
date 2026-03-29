@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Phase **2** spec (*Document CDN vs bundled replayt with SRI and supply-chain notes*): **`docs/FRONTEND_SUPPLY_CHAIN.md`** — **CDN** (**jsDelivr**-style) pinning, optional **Subresource Integrity**, **npm**/**bundler** alternative, **`pip-audit`** vs **JS** surface; linked from **`README.md`**, **`docs/DESIGN_PRINCIPLES.md`** (**Frontend supply chain** + traceability), and **`docs/compat.md`**.
 - **P-04** (*Empty, loading, and failure states for the embed container*): **`docs/examples/PATTERNS.md`** (spec then **Shipped**), **`docs/MISSION.md`** pattern count (**4** shipped), **`docs/compat.md`** digest, **`docs/DESIGN_PRINCIPLES.md`** catalog / **Audience** / backlog traceability, **`docs/demo.md`** cross-surface operator story and **Builder alignment** with **`embed-container-states.html`** (phases **2**–**3**).
 - `docs/examples/PATTERNS.md`: **P-03** marked **Shipped**; **`docs/MISSION.md`** pattern table (**3** shipped with **P-03**); **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** catalog and **P-03** traceability (phase **3**).
 - `docs/examples/PATTERNS.md`: **P-02** catalog and normative spec; **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** pattern coverage and traceability (phase **2**).
