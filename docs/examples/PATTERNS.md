@@ -16,10 +16,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | -- | -------- | ------ | ------- |
 | **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note. |
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
+| **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) (planned) | **Spec only** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
 
-**Mission trajectory:** P-01 is the first shipped pattern. This backlog (**P-02**) moves the repo toward **5+** distinct
-patterns; additional rows (timeline chrome, error boundary, framework variants, etc.) are **future** backlogs unless
-explicitly added here first.
+**Mission trajectory:** **P-01** / **P-02** are shipped. **P-03** is specified here (**Spec only**) for the *Timeline scrubber strip example using replayt public events API* backlog; Builder implements `docs/examples/timeline-scrubber.html` (or an equivalent clearly separated section in an existing file—see [Delivery shape](#delivery-shape-normative)). Additional patterns toward **5+** stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -121,3 +120,105 @@ out of scope until the [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-
 | Keyboard-focus order | [Keyboard focus and accessibility](#keyboard-focus-and-accessibility-normative) |
 | Progress toward **5+** patterns | [Pattern inventory](#pattern-inventory), [Mission](../MISSION.md#pattern-coverage-tracking) |
 | **CHANGELOG** / mission tracking | [Builder acceptance checklist](#builder-acceptance-checklist-implementation), [Mission](../MISSION.md#pattern-coverage-tracking) |
+
+---
+
+## P-03 — Timeline scrubber strip (events-driven seek)
+
+### User story
+
+As an integrator, I want a **copy-paste vanilla** example that adds a **horizontal timeline scrubber** (slider / track)
+below or above the player so operators can **seek** through the replay using **`sessionData.events`** and **replayt’s
+published browser/JS API**, with **explicit assumptions** about event ordering and **input throttling** so my fork
+behaves predictably across replayt minors inside the supported range.
+
+### Relationship to P-01
+
+[`basic-player.html`](basic-player.html) already mentions extending with a timeline via the replayt events API. **P-03**
+is the **dedicated** pattern for that job: it **must not** silently redefine P-01’s init contract; it **layers** scrubber
+UX and documented event handling on top of the same **`sessionData` root** (`events` + `metadata`) unless the Builder
+documents a deliberate, additive extension in-snippet.
+
+### Delivery shape (normative)
+
+- **Preferred:** new file **`docs/examples/timeline-scrubber.html`**.
+- **Allowed alternative:** extend **`basic-player.html`** only if the scrubber is a **clearly separated** section
+  (distinct `<section>` or major comment banner + self-contained script block) and **P-03** acceptance criteria still
+  read as a single pattern in review; if this path is chosen, update this inventory row to point at the anchor filename
+  and **CHANGELOG** **Unreleased** in the same change set.
+
+### `sessionData` and events (normative)
+
+- **Root shape:** Same as P-01: `events` (array) and `metadata` (object). The scrubber **must** use **`events`** (not
+  only empty placeholder arrays in the shipped snippet—include **synthetic or documented sample events** sufficient to
+  demonstrate a non-trivial timeline, or document how to substitute real API payloads).
+- **Documented ordering assumption:** The HTML/JS **must** include a short **comment block** (design-handoff style)
+  stating what ordering integrators should assume for `events` (e.g. “replayt guarantees monotonic timestamps” vs
+  “sort client-side by field X before mapping to the scrubber”). If the showcase cannot assert upstream guarantees,
+  state **“integrators should verify against replayt release notes for their pin”** and implement **defensive ordering**
+  (e.g. sort once before building the time range) **in the example** so the demo is stable.
+- **Time range:** The snippet **must** document which **timestamp(s)** define scrubber min/max and playhead position
+  (e.g. first/last event time, `metadata.startTs` + duration, or API described in comments). Ambiguous mapping is not
+  acceptable for **Shipped**—pick one approach and document it.
+
+### Scrub / seek interactions (normative)
+
+- **Primary control:** A **range** or **single-thumb** slider (or equivalent ARIA **`slider`**) spanning the session
+  timeline; dragging or keyboard adjustment **seeks** the replay.
+- **Keyboard:** Slider (or focusable scrub control) **must** be reachable and adjustable without a pointer; document
+  expected keys (native range behavior is enough if documented).
+- **Published JS only:** All **replayt** calls **must** use **documented public** browser/JS entry points (same boundary
+  as [Upstream boundary](../DESIGN_PRINCIPLES.md#one-way-to-do-it-canonical-patterns)—no minified private hooks). The file
+  **must** list **exact symbols** used (e.g. `window.replayt.…`) in a header or comment block and tie them to **replayt**
+  docs or release notes where possible.
+- **Graceful degradation:** If init fails or `events` is empty, show a **user-visible** message (not only `console.error`).
+
+### Throttling and coalescing (normative)
+
+- **During scrub:** High-frequency input (pointer move, `input` events) **must** be **throttled or debounced** before
+  calling seek APIs (e.g. `requestAnimationFrame`, debounced handler, or documented “at most N seeks per second”
+  strategy). Document the chosen approach in comments so integrators can tune it.
+- **End of gesture:** On **pointer up** / **change** (commit), **must** perform a **final** seek to the committed value
+  so the player ends on the operator’s chosen frame.
+
+### Limitations and CDN builds (normative)
+
+- Include a visible **“Limitations”** short note (prose in the page or comment visible in “view source”) stating that
+  **some CDN builds may omit or rename seek/event APIs**; integrators should **pin** a **replayt** version whose **JS**
+  surface matches the snippet and **upgrade** if methods are missing. Align the **`<script src=…replayt@…>`** pin with
+  [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins).
+
+### replayt pin and file placement
+
+- **CDN / npm pin** in the shipped HTML **must** satisfy **`pyproject.toml`** **replayt** PEP 508 range (enforced by
+  **`tests/test_docs_examples_replayt_pins.py`** once the file exists).
+
+### Builder acceptance checklist (implementation)
+
+**P-03** is **Spec only** until the items below are met; then mark **Shipped** in [Pattern inventory](#pattern-inventory)
+and update **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** counts in the **same** change set as the HTML.
+
+1. **`docs/examples/timeline-scrubber.html`** (or approved alternate per [Delivery shape](#delivery-shape-normative))
+   implements the normative sections above.
+2. [Pattern inventory](#pattern-inventory) lists **P-03** as **Shipped** with the correct filename.
+3. **Extend** **`tests/test_examples.py`** with file presence and **light contract markers** aligned with this spec
+   (ordering comment block, throttling note, limitations note, scrub control, **replayt** script pin)—mirror the **P-02**
+   approach; full browser automation remains optional per [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix).
+4. **CHANGELOG** **Unreleased** records the new example; note pattern count / mission tracking when status flips to **Shipped**.
+
+**Automated checks today (when shipped):** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers as extended by Builder.
+
+---
+
+## Backlog traceability: Timeline scrubber strip example (replayt public events API)
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| New example or clearly separated section | [Delivery shape](#delivery-shape-normative) |
+| Seek/scrub interactions | [Scrub / seek interactions](#scrub--seek-interactions-normative) |
+| Documented event ordering assumptions | [`sessionData` and events](#sessiondata-and-events-normative) |
+| Throttling / coalescing | [Throttling and coalescing](#throttling-and-coalescing-normative) |
+| Published replayt JS surface only | [Scrub / seek interactions](#scrub--seek-interactions-normative) |
+| Short limitations note if CDN lacks API | [Limitations and CDN builds](#limitations-and-cdn-builds-normative) |
+| **replayt** pin in range | [replayt pin and file placement](#replayt-pin-and-file-placement) |
+| Progress toward **5+** patterns | [Pattern inventory](#pattern-inventory), [Mission](../MISSION.md#pattern-coverage-tracking) |
