@@ -108,8 +108,9 @@ Shared checklist: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**
 4. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** reflects the shipped count.
 
 **Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`** (CDN pin vs **`pyproject.toml`**) and
-**`tests/test_examples.py`** (example files on disk plus light **P-02** contract strings). Full browser automation remains
-out of scope until the [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix) adds it.
+**`tests/test_examples.py`** (example files on disk plus light **P-02** contract strings). Headless **Playwright** smoke for
+**`basic-player.html`** (**P-01**) is specified in [docs/examples static demos: Playwright smoke tests](../DESIGN_PRINCIPLES.md#docs-examples-static-demos-playwright-smoke-tests)
+and tracked in the [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix) (*Headless browser smoke* row); **Builder** implements **CI** per that spec.
 
 ---
 
@@ -206,7 +207,8 @@ documents a deliberate, additive extension in-snippet.
 2. [Pattern inventory](#pattern-inventory) lists **P-03** as **Shipped** with the correct filename.
 3. **`tests/test_examples.py`** includes file presence and **light contract markers** aligned with this spec
    (ordering comment block, throttling note, limitations note, scrub control, **replayt** script pin)—mirror the **P-02**
-   approach; full browser automation remains optional per [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix).
+   approach; **P-03** is **not** required to ship in the initial **Playwright** slice (**P-01** / **`basic-player.html`** only—see
+   [Playwright smoke spec](../DESIGN_PRINCIPLES.md#docs-examples-static-demos-playwright-smoke-tests)).
 4. **CHANGELOG** **Unreleased** records notable example or contract changes; note pattern count / mission tracking when the inventory changes.
 
 **Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-03**.

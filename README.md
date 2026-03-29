@@ -16,6 +16,8 @@ This project builds on **[replayt](https://pypi.org/project/replayt/)**. Read
 
 Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Normative requirements (tests with the **pytest-cov** gate, **ruff**, **replayt** install path, supply chain, badges) are in **[docs/DESIGN_PRINCIPLES.md — GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow)**.
 
+**Playwright smoke (static `docs/examples/` demos):** Spec and acceptance criteria live in **[docs/DESIGN_PRINCIPLES.md — docs/examples static demos: Playwright smoke tests](docs/DESIGN_PRINCIPLES.md#docs-examples-static-demos-playwright-smoke-tests)** (backlog: headless **Chromium** on **`basic-player.html`**, **HTTP** static root, **no** change to the **`demo.py`** coverage gate). When implemented, **README** will document the exact **`pip`** / **`playwright install`** / **`pytest`** commands alongside **CI**; until then there is no second test entrypoint.
+
 ## Reference documentation
 
 No snapshot was copied into this checkout. Add markdown under `docs/reference-documentation/` if you want bundled
