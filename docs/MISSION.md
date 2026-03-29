@@ -21,7 +21,7 @@ Delegates upstream: core capture/replay logic.
 
 ## Success
 
-- CI automated tests: Demos render/load across supported replayt versions (smoke/integration via pytest + browser automation); compatibility matrix green.
+- CI automated tests: Demos render/load across supported replayt versions (smoke/integration via **pytest** + contract tests today; optional **Playwright** load smoke for **Shipped** vanilla **`docs/examples/*.html`** specified in **[`docs/DESIGN_PRINCIPLES.md` — Static HTML examples: browser smoke (Playwright)](DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)**); compatibility matrix green.
 - Playbook: Handovers pass checklist (<1 dev-day) using **[`docs/playbook/README.md`](playbook/README.md)** (tokens, timeline/overlay anatomy, printable **[`handoff-checklist.md`](playbook/handoff-checklist.md)**), alongside **[`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md)** for keyboard/focus. **Figma**-side alignment and interim token export: **[`docs/design-kit/README.md`](design-kit/README.md)** (**F1–F8**).
 - Player / timeline keyboard and focus: shared **[`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md)** checklist (tab order, roving composites when applicable, scrubber keys, **Escape**), linked from **`docs/examples/`** patterns.
 - Coverage: **5+** distinct UI patterns; tracked via **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** (canonical inventory), **CHANGELOG**, and **[compat digest](compat.md#vanilla-ui-pattern-catalog)**.
