@@ -71,3 +71,24 @@ def test_embed_container_states_contract_markers():
     assert "replayt.player.init" in text
     assert "data-demo-state" in text
     assert "cdn.jsdelivr.net/npm/replayt@" in text
+
+
+def test_fixture_replay_html_exists():
+    """P-05 example ships under docs/examples/ (see docs/examples/PATTERNS.md)."""
+    path = REPO_ROOT / "docs/examples/fixture-replay.html"
+    assert path.is_file(), f"P-05 demo missing: {path}"
+
+
+def test_fixture_replay_contract_markers():
+    """Light contract: deterministic fixture header, no session fetch(, stable literals story, pin (P-05)."""
+    text = (REPO_ROOT / "docs/examples/fixture-replay.html").read_text(
+        encoding="utf-8"
+    )
+    assert "Deterministic offline fixture" in text
+    assert "synthetic and stable" in text
+    assert "fetch(" not in text
+    assert "Date.now(" not in text
+    assert "Math.random(" not in text
+    assert "sessionData" in text
+    assert "replayt.player.init" in text
+    assert "cdn.jsdelivr.net/npm/replayt@" in text

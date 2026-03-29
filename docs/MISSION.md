@@ -31,6 +31,6 @@ Delegates upstream: core capture/replay logic.
 
 | Metric | Target | Current (update when patterns ship) |
 | ------ | ------ | ------------------------------------- |
-| Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **4** shipped (**P-01**–**P-04** — [`PATTERNS.md`](examples/PATTERNS.md)); **P-05** (**`fixture-replay.html`**) is **Spec only** (deterministic offline fixture for reviewers / **LLM** harnesses). **1+** shipped pattern still needed to reach **5+** unless **P-05** ships first. |
+| Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **5** shipped (**P-01**–**P-05** — [`PATTERNS.md`](examples/PATTERNS.md)), including **`fixture-replay.html`** (**P-05**: deterministic offline fixture for reviewers / **LLM** harnesses). |
 
 When a pattern moves to **Shipped**, update this table and the inventory in **`docs/examples/PATTERNS.md`** in the same change set as the new or updated **`*.html`** file and **CHANGELOG** **Unreleased**.

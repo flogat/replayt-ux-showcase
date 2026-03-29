@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+  P-05 — Deterministic offline fixture for human reviewers and automation agents.
+  sessionData below is synthetic and stable (fixed literals only). No runtime network
+  retrieval of the session payload; no secrets; no hosted LLM or other model calls in this page.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt fixture — deterministic offline session</title>
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        #player { width: 100%; height: 60vh; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .note { background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <h1>Offline fixture replay</h1>
+    <p class="note">
+        Open via a local static server under <code>docs/examples/</code> (see README) so the pinned replayt CDN script loads.
+        This page uses only inlined <code>sessionData</code>; it does not load session payloads over the network.
+    </p>
+    <div id="player"></div>
+    <!-- Public entrypoint for the pinned replayt build: replayt.player.init -->
+    <script>
+        const sessionData = {
+            events: [
+                { type: 'mousemove', ts: 1704067200100, x: 120, y: 88 },
+                { type: 'click', ts: 1704067201250, x: 200, y: 140, target: 'button.primary' }
+            ],
+            metadata: {
+                startTs: 1704067200000,
+                viewport: { width: 1280, height: 720 },
+                sessionId: 'fixture-offline-deterministic-001',
+                durationMs: 5000
+            }
+        };
+
+        window.replayt?.player?.init({
+            container: document.getElementById('player'),
+            data: sessionData,
+            theme: 'light'
+        });
+    </script>
+</body>
+</html>

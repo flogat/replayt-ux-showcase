@@ -18,9 +18,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
 | **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
 | **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
-| **P-05** | **`fixture-replay.html`** (planned) | **Spec only** | **Offline fixture** for **reviewers** and **LLM** harnesses: **inlined** synthetic **`sessionData`**, **no** runtime session fetch, **no** secrets, **no** live/stochastic model calls; pinned **replayt** player script only. |
+| **P-05** | [`fixture-replay.html`](fixture-replay.html) | **Shipped** | **Offline fixture** for **reviewers** and **LLM** harnesses: **inlined** synthetic **`sessionData`**, **no** runtime session fetch, **no** secrets, **no** live/stochastic model calls; pinned **replayt** player script only. |
 
-**Mission trajectory:** **P-01** through **P-04** are shipped. **P-05** is registered (**Spec only**) for the deterministic fixture page; shipping it satisfies the mission **5+** target if no other pattern ships first. Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct vanilla patterns), satisfying the mission **5+** target. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -395,19 +395,16 @@ inlined, synthetic **`sessionData`** (no API or `fetch` for the session payload)
 
 ### Builder acceptance checklist (implementation)
 
-**P-05** is **Spec only** until the **Builder** lands the **HTML** file and flips the inventory row to **Shipped**.
+**P-05** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin tests aligned when this pattern changes.
 
-1. Add **`docs/examples/fixture-replay.html`** (or approved alias) implementing the normative sections above.
+1. **`docs/examples/fixture-replay.html`** implements the normative sections above.
 2. [Pattern inventory](#pattern-inventory) lists **P-05** as **Shipped** with the correct filename.
-3. Update **`README.md`** and **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** with the **local open** instructions (if not already
-   present from an earlier phase).
+3. **`README.md`** and **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** include **local open** instructions (static server under **`docs/examples/`**).
 4. **CHANGELOG** **Unreleased** records the example; **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**
-   pattern table reflects **5** shipped vanilla patterns when **P-05** is the fifth shipped file.
-5. **`tests/test_docs_examples_replayt_pins.py`** scans the new **`*.html`**. Optional: **`tests/test_examples.py`**
-   minimal markers (determinism comment, no `fetch` of session, **replayt** pin)—**Builder** choice aligned with this spec.
+   pattern table reflects **5** shipped vanilla patterns.
+5. **`tests/test_docs_examples_replayt_pins.py`** scans the **`*.html`**. **`tests/test_examples.py`** includes file presence and light **P-05** contract markers (determinism header, no session **`fetch(`**, **replayt** script pin).
 
-**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`** once **HTML** exists; no **P-05**-specific
-**pytest** contract is required by this **phase 2** spec.
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-05**.
 
 ---
 
