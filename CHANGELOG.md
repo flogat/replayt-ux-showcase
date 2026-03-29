@@ -9,29 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `docs/examples/embed-container-states.html`: **P-04** vanilla example — async `sessionData` (simulated delay), skeleton UI with **Loading replay…**, user-visible **network** vs **invalid payload** errors, focusable **Retry**, **`role="status"`** / **`aria-live="polite"`** announcement contract, optional **`data-demo-state`** on **`#embed-shell`**; **`replayt.player.init`** only (backlog phase **3**, *Empty, loading, and failure states for the embed container*).
+- `tests/test_examples.py`: asserts **`embed-container-states.html`** exists and keeps minimal **P-04** contract markers aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
 - `docs/examples/timeline-scrubber.html`: **P-03** vanilla example — `sessionData.events` + `metadata` time range, defensive sort-by-timestamp comment, `requestAnimationFrame`-throttled scrub seeks with final commit on `change` / `pointerup`, optional `seekToMs` / `goto` seek hooks, visible **Limitations** note for CDN builds (backlog phase **3**, *Timeline scrubber strip example using replayt public events API*).
 - `tests/test_examples.py`: asserts **`timeline-scrubber.html`** exists and keeps minimal **P-03** contract markers aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
-
-### Documentation
-
-- `docs/examples/PATTERNS.md`: **P-03** marked **Shipped** in the pattern inventory; Builder checklist reflects shipped state (same backlog, phase **3**).
-- `docs/MISSION.md`: pattern coverage table — **3** shipped vanilla patterns including **P-03** (same backlog, phase **3**).
-- `docs/compat.md`, `docs/DESIGN_PRINCIPLES.md`: **Vanilla UI pattern catalog** / **P-03** backlog traceability updated for **Shipped** state (same backlog, phase **3**).
-- `docs/examples/PATTERNS.md`: canonical **vanilla UI pattern** catalog (**P-01** / **P-02**), normative **P-02** spec (session metadata bar above player, `sessionData` compatibility with `basic-player.html`, loading / error / focus rules), and Builder checklist (backlog phase **2** spec lead, *Ship session metadata chrome pattern (viewport, duration, session id)*).
-- `docs/MISSION.md`, `docs/compat.md`, `docs/DESIGN_PRINCIPLES.md`: pattern coverage tracking toward **5+** examples, digest link, design-principles traceability and backlog mapping for **P-02** (same backlog, phase **2**).
-- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec and traceability for **contract tests** that scan **`docs/examples/**/*.{html,md}`** so **replayt** CDN and requirement pins stay inside the PEP 508 range from **`pyproject.toml`**, including **`<!-- replayt-examples:pin-exempt -->`** for deliberate exceptions (backlog phase 2, Contract test: examples reference replayt in supported semver range).
-- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: traceability updated now that **`tests/test_docs_examples_replayt_pins.py`** runs in default **CI** **pytest** (same backlog, phase 3).
-- Phase **5** architect review: single **Unreleased** **Documentation** block in **CHANGELOG**; **P-02** checklist wording in **`docs/DESIGN_PRINCIPLES.md`** and **`docs/examples/PATTERNS.md`** updated for shipped state (*Ship session metadata chrome pattern (viewport, duration, session id)*).
-
-### Added
-
 - `docs/examples/player-session-metadata-bar.html`: **P-02** vanilla example — metadata bar above the player, same **`sessionData`** shape as **`basic-player.html`**, loading placeholder, user-visible errors when **`sessionId`** / **`durationMs`** / **`viewport`** are missing or invalid after load, and bar focusable controls before the player in DOM order (backlog phase **3**, *Ship session metadata chrome pattern (viewport, duration, session id)*).
 - `tests/test_examples.py`: asserts **`player-session-metadata-bar.html`** exists and keeps minimal **P-02** contract markers (loading copy, validation strings, tab-order comment, **replayt** script pin) aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
 - `tests/test_docs_examples_replayt_pins.py`: **pytest** contract for **`docs/examples/**/*.{html,md}`** — **replayt** CDN (`replayt@…`) and PEP 508-style pins checked against the **`replayt`** line in **`pyproject.toml`**, with **`<!-- replayt-examples:pin-exempt -->`** skipping the next script line, URL line, or fenced block (backlog phase 3, Contract test: examples reference replayt in supported semver range).
 
-### Fixed
+### Documentation
 
-- `docs/examples/player-session-metadata-bar.html`: render placeholder status with **`textContent`** / **`createElement`** instead of templated **`innerHTML`**, so integrators who swap in dynamic copy do not risk accidental HTML injection (backlog phase **6** security review, *Ship session metadata chrome pattern (viewport, duration, session id)*).
+- **P-04** (*Empty, loading, and failure states for the embed container*): **`docs/examples/PATTERNS.md`** (spec then **Shipped**), **`docs/MISSION.md`** pattern count (**4** shipped), **`docs/compat.md`** digest, **`docs/DESIGN_PRINCIPLES.md`** catalog / **Audience** / backlog traceability, **`docs/demo.md`** cross-surface operator story and **Builder alignment** with **`embed-container-states.html`** (phases **2**–**3**).
+- `docs/examples/PATTERNS.md`: **P-03** marked **Shipped**; **`docs/MISSION.md`** pattern table (**3** shipped with **P-03**); **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** catalog and **P-03** traceability (phase **3**).
+- `docs/examples/PATTERNS.md`: **P-02** catalog and normative spec; **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** pattern coverage and traceability (phase **2**).
+- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec for **`tests/test_docs_examples_replayt_pins.py`** (pin scan scope, **`pin-exempt`** comments); traceability for default **CI** **pytest** (phases **2**–**3**).
+- **CHANGELOG** **Unreleased** (phase **5** architect): one **`Added`** group and consolidated **P-04** / **P-03** documentation bullets (no duplicate **`### Added`** headings).
+- Phase **6** security review (*Empty, loading, and failure states for the embed container*): **`docs/examples/embed-container-states.html`** updates the live region and visible errors with **`textContent`** only (no **`innerHTML`** for dynamic strings); **replayt** script pin remains **`replayt@0.1.0`** on **jsDelivr**, within **`pyproject.toml`**. Init failures log via **`console.error`** for developer tooling only—not copied into **`#embed-status`**.
 
 ## [0.2.0] - 2026-03-28
 

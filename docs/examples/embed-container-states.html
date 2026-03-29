@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt embed container states (P-04)</title>
+    <!--
+      P-04 — replayt browser symbols this file calls (confirm against replayt release notes for your CDN pin):
+        - window.replayt.player.init({ container, data, theme })
+
+      Async sessionData: this demo uses setTimeout to mimic fetch latency. Replace fetchSessionData() with your
+      backend call; do not rely on undocumented replayt HTTP helpers.
+
+      Operators and automation agents: treat the loading skeleton as non-final UI. Optional scrape hook:
+      data-demo-state on #embed-shell — loading | ready | failed | empty (empty = valid session with zero events).
+
+      Announcement contract (handoff): #embed-status (role="status") text is updated for high-level phases only:
+        - "Loading replay." — sessionData request in flight
+        - "Replay ready." — init succeeded with at least one event in the sample path
+        - "Replay ready. No events in session." — valid empty session (distinct from loading)
+        - "Failed to load replay." — network/transport or non-OK response (recoverable; use Retry)
+        - "Replay data invalid." — response OK but payload failed validation
+        - "Replay failed to start." — replayt.player.init threw or replayt is missing
+
+      Tab order (handoff): demo controls (#toolbar) and Retry (#btn-retry) come before #player in DOM order so
+      keyboard users reach recovery and scenario buttons before embedded player focusables.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        :root {
+            --surface-border: #e0e0e0;
+            --surface-muted: #f4f4f5;
+            --text: #222;
+            --warn-bg: #fef3f2;
+            --warn-border: #fecdca;
+            --warn-text: #b42318;
+            --skeleton: #e4e4e7;
+        }
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: var(--text);
+        }
+        .instructions {
+            background: var(--surface-muted);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--surface-border);
+        }
+        #toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        #toolbar button {
+            font: inherit;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--surface-border);
+            background: #fff;
+            cursor: pointer;
+        }
+        #toolbar button:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+        /* Visually hidden; text remains available to AT and automation scrapers per P-04 announcement contract. */
+        #embed-status {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        #embed-shell {
+            width: 100%;
+            min-height: 52vh;
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+            position: relative;
+            background: #fff;
+            box-sizing: border-box;
+        }
+        #player {
+            width: 100%;
+            height: 52vh;
+            border-radius: 8px;
+        }
+        .skeleton-panel {
+            padding: 1.25rem;
+            height: 52vh;
+            box-sizing: border-box;
+        }
+        .skeleton-panel p {
+            margin: 0 0 1rem;
+            color: #52525b;
+            font-weight: 500;
+        }
+        .sk-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .sk-block {
+            flex: 1;
+            height: 3rem;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--skeleton) 25%, #f4f4f5 50%, var(--skeleton) 75%);
+            background-size: 200% 100%;
+            animation: sk 1.2s ease-in-out infinite;
+        }
+        .sk-block.tall { height: 14rem; }
+        @keyframes sk {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .error-panel {
+            padding: 1.25rem;
+            height: 52vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 1rem;
+            background: var(--warn-bg);
+            border-radius: 8px;
+        }
+        .error-panel p {
+            margin: 0;
+            color: var(--warn-text);
+            max-width: 40rem;
+        }
+        #btn-retry {
+            font: inherit;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--warn-border);
+            background: #fff;
+            cursor: pointer;
+        }
+        #btn-retry:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+        [hidden] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Embed container: loading, failure, retry (P-04)</h1>
+    <div class="instructions">
+        <p><strong>Copy-paste pattern:</strong> Async <code>sessionData</code>, skeleton while loading, visible errors,
+            focusable <strong>Retry</strong>, and a <code>role="status"</code> region for phase announcements.</p>
+        <p>Use the buttons to simulate a happy path, a transport failure, invalid payload, or a valid empty session.</p>
+    </div>
+
+    <div id="toolbar">
+        <button type="button" id="btn-load-ok">Load sample replay</button>
+        <button type="button" id="btn-fail-network">Simulate failed fetch</button>
+        <button type="button" id="btn-fail-invalid">Simulate invalid payload</button>
+        <button type="button" id="btn-load-empty">Load empty session (valid)</button>
+    </div>
+
+    <div id="embed-status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="embed-shell" data-demo-state="loading">
+        <div id="skeleton-panel" class="skeleton-panel">
+            <p>Loading replay…</p>
+            <div class="sk-row"><div class="sk-block"></div><div class="sk-block"></div></div>
+            <div class="sk-row"><div class="sk-block tall"></div></div>
+            <div class="sk-row"><div class="sk-block"></div><div class="sk-block"></div><div class="sk-block"></div></div>
+        </div>
+        <div id="error-panel" class="error-panel" hidden>
+            <p id="error-message"></p>
+            <button type="button" id="btn-retry">Retry</button>
+        </div>
+        <div id="player" hidden></div>
+    </div>
+
+    <script>
+        (function () {
+            const shell = document.getElementById("embed-shell");
+            const statusEl = document.getElementById("embed-status");
+            const skeletonEl = document.getElementById("skeleton-panel");
+            const errorPanel = document.getElementById("error-panel");
+            const errorMessage = document.getElementById("error-message");
+            const playerEl = document.getElementById("player");
+            const btnRetry = document.getElementById("btn-retry");
+
+            let loadGeneration = 0;
+
+            function announce(msg) {
+                statusEl.textContent = msg;
+            }
+
+            function setDemoState(state) {
+                shell.setAttribute("data-demo-state", state);
+            }
+
+            function showSkeleton() {
+                skeletonEl.hidden = false;
+                errorPanel.hidden = true;
+                playerEl.hidden = true;
+                playerEl.replaceChildren();
+            }
+
+            function showError(msg) {
+                skeletonEl.hidden = true;
+                errorPanel.hidden = false;
+                playerEl.hidden = true;
+                playerEl.replaceChildren();
+                errorMessage.textContent = msg;
+            }
+
+            function showPlayer() {
+                skeletonEl.hidden = true;
+                errorPanel.hidden = true;
+                playerEl.hidden = false;
+            }
+
+            function validateSessionData(data) {
+                if (!data || typeof data !== "object") return false;
+                if (!Array.isArray(data.events)) return false;
+                const m = data.metadata;
+                if (!m || typeof m !== "object") return false;
+                const vp = m.viewport;
+                if (!vp || typeof vp.width !== "number" || typeof vp.height !== "number") return false;
+                if (typeof m.startTs !== "number") return false;
+                return true;
+            }
+
+            function sampleSessionData() {
+                return {
+                    events: [
+                        { type: "click", ts: 1.0, x: 100, y: 200 },
+                        { type: "scroll", ts: 5.0, dy: 300 },
+                    ],
+                    metadata: {
+                        startTs: Date.now(),
+                        viewport: { width: 1920, height: 1080 },
+                    },
+                };
+            }
+
+            function emptySessionData() {
+                return {
+                    events: [],
+                    metadata: {
+                        startTs: Date.now(),
+                        viewport: { width: 800, height: 600 },
+                    },
+                };
+            }
+
+            /**
+             * Mimics fetch; swap for real fetch(url) in production.
+             * @param {"ok"|"network"|"invalid"|"empty"} scenario
+             */
+            async function fetchSessionData(scenario) {
+                await new Promise((r) => setTimeout(r, 700));
+                if (scenario === "network") {
+                    throw new Error("network");
+                }
+                if (scenario === "invalid") {
+                    return { events: [], metadata: {} };
+                }
+                if (scenario === "empty") {
+                    return emptySessionData();
+                }
+                return sampleSessionData();
+            }
+
+            async function runLoad(scenario, gen) {
+                announce("Loading replay.");
+                setDemoState("loading");
+                showSkeleton();
+
+                let data;
+                try {
+                    data = await fetchSessionData(scenario);
+                } catch {
+                    if (gen !== loadGeneration) return;
+                    announce("Failed to load replay.");
+                    setDemoState("failed");
+                    showError("Could not load session data (network or server error).");
+                    return;
+                }
+
+                if (gen !== loadGeneration) return;
+
+                if (!validateSessionData(data)) {
+                    announce("Replay data invalid.");
+                    setDemoState("failed");
+                    showError("Session data is missing required fields (events, metadata.startTs, metadata.viewport).");
+                    return;
+                }
+
+                const api = window.replayt && window.replayt.player;
+                if (!api || typeof api.init !== "function") {
+                    announce("Replay failed to start.");
+                    setDemoState("failed");
+                    showError("replayt player API is not available. Check your script pin and CDN build.");
+                    return;
+                }
+
+                showPlayer();
+                try {
+                    api.init({
+                        container: playerEl,
+                        data,
+                        theme: "light",
+                    });
+                } catch (e) {
+                    announce("Replay failed to start.");
+                    setDemoState("failed");
+                    showError("The player failed to start. See console for details.");
+                    console.error(e);
+                    return;
+                }
+
+                if (gen !== loadGeneration) return;
+
+                if (data.events.length === 0) {
+                    announce("Replay ready. No events in session.");
+                    setDemoState("empty");
+                } else {
+                    announce("Replay ready.");
+                    setDemoState("ready");
+                }
+            }
+
+            function startLoad(scenario) {
+                loadGeneration += 1;
+                const gen = loadGeneration;
+                void runLoad(scenario, gen);
+            }
+
+            document.getElementById("btn-load-ok").addEventListener("click", () => startLoad("ok"));
+            document.getElementById("btn-fail-network").addEventListener("click", () => startLoad("network"));
+            document.getElementById("btn-fail-invalid").addEventListener("click", () => startLoad("invalid"));
+            document.getElementById("btn-load-empty").addEventListener("click", () => startLoad("empty"));
+
+            btnRetry.addEventListener("click", () => startLoad("ok"));
+
+            startLoad("ok");
+        })();
+    </script>
+</body>
+</html>

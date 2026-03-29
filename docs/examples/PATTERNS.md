@@ -17,8 +17,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note. |
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
 | **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
+| **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
 
-**Mission trajectory:** **P-01**, **P-02**, and **P-03** are shipped. Additional patterns toward **5+** stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-04** are shipped. At least **one** more registered pattern is needed to reach the mission **5+** target. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -221,3 +222,110 @@ documents a deliberate, additive extension in-snippet.
 | Short limitations note if CDN lacks API | [Limitations and CDN builds](#limitations-and-cdn-builds-normative) |
 | **replayt** pin in range | [replayt pin and file placement](#replayt-pin-and-file-placement) |
 | Progress toward **5+** patterns | [Pattern inventory](#pattern-inventory), [Mission](../MISSION.md#pattern-coverage-tracking) |
+
+---
+
+## P-04 Embed container states (empty, loading, failure, recovery)
+
+### User story
+
+As an **operator** or **integrator**, I want the **replay player embed container** (the DOM subtree passed to
+`replayt.player.init` as `container`, per **P-01**) to have **predictable UX** while `sessionData` is **not yet**
+available, when **fetch fails**, and when **init or data** fails after load— including **skeleton** affordances,
+**retry**, and **accessible status announcements**—without relying on **undocumented** replayt internals.
+
+### Relationship to P-01 and P-02
+
+- **P-01** ([`basic-player.html`](basic-player.html)) shows a minimal init with inline `sessionData`. It does **not**
+  yet normatively define loading/error/retry for the **embed container** itself; **P-04** is the dedicated contract for
+  that job.
+- **P-02** defines loading/error for the **metadata bar** and “at least one of bar or player must make loading obvious.”
+  **P-04** tightens the **player/embed** side: even when no metadata bar exists, the **container** must communicate
+  **loading**, **failure**, and **recovery** per below.
+- **P-04** may ship as **`docs/examples/embed-container-states.html`** or as a **clearly delimited** section inside
+  **`basic-player.html`** (same rules as **P-03** [Delivery shape](#delivery-shape-normative): if merged into **P-01**,
+  update this inventory row to point at the anchor file and keep acceptance criteria in one place).
+
+### P-04 async sessionData acquisition (normative)
+
+- The example **must** model **async** acquisition of `sessionData` (e.g. `fetch` to a placeholder URL or a **documented**
+  `setTimeout` fake loader)—**no** suggestion that operators should call private replayt HTTP helpers not described in
+  **published** replayt docs.
+- **Empty vs not-yet-loaded:** Before the async source resolves, the UI **must not** look like a **successful** session
+  with zero events unless the snippet explicitly demonstrates **“loaded empty”** as a **distinct** labeled state from
+  **“still loading.”**
+- **On success:** Pass the resolved object to **`replayt.player.init`** (or the **documented** equivalent public entry
+  for the pinned version) using only **published** JS symbols; list those symbols in a header or comment block (same
+  boundary as **P-03**).
+
+### P-04 embed skeleton and loading (normative)
+
+- While `sessionData` is **in flight**, the **embed container** (or a dedicated child **wrapper** that fills the same
+  visual box as the player) **must** show **skeleton UI**: non-empty placeholder **structure** (e.g. muted blocks,
+  shimmer optional) and **visible text** such as “Loading replay…”—not a blank white box.
+- **Automation / design handoff:** Include a short comment that **operators** and **automation agents** should treat the
+  loading placeholder as **non-final** UI (stable **hook** optional: e.g. `data-demo-state="loading"` on the wrapper—
+  not required unless the Builder documents it as the scrape contract).
+
+### P-04 embed failure surface (normative)
+
+- If **fetch** fails (network / non-OK HTTP) or **`replayt.player.init`** throws / rejects per the snippet’s error
+  handling, the embed region **must** show a **user-visible** error message (not only `console.error`).
+- The copy **must** distinguish **network/load failure** from **invalid payload** when both are demonstrated (can be
+  two separate demo buttons or commented alternate code paths).
+
+### P-04 retry affordance (normative)
+
+- After a **recoverable** failure (at minimum: **failed fetch**), the snippet **must** expose a **keyboard-focusable**
+  control (e.g. `<button type="button">`) labeled for **retry** (e.g. “Retry”) that **re-runs** the load path.
+- **Tab order:** Retry control **must** appear in **logical** order (typically **before** any secondary chrome that is
+  disabled while broken)—document intent in a comment block for handoff.
+
+### P-04 status live region (normative)
+
+- The snippet **must** include an element with **`role="status"`** (preferred) or equivalent **`aria-live="polite"`**
+  region dedicated to **high-level phase changes**: at least **loading**, **ready** (or **playing** / **initialized**),
+  and **failed** (exact strings are implementation-defined but **must** be listed in-snippet as the **announcement
+  contract**).
+- **Polite** by default; use **`assertive`** only if the snippet documents **why** (e.g. synchronous fatal error)—avoid
+  noisy announcements on every micro-interaction.
+- **Audience — automation agents ([`DESIGN_PRINCIPLES.md`](../DESIGN_PRINCIPLES.md#audience)):** Document that LLM/CI
+  scrapers may rely on **this live region’s text** (or the optional `data-demo-state` hook) **only** as described in
+  the file’s comment block—do not invent parallel hidden channels.
+
+### P-04 replayt pin and file placement
+
+- Planned primary file: **`docs/examples/embed-container-states.html`**. **replayt** script URL **must** satisfy
+  [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins).
+- **No private APIs:** All replayt usage **must** match **published** player/init docs for the pinned version; if the
+  snippet checks for optional APIs, document **graceful** fallback (message + retry or doc link)—not deep object
+  probing of minified internals.
+
+### Builder acceptance checklist (implementation)
+
+**P-04** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin tests aligned when this pattern changes.
+
+1. **`docs/examples/embed-container-states.html`** implements the normative sections above (new file per [Relationship to P-01 and P-02](#relationship-to-p-01-and-p-02)).
+2. [Pattern inventory](#pattern-inventory) lists **P-04** as **Shipped** with the correct filename.
+3. **[`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed)** stays aligned with the
+   shipped **operator story** table (same vocabulary: loading / failure / retry / ready).
+4. **CHANGELOG** **Unreleased** records the example; **`docs/MISSION.md`** pattern count includes **P-04** as a **fourth**
+   shipped vanilla file.
+5. **`tests/test_docs_examples_replayt_pins.py`** scans the new **`*.html`**. **`tests/test_examples.py`** includes file presence and light contract markers (loading copy, live region, **Retry**, tab-order comment, **replayt** script pin).
+
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-04**.
+
+---
+
+## Backlog traceability: Empty, loading, and failure states for the embed container
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | --------------- |
+| Skeleton / loading UX for embed container | [P-04 embed skeleton and loading](#p-04-embed-skeleton-and-loading-normative) |
+| User-visible failure + distinguish load vs validation where applicable | [P-04 embed failure surface](#p-04-embed-failure-surface-normative) |
+| Retry affordance (focusable) | [P-04 retry affordance](#p-04-retry-affordance-normative) |
+| Accessible announcements (`role="status"` / `aria-live`) | [P-04 status live region](#p-04-status-live-region-normative) |
+| **Automation agents** + operators: documented scrape/announcement contract | [P-04 status live region](#p-04-status-live-region-normative), [P-04 embed skeleton and loading](#p-04-embed-skeleton-and-loading-normative) |
+| **Published** replayt JS only | [P-04 async sessionData acquisition](#p-04-async-sessiondata-acquisition-normative), [P-04 replayt pin and file placement](#p-04-replayt-pin-and-file-placement) |
+| Same operator story as **console** demo doc | **[`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed)** |
+| Pattern inventory + mission trajectory | [Pattern inventory](#pattern-inventory), [Mission](../MISSION.md#pattern-coverage-tracking) |

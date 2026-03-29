@@ -475,7 +475,7 @@ copy the pattern; “CI” means automated verification exists.
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**, **P-02**, **P-03**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
+(**P-01**, **P-02**, **P-03**, **P-04**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
 **[`docs/compat.md` — Vanilla UI pattern catalog](compat.md#vanilla-ui-pattern-catalog)**.
 
@@ -519,6 +519,23 @@ and **replayt’s published JS API** for seek/scrub, with **documented** event-o
 **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **`tests/test_examples.py`** contract markers,
 **CHANGELOG** **Unreleased** **Added** entry, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**.
 Further edits to **P-03** should keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin contract tests aligned when contracts change.
+
+#### Backlog traceability: Empty, loading, and failure states for the embed container
+
+**Normalized user story:** As **operator** or **integrator**, I want the **player embed container** to show **skeleton**
+UI while `sessionData` loads, **visible errors** and **retry** when fetch/init fails, and **`aria-live` / `role="status"`**
+announcements consistent with **[Audience](#audience)** (including **automation agents**), using only **published**
+replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)**.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ------------------------ |
+| Pattern registration + criteria | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-04** | **`docs/examples/embed-container-states.html`** on disk; **`tests/test_docs_examples_replayt_pins.py`** + **`tests/test_examples.py`** markers |
+| Skeleton loading, failure, retry, live region | **P-04** sections (embed skeleton, failure, retry, status region) | Code review + **`tests/test_examples.py`** contract strings |
+| No private replayt APIs | **P-04** [async sessionData](examples/PATTERNS.md#p-04-async-sessiondata-acquisition-normative) + [pin / placement](examples/PATTERNS.md#p-04-replayt-pin-and-file-placement) | Code review; symbols documented in-snippet |
+| Console vs web story | **[`docs/demo.md` — Cross-surface operator story](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** | Table + **Builder alignment** note kept in sync with shipped **P-04** |
+| **CHANGELOG** / **MISSION** when shipped | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** Builder checklist | **P-04** → **Shipped** in phase **3** with **MISSION** count **4** |
+
+**Shipped (phase 3):** **`docs/examples/embed-container-states.html`**, **P-04** marked **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **`tests/test_examples.py`** contract markers, **CHANGELOG** **Unreleased** entries, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**, **[`docs/demo.md`](demo.md)** **Builder alignment** note updated. **Spec lead (phase 2)** registered **P-04** and the cross-surface table before HTML landed.
 
 ---
 
@@ -603,4 +620,4 @@ metering in CI.
 | **Design / DX** | Tokens and handoff checklist alignment (playbook docs); clarity on what is example-only vs maintained API |
 | **Security / compliance** | No secrets in repo; LLM and third-party boundaries; supply-chain audit expectations in CI |
 | **Release / tag consumers** | SemVer and CHANGELOG for removals; matrix “policy vs CI” truth at the version they pin |
-| **Automation agents (LLM tooling)** | Respect [LLM boundaries](#llm-boundaries); treat this file and `tests/` as normative for boundaries—do not invent alternate package layouts or secret-handling rules |
+| **Automation agents (LLM tooling)** | Respect [LLM boundaries](#llm-boundaries); treat this file and `tests/` as normative for boundaries—do not invent alternate package layouts or secret-handling rules; for **vanilla** examples, use **only** documented visible copy, **`aria-live` / `role="status"`** text, or optional hooks (e.g. `data-demo-state`) **where a pattern spec says so**—see **[P-04](examples/PATTERNS.md#p-04-status-live-region-normative)** |

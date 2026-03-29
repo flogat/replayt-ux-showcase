@@ -18,6 +18,26 @@ As demo author, I want `src/replayt_ux_showcase/demo.py` exercising core replayt
 | 6 | Stdlib dependencies only | `logging`, `typing`; no heavy frameworks |
 | 7 | Exports public API | `__init__.py` exposes `render_console_timeline` and `SAMPLE_SESSION_DATA` |
 
+## Cross-surface operator story (console demo and web embed)
+
+Integrators ship **web** embeds that spend real time in **loading**, **failure**, and **retry** phases before
+`sessionData` exists or after fetch/init errors. The **console** module spec’d here is **stdlib-only** and uses static
+**`SAMPLE_SESSION_DATA`**: it demonstrates the **ready** path (data already available) and **degraded** parsing
+(**`WARNING`** lines for bad events), not network failure.
+
+| Phase (web embed vocabulary) | What operators see today (`python -m replayt_ux_showcase.demo`) | Normative web spec |
+| ---------------------------- | -------------------------------------------------------------- | ------------------ |
+| **Loading** (no `sessionData` yet) | Not modeled; run starts with data in memory | **[P-04](examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery)** — skeleton + status region |
+| **Ready** (valid session, init OK) | **`[replayt-demo]`** timeline logs and ASCII progress snapshot | **P-01** / **P-04** after successful init |
+| **Failure** (fetch/init/payload) | Unrecoverable errors propagate; **WARN** for bad events continues | **P-04** — visible error + **retry** where recoverable |
+| **Retry** | N/A in static demo | **P-04** — focusable control |
+
+**Builder alignment:** **[P-04](examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery)** ships as
+[`embed-container-states.html`](examples/embed-container-states.html); keep this table accurate when web copy or console
+demo behavior changes. Optional stretch (separate backlog unless combined): simulate phased console output (e.g. log
+lines that name **loading → ready** or **failed**)—must remain **offline** and **deterministic** per
+**`docs/DESIGN_PRINCIPLES.md`** → [LLM boundaries](DESIGN_PRINCIPLES.md#llm-boundaries).
+
 ## Replayt Primitives Usage
 
 This demo exercises replayt concepts at the **data schema level** (session/events), not the runtime level:

@@ -49,3 +49,25 @@ def test_timeline_scrubber_contract_markers():
     assert "applySeekMs" in text
     assert "metadata.durationMs" in text
     assert "cdn.jsdelivr.net/npm/replayt@" in text
+
+
+def test_embed_container_states_html_exists():
+    """P-04 example ships under docs/examples/ (see docs/examples/PATTERNS.md)."""
+    path = REPO_ROOT / "docs/examples/embed-container-states.html"
+    assert path.is_file(), f"P-04 demo missing: {path}"
+
+
+def test_embed_container_states_contract_markers():
+    """Light contract: loading copy, status live region, Retry, tab-order comment, announcement contract, pin (P-04)."""
+    text = (REPO_ROOT / "docs/examples/embed-container-states.html").read_text(
+        encoding="utf-8"
+    )
+    assert "Loading replay…" in text
+    assert 'role="status"' in text
+    assert "aria-live=" in text
+    assert "Retry</button>" in text
+    assert "Tab order (handoff):" in text
+    assert "Announcement contract (handoff):" in text
+    assert "replayt.player.init" in text
+    assert "data-demo-state" in text
+    assert "cdn.jsdelivr.net/npm/replayt@" in text
