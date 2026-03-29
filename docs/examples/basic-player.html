@@ -48,25 +48,84 @@
     <div class="instructions">
         <p><strong>Copy-paste ready:</strong> Embed in your app. Fetch <code>sessionData</code> from replayt backend API.</p>
         <ul>
+            <li>Offline fixture shape (console / Python parity): <a href="SESSION_SCHEMA.md">docs/examples/SESSION_SCHEMA.md</a> §1; same object as <code>replayt_ux_showcase.demo.SAMPLE_SESSION_DATA</code>.</li>
+            <li><code>replayt.player.init</code> often expects ms timestamps and camelCase metadata (§2 in that doc). This page keeps §1 in JSON below and adapts before <code>init</code>.</li>
             <li>Theme: set <code>--rux-color-primary</code> (wired to <code>--replayt-primary</code> for the player); full scale in <a href="../playbook/tokens.md">docs/playbook/tokens.md</a>.</li>
             <li>Extend: Add timeline scrubber via replayt events API.</li>
             <li>Keyboard / focus handoff: see <a href="../a11y/keyboard-model.md">docs/a11y/keyboard-model.md</a> (tab order, scrubber keys, Escape).</li>
         </ul>
     </div>
     <div id="player"></div>
+    <!--
+      Canonical showcase session (SESSION_SCHEMA §1) — byte-aligned with demo.py / docs/demo.md.
+      CI: tests/test_session_schema_examples.py parses this block and compares to SAMPLE_SESSION_DATA.
+    -->
+    <script type="application/json" id="rux-showcase-session-fixture">
+{
+  "events": [
+    {"type": "click", "ts": 1.0, "x": 100, "y": 200},
+    {"type": "scroll", "ts": 5.0, "dy": 300},
+    {"type": "keypress", "ts": 8.5, "key": "a"},
+    {"type": "resize", "ts": 12.0, "w": 1920, "h": 1080},
+    {"type": "click", "ts": 15.0, "x": 500, "y": 300},
+    {"type": "scroll", "ts": 18.0, "dy": -150},
+    {"type": "keypress", "ts": 22.0, "key": "Enter"},
+    {"type": "click", "ts": 25.0, "x": 800, "y": 600},
+    {"type": "scroll", "ts": 27.5, "dy": 200},
+    {"type": "mousemove", "ts": 28.0, "x": 900, "y": 700},
+    {"type": "click", "ts": 29.0, "x": 950, "y": 750},
+    {"type": "scroll", "ts": 29.5, "dy": 50}
+  ],
+  "metadata": {
+    "start_ts": 0.0,
+    "viewport": {"w": 1920, "h": 1080},
+    "duration": 30.0
+  }
+}
+    </script>
     <script>
-        // Placeholder: Fetch real data e.g. fetch('/api/sessions/:id/replay')
-        const sessionData = {
-            events: [],  // Replayt event array
-            metadata: { startTs: Date.now(), viewport: { width: 1920, height: 1080 } }
-            // Full schema: see replayt docs
-        };
+        /** Wall-clock anchor (ms). Console sample uses relative seconds; init/scrub often need absolute ms. */
+        const ADAPTER_EPOCH_MS = 1704067200000;
 
-        // Init player (assumed API; match your replayt version)
+        /**
+         * §1 → replayt.player.init wire (SESSION_SCHEMA §2). Same idea as adaptConsoleSessionToReplaytMs in docs/examples/react/src/App.jsx.
+         */
+        function adaptConsoleSessionToReplaytMs(session, epochMs = ADAPTER_EPOCH_MS) {
+            const meta = session.metadata || {};
+            const startTsS = typeof meta.start_ts === 'number' ? meta.start_ts : 0;
+            const durationS = typeof meta.duration === 'number' ? meta.duration : null;
+            const vp = meta.viewport || {};
+            const w = vp.w ?? vp.width;
+            const h = vp.h ?? vp.height;
+            const startMs = epochMs + startTsS * 1000;
+            const durationMs = durationS != null ? durationS * 1000 : null;
+            const events = (session.events || []).map((ev) => {
+                const copy = { ...ev };
+                const tsS = ev.ts;
+                if (typeof tsS === 'number' && !Number.isNaN(tsS)) {
+                    copy.timestamp = startMs + tsS * 1000;
+                }
+                return copy;
+            });
+            const metadata = {
+                startTs: startMs,
+                ...(durationMs != null ? { durationMs } : {}),
+                ...(typeof w === 'number' && typeof h === 'number'
+                    ? { viewport: { width: w, height: h } }
+                    : {}),
+            };
+            return { events, metadata };
+        }
+
+        const consoleSessionFixture = JSON.parse(
+            document.getElementById('rux-showcase-session-fixture').textContent
+        );
+        const sessionDataForPlayer = adaptConsoleSessionToReplaytMs(consoleSessionFixture);
+
         window.replayt?.player?.init({
             container: document.getElementById('player'),
-            data: sessionData,
-            theme: 'light'  // 'dark' supported
+            data: sessionDataForPlayer,
+            theme: 'light'
         });
     </script>
 </body>

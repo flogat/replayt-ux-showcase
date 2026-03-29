@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Phase **3** (*Normalize session schema examples between Python demo and basic-player.html*): **`docs/examples/basic-player.html`** — **`rux-showcase-session-fixture`** JSON matches **`SAMPLE_SESSION_DATA`**; **`adaptConsoleSessionToReplaytMs`** before **`init`**; links **`SESSION_SCHEMA.md`**. **`docs/examples/player-session-metadata-bar.html`** — viewport validation and chrome line prefer **`w`/** **`h`**, fallback **`width`/** **`height`**. **`tests/test_session_schema_examples.py`** — drift guard vs **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`**. **`docs/examples/SESSION_SCHEMA.md`** §3, **`docs/DESIGN_PRINCIPLES.md`** traceability row for the same check.
+
 ### Documentation
 
 - Phase **2** spec (*Normalize session schema examples between Python demo and basic-player.html*): **`docs/examples/SESSION_SCHEMA.md`** — canonical showcase fixture (**`start_ts`**, **`viewport.w`/`h`**, **`duration`**, **`events[].ts`**) vs **`replayt.player.init`** wire shape, legacy placeholder notes, Builder acceptance + contract-test intent; **`docs/examples/PATTERNS.md`** — **Canonical session fixture** section, **P-01**/**P-02**/**P-03**/**P-06** alignment, backlog traceability table; **`docs/demo.md`**, **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** — cross-links and backlog traceability + automated-checks **target** row (**pytest** drift guard **phase 3**).

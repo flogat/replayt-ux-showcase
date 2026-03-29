@@ -82,14 +82,15 @@ reintroduce a second “canonical” shape that disagrees with **`SAMPLE_SESSION
 
 ## 3. Legacy placeholders (drift to remove)
 
-Until the **basic-player** backlog ships, [`basic-player.html`](basic-player.html) may still show **`startTs`** /
-**`viewport.width`**. That is **legacy** relative to §1. **[`player-session-metadata-bar.html`](player-session-metadata-bar.html)**
-(**P-02**) and other patterns that mix **`durationMs`** + **`viewport.width`** remain valid for **chrome + init** demos
-but should **cross-link** §1 when documenting **console parity** or **Python** alignment.
+[`basic-player.html`](basic-player.html) (**P-01**) keeps §1 in the **`rux-showcase-session-fixture`** JSON block and uses a
+small **adapter** before **`replayt.player.init`** when the pinned player expects §2 (see §2 and the inline comments).
 
-**Target end state:** P-01’s **commented** sample uses §1; any ms/camelCase shape is explicitly labeled **init wire** or
-produced only via adapter. P-02 **viewport** display should prefer **`viewport.w` / `viewport.h`** when present, with
-optional fallback to **`width` / `height`** documented in the same change set if both must be supported temporarily.
+**[`player-session-metadata-bar.html`](player-session-metadata-bar.html)** (**P-02**) uses **`durationMs`** and init-style
+metadata for the chrome bar; **viewport** reads **`w` / `h`** first, then **`width` / `height`**. Cross-link §1 when
+documenting **console parity** or **Python** alignment.
+
+**Target end state:** P-01’s fixture is §1; ms/camelCase is **init wire** or produced only via adapter. P-02 documents the
+viewport fallback next to the sample.
 
 ---
 
