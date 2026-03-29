@@ -133,9 +133,9 @@ The backlog **Document pip-audit failures and dependency override playbook** is 
 | **D9** | **`README.md`** includes a **Troubleshooting** (or equivalent) entry that links here for **`pip-audit` / supply-chain** failures. |
 | **D10** | Material changes to this playbook or **CI** ignore list include **CHANGELOG** **Unreleased** per project policy. |
 
-**Automated checks (follow-up):** No contract module enforces **D1–D10** in **CI** today. A later phase MAY add
-**`tests/test_dependency_audit_doc.py`** (mirroring **`tests/test_frontend_supply_chain_doc.py`**) to assert headings,
-keywords, **README** / **DESIGN_PRINCIPLES** links, and **CHANGELOG** mentions.
+**Automated checks:** **`tests/test_dependency_audit_doc.py`** enforces **D1–D10** in default **CI** **pytest** (headings,
+keywords, **`ci.yml`** **`pip-audit`** line parity, cross-links, **README** / **DESIGN_PRINCIPLES** / **compat** wiring,
+**CHANGELOG** **Unreleased** mention).
 
 **Explicit non-goals (this backlog):** Replace **pip-audit** with a different scanner in **CI**; audit **npm** packages
 in default **CI**; document **GitHub Dependabot** configuration (unless a separate backlog adds it).

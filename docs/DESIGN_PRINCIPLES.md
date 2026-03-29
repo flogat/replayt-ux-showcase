@@ -60,7 +60,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | Showcase code: **replayt** imports use only published top-level symbols (**`replayt.__all__`**) and no underscore-private **`replayt` submodules** | **`tests/test_replayt_public_api_boundary.py`** — default **`pytest`** in every **CI** **test** matrix cell; see [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard) |
-| **`docs/DEPENDENCY_AUDIT.md`** — **D1–D10** playbook (local **`pip-audit`**, fix vs override policy, **README** troubleshooting link) | **Not** enforced in **CI** today; optional future **`tests/test_dependency_audit_doc.py`** (see [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit)) |
+| **`docs/DEPENDENCY_AUDIT.md`** — **D1–D10** playbook (local **`pip-audit`**, fix vs override policy, **README** troubleshooting link) | **`tests/test_dependency_audit_doc.py`** (see [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit)) |
 
 The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
 **`.github/workflows/ci.yml`** per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
@@ -579,15 +579,15 @@ escalate without bypassing the gate.
 
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | ------------------------ |
-| **Playbook doc** | **[`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md)** — **D1–D10** | **Spec gate** — sections present; optional future **`tests/test_dependency_audit_doc.py`** |
-| **CI alignment** | **D2**, **D7**; [GitHub Actions CI workflow](#github-actions-ci-workflow) **Supply chain** row | **Manual** diff **`ci.yml`** ↔ doc; **Builder** may add contract assertions later |
-| **README discoverability** | **D9** | **README.md** troubleshooting link |
-| **CHANGELOG** on material changes | **D10**; [Changelog, semver, and release notes](#changelog-semver-and-release-notes) | **CHANGELOG** **Unreleased**; **`tests/test_changelog_release_policy_docs.py`** when playbook is listed as a watched path (if extended) |
+| **Playbook doc** | **[`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md)** — **D1–D10** | **`tests/test_dependency_audit_doc.py`** |
+| **CI alignment** | **D2**, **D7**; [GitHub Actions CI workflow](#github-actions-ci-workflow) **Supply chain** row | **`tests/test_dependency_audit_doc.py`** (`pip-audit` line parity + documented **CVE** IDs) |
+| **README discoverability** | **D9** | **`README.md`** troubleshooting link; asserted by **`tests/test_dependency_audit_doc.py`** |
+| **CHANGELOG** on material changes | **D10**; [Changelog, semver, and release notes](#changelog-semver-and-release-notes) | **CHANGELOG** **Unreleased** mention asserted by **`tests/test_dependency_audit_doc.py`** |
 
 **Builder / Tester checklist (follow-up):**
 
-1. Optionally add **`tests/test_dependency_audit_doc.py`** to enforce **D1–D9** prose anchors, cross-links, and **README**
-   wiring (mirror **`tests/test_frontend_supply_chain_doc.py`**).
+1. When **`docs/DEPENDENCY_AUDIT.md`** acceptance rows (**D1–D10**) or required cross-links change, update
+   **`tests/test_dependency_audit_doc.py`** in the same change set.
 2. When adding **`--ignore-vuln`**, update **`docs/DEPENDENCY_AUDIT.md`**, **`.github/workflows/ci.yml`**, and
    **CHANGELOG** **Unreleased** in one PR.
 
