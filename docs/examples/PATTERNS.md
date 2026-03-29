@@ -5,7 +5,7 @@ This file is the **canonical inventory** for distinct, copy-paste **vanilla HTML
 a single place to check **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code
 lands.
 
-**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins).
+**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds).
 
 ## Pattern inventory
 
@@ -81,6 +81,8 @@ the pattern testable and aligned with the backlog title.
 - Errors **must not** silently fall back to an “empty” bar that looks like a successful zeroed session.
 
 ### Keyboard focus and accessibility (normative)
+
+Shared checklist: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)** (tab order, **Escape** for dismissible UI, focus visibility). The bullets below are **P-02**-specific.
 
 - **Tab order:** Elements in the **metadata bar** that are **focusable** (links, buttons, inputs) **must** appear **before**
   the player’s focusable controls in **DOM order** (bar first, then player). If the bar has no focusable controls, the
@@ -168,7 +170,7 @@ documents a deliberate, additive extension in-snippet.
 - **Primary control:** A **range** or **single-thumb** slider (or equivalent ARIA **`slider`**) spanning the session
   timeline; dragging or keyboard adjustment **seeks** the replay.
 - **Keyboard:** Slider (or focusable scrub control) **must** be reachable and adjustable without a pointer; document
-  expected keys (native range behavior is enough if documented).
+  expected keys (native range behavior is enough if documented). Full scrubber / **Escape** guidance: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)** (sections 3–4).
 - **Published JS only:** All **replayt** calls **must** use **documented public** browser/JS entry points (same boundary
   as [Upstream boundary](../DESIGN_PRINCIPLES.md#one-way-to-do-it-canonical-patterns)—no minified private hooks). The file
   **must** list **exact symbols** used (e.g. `window.replayt.…`) in a header or comment block and tie them to **replayt**
@@ -281,6 +283,7 @@ available, when **fetch fails**, and when **init or data** fails after load— i
   control (e.g. `<button type="button">`) labeled for **retry** (e.g. “Retry”) that **re-runs** the load path.
 - **Tab order:** Retry control **must** appear in **logical** order (typically **before** any secondary chrome that is
   disabled while broken)—document intent in a comment block for handoff.
+- Broader **keyboard / focus** checklist (toolbar vs player, **Escape**): **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**.
 
 ### P-04 status live region (normative)
 
