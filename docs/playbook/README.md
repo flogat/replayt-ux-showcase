@@ -33,8 +33,8 @@
 
 | Check | Command / path | What it proves today |
 | ----- | -------------- | -------------------- |
-| Playbook structure + cross-links | After **`pip install -e ".[dev]"`**: `python -m pytest tests/test_playbook_docs.py -q` | Sections and markers **T1–T3**, **A1–A3**, **H1–H3**, README index links, root **README** quick start, **DESIGN_PRINCIPLES** self-reference stay aligned. |
+| Playbook structure + cross-links | After **`pip install -e ".[dev]"`**: `python -m pytest tests/test_playbook_docs.py -q` | Sections and markers **T1–T5**, **A1–A5**, **H1–H5**, README index links, root **README** quick start, **DESIGN_PRINCIPLES** self-reference stay aligned. |
 | Broader docs / examples contracts | `python -m pytest tests -q` (same install) | Demo coverage, **replayt** pins in **`docs/examples/`**, **P-01**–**P-09** example markers, design-kit **F1–F8**, etc., per [DESIGN_PRINCIPLES — traceability](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). |
 | Visual / render smoke | _Not in default CI yet_ | Mission target: future browser automation (e.g. headless load of **`basic-player.html`**, **P-03**, **P-09**) to catch layout regressions on scrubber and overlays. Until that ships, rely on manual open-from-repo review + pytest contracts above. |
 
-**CI:** `tests/test_playbook_docs.py` keeps the four playbook files, acceptance row markers (**T1–T3**, **A1–A3**, **H1–H3**), and integrator entry-point links aligned with [DESIGN_PRINCIPLES — traceability to automated checks](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). `tests/test_design_kit_docs.py` covers **[`docs/design-kit/`](../design-kit/README.md)** (**F1–F8**, interim **`design-tokens.json`**).
+**CI:** `tests/test_playbook_docs.py` keeps the four playbook files, acceptance row markers (**T1–T5**, **A1–A5**, **H1–H5**), and integrator entry-point links aligned with [DESIGN_PRINCIPLES — traceability to automated checks](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). `tests/test_design_kit_docs.py` covers **[`docs/design-kit/`](../design-kit/README.md)** (**F1–F8**, interim **`design-tokens.json`**).

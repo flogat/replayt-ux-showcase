@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Phase **3** (*Author design-to-code handoff playbook (checklist + token mapping)*): **`tests/test_playbook_docs.py`** — **CI** asserts playbook sections and in-doc markers **T4**–**T5**, **A4**–**A5**, **H4**–**H5** (viewport / canonical **P-01** wiring, scrubber states, **P-09** parity, checklist cross-links); **`docs/playbook/README.md`**, **`docs/DESIGN_PRINCIPLES.md`** (traceability + backlog table), and **`docs/design-kit/README.md`** — marker ranges **T1**–**T5** / **A1**–**A5** / **H1**–**H5** aligned with tests.
 - Phase **2** spec (*Author design-to-code handoff playbook (checklist + token mapping)*): **`docs/playbook/tokens.md`** — viewport / session-frame semantics vs host layout, **P-01** **`basic-player.html`** canonical **`--rux-*`** table, acceptance **T4**–**T5**; **`docs/playbook/component-anatomy.md`** — scrubber interaction states, **P-09** hover/focus parity for callouts, acceptance **A4**–**A5**; **`docs/playbook/handoff-checklist.md`** — **Viewport**, **Timeline scrubber**, and **P-09** overlay rows, acceptance **H4**–**H5**; **`docs/playbook/README.md`** — **Under one dev-day** scope tip and **How to verify** (**pytest** / **`test_playbook_docs.py`**, full suite, future visual smoke); **`docs/DESIGN_PRINCIPLES.md`** — expanded backlog traceability table for the same item.
 
 ### Changed
