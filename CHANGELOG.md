@@ -7,8 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `docs/examples/embed-container-states.html`: **P-04** vanilla example — async `sessionData` (simulated delay), skeleton UI with **Loading replay…**, user-visible **network** vs **invalid payload** errors, focusable **Retry**, **`role="status"`** / **`aria-live="polite"`** announcement contract, optional **`data-demo-state`** on **`#embed-shell`**; **`replayt.player.init`** only (backlog phase **3**, *Empty, loading, and failure states for the embed container*).
+- `tests/test_examples.py`: asserts **`embed-container-states.html`** exists and keeps minimal **P-04** contract markers aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
+
 ### Documentation
 
+- `docs/examples/PATTERNS.md`: **P-04** marked **Shipped**; mission trajectory and automated-check notes updated (same backlog, phase **3**).
+- `docs/MISSION.md`: pattern coverage — **4** shipped vanilla patterns including **P-04** (same backlog, phase **3**).
+- `docs/compat.md`: **Vanilla UI pattern catalog** — **P-04** **Shipped** (`embed-container-states.html`) (same backlog, phase **3**).
+- `docs/DESIGN_PRINCIPLES.md`: **P-04** backlog traceability — **Shipped** verification row and phase **3** delivery note (same backlog, phase **3**).
+- `docs/demo.md`: **Builder alignment** note for the cross-surface operator story now that **P-04** ships (same backlog, phase **3**).
 - `docs/examples/PATTERNS.md`: **P-04** registered (**Spec only**) — embed container skeleton loading, user-visible failure, focusable **retry**, **`role="status"` / `aria-live`** announcement contract for operators and **automation agents**, **published** replayt JS only; backlog traceability for *Empty, loading, and failure states for the embed container* (backlog phase **2**, spec lead).
 - `docs/demo.md`: **Cross-surface operator story** table links web embed phases (**loading**, **ready**, **failure**, **retry**) to console demo behavior and **P-04** (same backlog, phase **2**).
 - `docs/DESIGN_PRINCIPLES.md`: vanilla catalog lists **P-04**; **Audience** row for **Automation agents** references **P-04** live-region scrape contract; backlog traceability subsection for the embed-container states item (same backlog, phase **2**).

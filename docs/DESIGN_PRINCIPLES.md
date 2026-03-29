@@ -529,16 +529,13 @@ replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#
 
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | ------------------------ |
-| Pattern registration + criteria | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-04** | **Spec only** until HTML ships; then file on disk + pin test |
-| Skeleton loading, failure, retry, live region | **P-04** sections (embed skeleton, failure, retry, status region) | Code review + optional **`tests/test_examples.py`** markers (Builder) |
+| Pattern registration + criteria | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-04** | **`docs/examples/embed-container-states.html`** on disk; **`tests/test_docs_examples_replayt_pins.py`** + **`tests/test_examples.py`** markers |
+| Skeleton loading, failure, retry, live region | **P-04** sections (embed skeleton, failure, retry, status region) | Code review + **`tests/test_examples.py`** contract strings |
 | No private replayt APIs | **P-04** [async sessionData](examples/PATTERNS.md#p-04-async-sessiondata-acquisition-normative) + [pin / placement](examples/PATTERNS.md#p-04-replayt-pin-and-file-placement) | Code review; symbols documented in-snippet |
-| Console vs web story | **[`docs/demo.md` — Cross-surface operator story](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** | Doc drift check when **P-04** ships |
-| **CHANGELOG** / **MISSION** when shipped | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** Builder checklist | Same change set as new **`*.html`** when **P-04** → **Shipped** |
+| Console vs web story | **[`docs/demo.md` — Cross-surface operator story](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** | Table + **Builder alignment** note kept in sync with shipped **P-04** |
+| **CHANGELOG** / **MISSION** when shipped | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** Builder checklist | **P-04** → **Shipped** in phase **3** with **MISSION** count **4** |
 
-**Spec lead (phase 2):** **P-04** added to **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** as **Spec only**;
-**[`docs/demo.md`](demo.md)** cross-surface table links web phases to console behavior. **Builder (phase 3)** implements
-**`docs/examples/embed-container-states.html`** (or approved merge into **P-01** per **P-04**), updates inventory to
-**Shipped**, and extends tests per **P-04** checklist.
+**Shipped (phase 3):** **`docs/examples/embed-container-states.html`**, **P-04** marked **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **`tests/test_examples.py`** contract markers, **CHANGELOG** **Unreleased** entries, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**, **[`docs/demo.md`](demo.md)** **Builder alignment** note updated. **Spec lead (phase 2)** registered **P-04** and the cross-surface table before HTML landed.
 
 ---
 

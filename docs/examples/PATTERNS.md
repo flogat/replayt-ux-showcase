@@ -17,9 +17,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note. |
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
 | **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
-| **P-04** | [`embed-container-states.html`](embed-container-states.html) (planned) | **Spec only** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** status for operators and **automation agents**; **published** replayt JS only. |
+| **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
 
-**Mission trajectory:** **P-01**, **P-02**, and **P-03** are shipped. **P-04** is registered (**Spec only**) pending Builder delivery of the HTML artifact. Additional patterns toward **5+** stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-04** are shipped. At least **one** more registered pattern is needed to reach the mission **5+** target. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -303,19 +303,17 @@ available, when **fetch fails**, and when **init or data** fails after load— i
 
 ### Builder acceptance checklist (implementation)
 
-When **P-04** moves to **Shipped**:
+**P-04** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin tests aligned when this pattern changes.
 
-1. Artifact exists per [Relationship to P-01 and P-02](#relationship-to-p-01-and-p-02) (new file or approved merge into **P-01**).
+1. **`docs/examples/embed-container-states.html`** implements the normative sections above (new file per [Relationship to P-01 and P-02](#relationship-to-p-01-and-p-02)).
 2. [Pattern inventory](#pattern-inventory) lists **P-04** as **Shipped** with the correct filename.
 3. **[`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed)** stays aligned with the
    shipped **operator story** table (same vocabulary: loading / failure / retry / ready).
-4. **CHANGELOG** **Unreleased** records the example; **`docs/MISSION.md`** pattern count updated if this becomes a **fourth**
+4. **CHANGELOG** **Unreleased** records the example; **`docs/MISSION.md`** pattern count includes **P-04** as a **fourth**
    shipped vanilla file.
-5. **`tests/test_docs_examples_replayt_pins.py`** covers any new **`*.html`**. Optional: **`tests/test_examples.py`**
-   markers for loading copy, live region, retry button, and tab-order comment—mirror **P-02** / **P-03** when the
-   [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix) calls for them.
+5. **`tests/test_docs_examples_replayt_pins.py`** scans the new **`*.html`**. **`tests/test_examples.py`** includes file presence and light contract markers (loading copy, live region, **Retry**, tab-order comment, **replayt** script pin).
 
-**Automated checks today:** none for **P-04** until the HTML exists.
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-04**.
 
 ---
 

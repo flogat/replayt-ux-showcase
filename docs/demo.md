@@ -32,8 +32,9 @@ Integrators ship **web** embeds that spend real time in **loading**, **failure**
 | **Failure** (fetch/init/payload) | Unrecoverable errors propagate; **WARN** for bad events continues | **P-04** — visible error + **retry** where recoverable |
 | **Retry** | N/A in static demo | **P-04** — focusable control |
 
-**Builder alignment:** When **[P-04](examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery)** ships,
-keep this table accurate. Optional stretch (separate backlog unless combined): simulate phased console output (e.g. log
+**Builder alignment:** **[P-04](examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery)** ships as
+[`embed-container-states.html`](examples/embed-container-states.html); keep this table accurate when web copy or console
+demo behavior changes. Optional stretch (separate backlog unless combined): simulate phased console output (e.g. log
 lines that name **loading → ready** or **failed**)—must remain **offline** and **deterministic** per
 **`docs/DESIGN_PRINCIPLES.md`** → [LLM boundaries](DESIGN_PRINCIPLES.md#llm-boundaries).
 
