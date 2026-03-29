@@ -60,7 +60,10 @@ def test_shipped_root_html_inventory_matches_allowlist() -> None:
 
 # If the pinned replayt bundle or the browser emits unavoidable console warnings,
 # add ``(filename, substring)`` entries and a one-line rationale in a comment above.
-_CONSOLE_WARNING_ALLOWLIST: tuple[tuple[str, str], ...] = ()
+# P-11 basic-player-tailwind.html: Tailwind Play CDN logs this by design; HTML already warns integrators.
+_CONSOLE_WARNING_ALLOWLIST: tuple[tuple[str, str], ...] = (
+    ("basic-player-tailwind.html", "cdn.tailwindcss.com should not be used in production"),
+)
 
 
 def _warning_allowed(filename: str, text: str) -> bool:
