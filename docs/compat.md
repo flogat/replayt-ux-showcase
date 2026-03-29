@@ -50,7 +50,7 @@ unless a future backlog adds workflow jobs.
 | ------- | ---------------------------------------- | ------------------------------ |
 | **Install + tests** | One full gate per **Python** × **replayt** matrix cell (**EX-311-RT-*** … **EX-312-RT-***): editable **`".[dev]"`** install with **`-c`** **replayt** pin, **ruff**, **`python -m pytest tests`** with **`[tool.pytest.ini_options]`** | Reproduce locally with the same **`replayt==…`** constraint file or **`pip install "replayt==…"`** before **`pip install -e ".[dev]"`**, on a **supported** **Python**. |
 | **replayt resolution** | Explicit **`replayt-version`** per cell (**0.1.0**, **0.2.0**, **0.4.25**) | Other releases in-range are **policy** until new inventory rows + matrix pins prove them. |
-| **Example pins** | **EX-EXAMPLES-PINS** — bundled in **pytest** on every **test** cell | Snippet pins are checked on each **Python** row; not separate jobs per pattern file. |
+| **Example pins** | **EX-EXAMPLES-PINS** — bundled in **pytest** on every **test** cell | Snippet pins are checked on each **Python** × **replayt** matrix cell; not separate jobs per pattern file. |
 | **Lint / supply chain** | **ruff** inside each **test** row; **`pip-audit`** in **EX-SUPPLY-CHAIN** | Failures block merge when those steps are required. |
 
 **Future matrix rows:** When maintainers add or change **replayt** pins in **`ci.yml`**, update this inventory, **Verified in CI today** in **`docs/DESIGN_PRINCIPLES.md`**, and **`tests/test_design_principles_contract.py`** in the **same** change set.

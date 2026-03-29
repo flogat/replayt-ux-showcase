@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Phase **5** architecture review (*Expand compatibility matrix with explicit CI matrix job per row*): **`docs/compat.md`** — **CI matrix coverage** table: example-pin contract tests run per **Python** × **replayt** cell, not per **Python** version alone.
 - Phase **2** spec (*Author design-to-code handoff playbook (checklist + tokens)*): **`docs/playbook/`** — **[`README.md`](docs/playbook/README.md)** (index), **[`tokens.md`](docs/playbook/tokens.md)** (spacing / typography / color → **`--rux-*`** CSS variables + **Tailwind `theme.extend`** names), **[`component-anatomy.md`](docs/playbook/component-anatomy.md)** (timeline/scrubber + overlay regions, **P-03** / **P-06** / **P-04** ties), **[`handoff-checklist.md`](docs/playbook/handoff-checklist.md)** (printable accessibility, loading, error sections); **`README.md`** **Quick start** integrator link; **`docs/DESIGN_PRINCIPLES.md`** traceability row, module-boundary note, **Vanilla UI pattern catalog** cross-link, and **backlog traceability** table; **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/PATTERNS.md`** cross-links.
 
 ### Added
