@@ -9,6 +9,8 @@ import tomllib
 from packaging.requirements import Requirement
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+CI_YML = REPO_ROOT / ".github/workflows" / "ci.yml"
+REPLAYT_MINOR_FLOAT_YML = REPO_ROOT / ".github/workflows" / "replayt-minor-float.yml"
 
 # Must match `strategy.matrix` in `.github/workflows/ci.yml` and inventory IDs in `docs/compat.md`.
 CI_TEST_JOB_PYTHON_VERSIONS = ("3.11", "3.12")
@@ -99,7 +101,7 @@ def test_build_system_requires_have_version_constraints() -> None:
 
 def test_ci_test_job_matrix_matches_design_principles_matrix() -> None:
     """Replayt and Python matrix: CI test job exercises declared Python and replayt pins."""
-    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    ci = CI_YML.read_text(encoding="utf-8")
     assert "strategy:" in ci
     assert "matrix:" in ci
     assert "python-version:" in ci
@@ -123,11 +125,12 @@ def test_compat_ci_exercise_inventory_ids_match_ci_matrix() -> None:
     assert "**EX-REPLAYT-PY-API**" in compat
     assert "**EX-SUPPLY-CHAIN**" in compat
     assert "**EX-PLAYWRIGHT-SMOKE**" in compat
+    assert "**EX-REPLAYT-MINOR-FLOAT**" in compat
 
 
 def test_ci_examples_playwright_smoke_job_matches_spec() -> None:
     """Optional Playwright job: Chromium, replayt 0.4.25 pin, no pytest-cov gate on this step."""
-    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    ci = CI_YML.read_text(encoding="utf-8")
     assert "examples-playwright-smoke:" in ci
     assert "python -m playwright install chromium" in ci
     assert "replayt-constraint.txt" in ci
@@ -138,14 +141,32 @@ def test_ci_examples_playwright_smoke_job_matches_spec() -> None:
     assert "--browser chromium" in ci
 
 
+def test_ci_replayt_minor_float_job_matches_spec() -> None:
+    """Optional float job: schedule + workflow_dispatch only; 0.2.x constraint; dev install; import + demo smoke."""
+    text = REPLAYT_MINOR_FLOAT_YML.read_text(encoding="utf-8")
+    assert "on:" in text
+    assert "schedule:" in text
+    assert "workflow_dispatch:" in text
+    assert "push:" not in text
+    assert "pull_request:" not in text
+    assert "replayt-minor-float-smoke:" in text
+    assert 'pip install -e ".[dev]"' in text and "-c" in text
+    assert "replayt>=0.2.0,<0.3.0" in text
+    assert "packaging.version" in text
+    assert "import replayt_ux_showcase" in text
+    assert "replayt_ux_showcase.demo" in text
+    assert "[replayt-demo]" in text
+    assert "Rendering demo timeline" in text
+
+
 def test_ci_installs_editable_with_dev_extras() -> None:
     """Supported contributor entrypoint: pip install -e ".[dev]" (quoted extras)."""
-    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    ci = CI_YML.read_text(encoding="utf-8")
     assert 'pip install -e ".[dev]"' in ci
 
 
 def test_ci_runs_ruff_lint_and_format_check() -> None:
-    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    ci = CI_YML.read_text(encoding="utf-8")
     assert "ruff check" in ci
     assert "ruff format --check" in ci
 
