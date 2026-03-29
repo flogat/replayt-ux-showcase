@@ -34,6 +34,7 @@ is tracked separately in code and CHANGELOG):
 | **Session fixture** (`SAMPLE_SESSION_DATA` ↔ **`docs/examples`**) | [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [examples/PATTERNS.md — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), [`docs/demo.md`](demo.md) |
 | **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
 | Optional **replayt** minor-line float smoke (**schedule** / **manual**, not default **PR** gate) | [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), [Compatibility digest — optional float spec](compat.md#optional-replayt-minor-line-float-job-spec) |
+| **Bundled upstream reference docs** (optional **replayt** markdown snapshots, **Mission Control** refresh workflow) | [`docs/reference-documentation/README.md`](reference-documentation/README.md), [Backlog traceability: Bundled upstream reference docs workflow](#backlog-traceability-bundled-upstream-reference-docs-workflow), [Extension points](#extension-points) (**Maintainers** row) |
 
 ### Traceability to automated checks
 
@@ -62,6 +63,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T5**, **A1–A5**, **H1–H5**) | `tests/test_playbook_docs.py` |
 | **`CONTRIBUTING.md`**, [Changelog, semver, and release notes](#changelog-semver-and-release-notes) headings and semver tables, pins ↔ **DESIGN_PRINCIPLES** table, **CHANGELOG** **Unreleased** mention | `tests/test_changelog_release_policy_docs.py` |
 | **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | `tests/test_design_kit_docs.py` (sections **F1–F8**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
+| **`docs/reference-documentation/`** — spec **README**, **README**/**CONTRIBUTING** links, refresh helper documented, default **CI** does not invoke the helper | **`tests/test_reference_documentation_docs.py`** (normative sections + script path in spec; subprocess **copy** + **dry-run** checks; **`.github/workflows/ci.yml`** must not reference **`refresh-reference-docs`** / **`copy_markdown_snapshots.py`**) |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | Static **HTML** examples: **Playwright** load smoke (no **console** errors on initial load; **Chromium**-first matrix) | **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`**; **`tests/playwright/test_static_html_examples_load.py`**; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE**; `tests/test_design_principles_contract.py` (`test_ci_examples_playwright_smoke_job_matches_spec`) |
@@ -108,6 +110,7 @@ unless the test is being retired on purpose.
 | **`src/replayt_ux_showcase/`** | Python package surface (`import replayt_ux_showcase`), console demos, test helpers that exercise replayt through supported APIs | Become a second “core” for capture/replay; depend on unreleased or git-pinned replayt without an explicit maintainer decision recorded in CHANGELOG |
 | **`docs/`** | Mission, principles, demo specs, copy-paste examples, **[`docs/playbook/`](playbook/README.md)** (design-to-code handoff: tokens, anatomy, printable checklist), **[`docs/design-kit/`](design-kit/README.md)** (**Figma** library spec, variable → **`rux-*`** mapping rules, interim **`design-tokens.json`**), playbook-oriented markdown | Hold secrets, credentials, or environment-specific endpoints checked into git |
 | **`docs/examples/`** | Static HTML/JS (and future framework snippets) that integrators copy | Imply they are supported npm packages unless explicitly published as such |
+| **`docs/reference-documentation/`** | Optional **markdown** (or lightweight text) snapshots of **replayt** upstream reference material for contributors / **Mission Control** / offline context — see **[`README.md`](reference-documentation/README.md)** | Replace **PyPI** or upstream docs as the integration contract; commit material without **license** / **provenance** review; bloat the default tree with large binaries without an explicit maintainer decision and **CHANGELOG** note |
 | **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
 | **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); **`jobs.examples-playwright-smoke`** for **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`** (see [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright)); optional **`replayt-minor-float.yml`** for **schedule**/**manual** **0.2.x** float smoke ([Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job)) | Store long-lived tokens (read-only `contents` is the default contract) |
@@ -1071,6 +1074,28 @@ and **[offline / deterministic fixture](#offline-deterministic-fixture-page-for-
 
 ---
 
+#### Backlog traceability: Bundled upstream reference docs workflow
+
+**Scope:** Optional **`docs/reference-documentation/`** tree — **markdown** (or lightweight text) snapshots of **replayt**
+upstream reference docs for contributors, **Mission Control**, and automation context **without** requiring a bloated
+default clone. Canonical spec: **[`docs/reference-documentation/README.md`](reference-documentation/README.md)**.
+
+**Normalized user story:** As a maintainer, I want a **documented** way to **refresh** bundled **replayt** markdown
+(**license**, **paths**, **cadence**) and an optional **`scripts/`** helper so **Mission Control** and contributors can
+align offline context with pinned **replayt** versions, while **PyPI** / upstream remains authoritative.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| Canonical workflow + checklist | **[`docs/reference-documentation/README.md`](reference-documentation/README.md)** | File on disk; **README** + **CONTRIBUTING** + **DESIGN_PRINCIPLES** links |
+| **License** / **provenance** for committed snapshots | Same — **License and attribution**, **Layout** | Maintainer review; no secrets; **NOTICE** / **`PROVENANCE.md`** when files are added |
+| **Refresh** triggers + **CHANGELOG** when snapshots change | Same — **Refresh cadence**, **Maintenance checklist** | Process review; **Unreleased** bullet when tree gains or materially updates upstream copies |
+| Optional **scripts/** refresh helper | Same — **Optional automation** | **`scripts/refresh-reference-docs/copy_markdown_snapshots.py`** documented in spec **README**; **`tests/test_reference_documentation_docs.py`** |
+| Default clone stays lean | **Layout**, module boundary row [Module and directory boundaries](#module-and-directory-boundaries) | Repo may ship **only** spec **README** under **`docs/reference-documentation/`**; no new default **CI** deps |
+
+**Enforcement in CI today:** **`tests/test_reference_documentation_docs.py`** guards spec structure, cross-links, helper documentation, and that **default CI** does not run the helper. **No** test requires committed snapshot files under **`docs/reference-documentation/`** (tree may stay **README**-only).
+
+---
+
 ## Extension points
 
 What integrators and maintainers may rely on or extend:
@@ -1081,7 +1106,7 @@ What integrators and maintainers may rely on or extend:
 | **Integrators** | **replayt** APIs used in examples (imports, session/event shapes) | Governed by **replayt** semver and this repo’s stated supported range |
 | **Integrators** | **`replayt_ux_showcase`** entrypoints and helpers described in README or package docs as stable | SemVer for behavior; breaking CLI or import paths follow [Deprecation and removal](#deprecation-and-removal) |
 | **Maintainers** | New pytest coverage and optional CI matrix dimensions | Internal to repo; must keep logs and exit codes obvious ([Observable automation](#principles)) |
-| **Maintainers** | Optional **`docs/reference-documentation/`** snapshots | Contributor convenience only; not a substitute for upstream docs |
+| **Maintainers** | Optional **`docs/reference-documentation/`** snapshots | Contributor convenience only; not a substitute for upstream docs — normative process in **[`docs/reference-documentation/README.md`](reference-documentation/README.md)** |
 
 **Non–extension points:** Undocumented imports from **replayt**, private modules, or scraping this repo’s CI logs as
 an API.
