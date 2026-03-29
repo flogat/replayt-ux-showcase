@@ -24,10 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/examples/PATTERNS.md`: **P-02** catalog and normative spec; **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** pattern coverage and traceability (phase **2**).
 - `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec for **`tests/test_docs_examples_replayt_pins.py`** (pin scan scope, **`pin-exempt`** comments); traceability for default **CI** **pytest** (phases **2**–**3**).
 - **CHANGELOG** **Unreleased** (phase **5** architect): one **`Added`** group and consolidated **P-04** / **P-03** documentation bullets (no duplicate **`### Added`** headings).
-
-### Fixed
-
-- `docs/examples/player-session-metadata-bar.html`: render placeholder status with **`textContent`** / **`createElement`** instead of templated **`innerHTML`**, so integrators who swap in dynamic copy do not risk accidental HTML injection (backlog phase **6** security review, *Ship session metadata chrome pattern (viewport, duration, session id)*).
+- Phase **6** security review (*Empty, loading, and failure states for the embed container*): **`docs/examples/embed-container-states.html`** updates the live region and visible errors with **`textContent`** only (no **`innerHTML`** for dynamic strings); **replayt** script pin remains **`replayt@0.1.0`** on **jsDelivr**, within **`pyproject.toml`**. Init failures log via **`console.error`** for developer tooling only—not copied into **`#embed-status`**.
 
 ## [0.2.0] - 2026-03-28
 
