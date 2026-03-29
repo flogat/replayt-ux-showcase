@@ -138,8 +138,8 @@ def test_click_heatmap_canvas_contract_markers():
     assert "2D histogram" in text
     assert "box blur" in text
     assert "Tab order (handoff):" in text
-    assert "role=\"img\"" in text
-    assert "aria-labelledby=\"heatmap-title\"" in text
+    assert 'role="img"' in text
+    assert 'aria-labelledby="heatmap-title"' in text
     assert "keyboard-model.md" in text
     assert "focus-visible" in text
     assert "fetch(" not in text
