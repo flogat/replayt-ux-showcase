@@ -10,7 +10,7 @@ in `docs/DESIGN_PRINCIPLES.md`. If anything here disagrees with that document, *
 | --------- | ------------------ | -------------------- | ----- |
 | **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` (PEP 508 in `pyproject.toml`) | **One** resolved version per default CI job: the **latest** package on PyPI that satisfies that range at install time | Not every patch release is pinned in CI; the range is the support promise. To claim specific minors are regression-tested, add explicit matrix jobs (see [CI matrix coverage](#ci-matrix-coverage)). |
 | **Python** | `requires-python` (currently **≥ 3.11**) | **3.11** and **3.12** in the **test** job **`strategy.matrix`** (`.github/workflows/ci.yml`; see design principles matrix) | Extra interpreters need new matrix rows and doc updates in the same change set. |
-| **Vanilla examples** (`docs/examples/`) | Intended copy-paste surface per [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix) | File or smoke checks under `tests/` **when implemented** | Front-end stacks (React/Vue/Svelte) are documented ahead of examples; CI follows when demos ship. |
+| **Vanilla examples** (`docs/examples/`) | Intended copy-paste surface per [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix); **replayt** pins must sit inside the same PEP 508 range as `pyproject.toml` | Contract test **`tests/test_docs_examples_replayt_pins.py`** (per [Vanilla examples: integrator-facing replayt pins](DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins)) **when implemented**; optional extra file/smoke tests later | Keeps CDN and requirement snippets from drifting ahead of the supported consumer story; intentional out-of-range demos use `<!-- replayt-examples:pin-exempt -->` per design principles. |
 
 Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix), [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix).
 
@@ -53,4 +53,4 @@ Full rules: [Deprecation and removal](DESIGN_PRINCIPLES.md#deprecation-and-remov
 ## Tracking upstream
 
 - Watch **replayt** on PyPI and upstream release notes for semver and API changes.
-- When widening the supported **replayt** range (e.g. raising the `<0.5` cap), update **`pyproject.toml`**, design principles matrices, **CHANGELOG**, and any contract tests **together**, per [Dependency pins and dev toolchain](DESIGN_PRINCIPLES.md#dependency-pins-and-dev-toolchain).
+- When widening the supported **replayt** range (e.g. raising the `<0.5` cap), update **`pyproject.toml`**, design principles matrices, **`docs/examples/`** pins (and the examples contract test if detection rules change), **CHANGELOG**, and any contract tests **together**, per [Dependency pins and dev toolchain](DESIGN_PRINCIPLES.md#dependency-pins-and-dev-toolchain) and [Vanilla examples: integrator-facing replayt pins](DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins).

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec and traceability for **contract tests** that scan **`docs/examples/**/*.{html,md}`** so **replayt** CDN and requirement pins stay inside the PEP 508 range from **`pyproject.toml`**, including **`<!-- replayt-examples:pin-exempt -->`** for deliberate exceptions (backlog phase 2, Contract test: examples reference replayt in supported semver range).
+
 ## [0.2.0] - 2026-03-28
 
 ### Changed
