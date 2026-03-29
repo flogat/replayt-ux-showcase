@@ -52,6 +52,7 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
 | `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
+| `docs/examples/PATTERNS.md` | Canonical UI pattern inventory (mission **5+** tracking, per-pattern acceptance criteria) |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
 | `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract |

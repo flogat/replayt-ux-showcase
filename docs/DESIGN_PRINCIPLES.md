@@ -19,6 +19,7 @@ is tracked separately in code and CHANGELOG):
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
+| Distinct vanilla UI patterns (mission: **5+**), per-pattern acceptance | [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog), [examples/PATTERNS.md](examples/PATTERNS.md), [MISSION.md](MISSION.md#pattern-coverage-tracking) |
 
 ### Traceability to automated checks
 
@@ -471,6 +472,37 @@ copy the pattern; “CI” means automated verification exists.
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
 | Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |
 
+### Vanilla UI pattern catalog
+
+**Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
+(**P-01**, **P-02**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
+target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
+**[`docs/compat.md` — Vanilla UI pattern catalog](compat.md#vanilla-ui-pattern-catalog)**.
+
+New patterns **must** be registered in **`docs/examples/PATTERNS.md`** before or in the same change set as the new
+**`docs/examples/*.html`** file (see [Single home for copy-paste demos](#one-way-to-do-it-canonical-patterns)).
+
+#### Backlog traceability: Ship session metadata chrome pattern (viewport, duration, session id)
+
+**Normalized user story:** As integrator, I want a **second vanilla HTML** example that adds a **compact metadata bar**
+above the player (session id, viewport, duration) using the **same `sessionData` root shape** as **`basic-player.html`**,
+with explicit **loading**, **error**, and **keyboard focus** behavior.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ------------------------ |
+| Second vanilla snippet, bar above player | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-02** | **Spec gate** — rules complete; **Builder** adds `player-session-metadata-bar.html` |
+| Same `sessionData` shape as P-01 (additive `metadata`) | **P-02** [`sessionData` contract](examples/PATTERNS.md#sessiondata-contract-compatibility-with-p-01) | Code review + inventory update |
+| Loading placeholder | **P-02** [Loading state](examples/PATTERNS.md#loading-state-normative) | Manual / future browser smoke |
+| Error when required metadata missing | **P-02** [Error state](examples/PATTERNS.md#error-state-normative) | Manual / future browser smoke |
+| Keyboard focus order (bar before player) | **P-02** [Keyboard focus and accessibility](examples/PATTERNS.md#keyboard-focus-and-accessibility-normative) | Manual / future a11y check |
+| **CHANGELOG** + mission pattern count | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, [P-02 Builder checklist](examples/PATTERNS.md#builder-acceptance-checklist-implementation) | **CHANGELOG** **Unreleased**; **MISSION** table |
+
+**Builder checklist (phase 3):**
+
+1. Implement **`docs/examples/player-session-metadata-bar.html`** per **P-02** in **`docs/examples/PATTERNS.md`**.
+2. Set **P-02** to **Shipped** in the pattern inventory; refresh **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts.
+3. Add **CHANGELOG** **Unreleased** (**Added**) for the new example; keep **replayt** CDN pin inside the **`pyproject.toml`** range (**`tests/test_docs_examples_replayt_pins.py`**).
+
 ---
 
 ## Extension points
@@ -511,6 +543,7 @@ an API.
 | **replayt** minor/major with API changes | Update examples and tests; refresh matrices; **CHANGELOG** with “how to update your copy” bullets |
 | **New Python floor** | Update `requires-python`, CI images, and the [Replayt and Python matrix](#replayt-and-python-matrix) |
 | **New framework example** | Add under **`docs/examples/`** (or scoped subdir), link from README/demo spec, add showcase row above |
+| **New vanilla UI pattern** | Add **`docs/examples/*.html`**, register in **`docs/examples/PATTERNS.md`**, update **CHANGELOG** **Unreleased** and **`docs/MISSION.md`** pattern table ([Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog)) |
 | **Integrator upgrading** | Compare their pinned **replayt** to this repo’s supported range; follow **CHANGELOG** for the showcase version they target |
 | **Dev toolchain or replayt pin change** | Update **`pyproject.toml`**, [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) / matrix cells, contract tests, and **CHANGELOG** in one change set |
 

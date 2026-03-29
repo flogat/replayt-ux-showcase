@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- `docs/examples/PATTERNS.md`: canonical **vanilla UI pattern** catalog (**P-01** / **P-02**), normative **P-02** spec (session metadata bar above player, `sessionData` compatibility with `basic-player.html`, loading / error / focus rules), and Builder checklist (backlog phase **2** spec lead, *Ship session metadata chrome pattern (viewport, duration, session id)*).
+- `docs/MISSION.md`, `docs/compat.md`, `docs/DESIGN_PRINCIPLES.md`: pattern coverage tracking toward **5+** examples, digest link, design-principles traceability and backlog mapping for **P-02** (same backlog, phase **2**).
+
 ### Added
 
 - `tests/test_docs_examples_replayt_pins.py`: **pytest** contract for **`docs/examples/**/*.{html,md}`** — **replayt** CDN (`replayt@…`) and PEP 508-style pins checked against the **`replayt`** line in **`pyproject.toml`**, with **`<!-- replayt-examples:pin-exempt -->`** skipping the next script line, URL line, or fenced block (backlog phase 3, Contract test: examples reference replayt in supported semver range).

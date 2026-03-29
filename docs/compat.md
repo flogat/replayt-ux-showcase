@@ -14,6 +14,12 @@ in `docs/DESIGN_PRINCIPLES.md`. If anything here disagrees with that document, *
 
 Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix), [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix).
 
+## Vanilla UI pattern catalog
+
+**Mission:** ≥ **5** distinct vanilla patterns under **`docs/examples/`** (see [MISSION.md — Pattern coverage tracking](MISSION.md#pattern-coverage-tracking)).
+
+**Canonical inventory:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) lists pattern IDs, filenames, shipped vs spec-only status, and **Builder** acceptance checklists. When compatibility or pinning rules for examples change, follow [Vanilla examples: integrator-facing replayt pins](DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) and update **CHANGELOG** **Unreleased** together with **`docs/examples/PATTERNS.md`** if the pattern list or contracts change.
+
 ## CI matrix coverage
 
 **Rule:** CI must not claim coverage it does not run ([Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix)).

@@ -23,4 +23,14 @@ Delegates upstream: core capture/replay logic.
 
 - CI automated tests: Demos render/load across supported replayt versions (smoke/integration via pytest + browser automation); compatibility matrix green.
 - Playbook: Handovers pass checklist (<1 dev-day).
-- Coverage: 5+ patterns; tracked via CHANGELOG/compat docs.
+- Coverage: **5+** distinct UI patterns; tracked via **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** (canonical inventory), **CHANGELOG**, and **[compat digest](compat.md#vanilla-ui-pattern-catalog)**.
+
+### Pattern coverage tracking
+
+**Source of truth:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) — pattern IDs (**P-01**, **P-02**, …), filenames, status (**Shipped** / **Spec only** / **Planned**), and per-pattern acceptance criteria.
+
+| Metric | Target | Current (update when patterns ship) |
+| ------ | ------ | ------------------------------------- |
+| Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **1** shipped (**P-01** `basic-player.html`); **P-02** session metadata chrome specified, pending implementation |
+
+When a pattern moves to **Shipped**, update this table and the inventory in **`docs/examples/PATTERNS.md`** in the same change set as the new or updated **`*.html`** file and **CHANGELOG** **Unreleased**.
