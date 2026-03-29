@@ -19,6 +19,13 @@ Owns:
 
 Delegates upstream: core capture/replay logic.
 
+## Non-goals
+
+- Not a hosted product, standalone “main app”, or separate “publish app” surface from this repository.
+- Not a replacement for **replayt** core capture, storage, or replay APIs.
+- Not an implied published **npm** package or framework SDK; shipped framework examples remain copy-paste showcase code.
+- Not a replacement for upstream **replayt** documentation; bundled reference docs, when present, are contributor convenience only.
+
 ## Success
 
 - CI automated tests: Demos render/load across supported replayt versions (smoke/integration via **pytest** + contract tests today; optional **Playwright** load smoke for **Shipped** vanilla **`docs/examples/*.html`** specified in **[`docs/DESIGN_PRINCIPLES.md` — Static HTML examples: browser smoke (Playwright)](DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)**); compatibility matrix green.
