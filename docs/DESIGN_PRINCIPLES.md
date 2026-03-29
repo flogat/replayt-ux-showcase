@@ -33,6 +33,7 @@ is tracked separately in code and CHANGELOG):
 | **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
 | **Session fixture** (`SAMPLE_SESSION_DATA` ↔ **`docs/examples`**) | [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [examples/PATTERNS.md — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), [`docs/demo.md`](demo.md) |
 | **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
+| Optional **replayt** minor-line float smoke (**schedule** / **manual**, not default **PR** gate) | [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), [Compatibility digest — optional float spec](compat.md#optional-replayt-minor-line-float-job-spec) |
 
 ### Traceability to automated checks
 
@@ -66,10 +67,13 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Static **HTML** examples: **Playwright** load smoke (no **console** errors on initial load; **Chromium**-first matrix) | **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`**; **`tests/playwright/test_static_html_examples_load.py`**; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE**; `tests/test_design_principles_contract.py` (`test_ci_examples_playwright_smoke_job_matches_spec`) |
 | Showcase code: **replayt** imports use only published top-level symbols (**`replayt.__all__`**) and no underscore-private **`replayt` submodules** | **`tests/test_replayt_public_api_boundary.py`** — default **`pytest`** in every **CI** **test** matrix cell; see [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard) |
 | **`docs/DEPENDENCY_AUDIT.md`** — **D1–D10** playbook (local **`pip-audit`**, fix vs override policy, **README** troubleshooting link) | **`tests/test_dependency_audit_doc.py`** (see [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit)) |
+| Optional **replayt** minor-line float job (**latest patch** within one minor, import + demo subprocess only) | **`.github/workflows/replayt-minor-float.yml`** — **`jobs.replayt-minor-float-smoke`**; **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**; `tests/test_design_principles_contract.py` (`test_ci_replayt_minor_float_job_matches_spec`); normative spec: [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), **`docs/compat.md`** [Optional replayt minor-line float job (spec)](compat.md#optional-replayt-minor-line-float-job-spec) |
 
 The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
-**`.github/workflows/ci.yml`** per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
-**`test_compat_ci_exercise_inventory_ids_match_ci_matrix`** (same change set as workflow or inventory edits — see
+**`.github/workflows/ci.yml`** and with any companion workflow file that has an inventory row (for example **`replayt-minor-float.yml`**
+for **EX-REPLAYT-MINOR-FLOAT**)
+per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
+**`test_compat_ci_exercise_inventory_ids_match_ci_matrix`** / **`test_ci_replayt_minor_float_job_matches_spec`** (same change set as workflow or inventory edits — see
 [Backlog traceability: Expand compatibility matrix with explicit CI matrix job per row](#backlog-traceability-expand-compatibility-matrix-with-explicit-ci-matrix-job-per-row)).
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
@@ -106,7 +110,7 @@ unless the test is being retired on purpose.
 | **`docs/examples/`** | Static HTML/JS (and future framework snippets) that integrators copy | Imply they are supported npm packages unless explicitly published as such |
 | **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
-| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); **`jobs.examples-playwright-smoke`** for **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`** (see [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright)) | Store long-lived tokens (read-only `contents` is the default contract) |
+| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); **`jobs.examples-playwright-smoke`** for **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`** (see [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright)); optional **`replayt-minor-float.yml`** for **schedule**/**manual** **0.2.x** float smoke ([Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job)) | Store long-lived tokens (read-only `contents` is the default contract) |
 
 **Dependency direction:** showcase code and tests **→** **replayt** (PyPI). Demos may document how integrators pull
 **replayt** in their own apps; this repo does not re-export **replayt** as a different product.
@@ -577,8 +581,11 @@ work unless a change here explicitly requires synchronized updates to **`.github
 
 ### Canonical workflow file
 
-- **Path:** **`.github/workflows/ci.yml`** — single primary workflow for PR/push automation on this repo (name aligns with
+- **Path:** **`.github/workflows/ci.yml`** — primary workflow for PR/push automation on this repo (name aligns with
   contract tests that read this file).
+- **Companion:** **`.github/workflows/replayt-minor-float.yml`** — optional **replayt** **0.2.x** patch float smoke (**`schedule`** /
+  **`workflow_dispatch`** only); see [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job) and
+  **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**.
 
 ### Triggers (acceptance)
 
@@ -605,6 +612,66 @@ work unless a change here explicitly requires synchronized updates to **`.github
 | **replayt** compatibility | **replayt** is pinned per **test** matrix cell (**`-c`** constraint) while staying inside **`[project].dependencies`**; contract tests and the **pytest** suite exercise pins, import smoke, and integration boundaries ([Demo module testing](#demo-module-testing-and-replayt-integration-boundaries), [Dependency pins](#dependency-pins-and-dev-toolchain)) | **`test_replayt_importable`**, **`test_replayt_dependency_matches_design_principles_matrix`**, **`test_ci_test_job_matrix_matches_design_principles_matrix`**, **`test_compat_ci_exercise_inventory_ids_match_ci_matrix`**, and full **`pytest`** run in CI |
 | **Supply chain** | Keep **`pip-audit`** aligned with **`docs/DEPENDENCY_AUDIT.md`** (including documented **`--ignore-vuln`** entries that match the workflow). | Existing **`supply-chain`** (or equivalent) job |
 | **Static HTML smoke (optional)** | **`jobs.examples-playwright-smoke`**: **Playwright** loads **Shipped** **`docs/examples/*.html`** over **HTTP** per [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright); **Chromium**-first; scoped **`pytest`** (**`--no-cov`**, **`--override-ini="addopts="`**) does **not** replace **`jobs.test`** **pytest** **cov** gate | **`tests/playwright/test_static_html_examples_load.py`**; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE**; **`test_ci_examples_playwright_smoke_job_matches_spec`** |
+| **replayt** minor-line float (optional) | **`schedule`** + **`workflow_dispatch`** only; **`pip install -e ".[dev]"`** with **PEP 508** constraint bounding **replayt** to **0.2.x** inside **`pyproject.toml`**; post-install version assert; **import smoke** + **`python -m replayt_ux_showcase.demo`** subprocess success only — **no** default **PR** trigger, **no** **ruff**/**cov**/**full pytest**/**Playwright**/**pip-audit** in this job unless a separate backlog expands it | **`.github/workflows/replayt-minor-float.yml`**; **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**; **`test_ci_replayt_minor_float_job_matches_spec`** |
+
+### Optional replayt minor-line float CI job
+
+Normative spec for the backlog item **Optional CI matrix job: second replayt semver line**: an **additional** automation
+path that proves the showcase still **imports** and the **console demo** runs against the **latest PyPI patch** on a
+**chosen minor** **replayt** line (within **`replayt>=0.1.0,<0.5.0`**), **without** running the full **`jobs.test`**
+matrix on every **PR**.
+
+### Replayt float job triggers (acceptance)
+
+- MUST include **`workflow_dispatch`** (manual run from **Actions**).
+- MUST include **`schedule`** with a maintainer-chosen **cron** (for example weekly).
+- MUST **NOT** list **`push`** or **`pull_request`** for this job’s workflow (or job-level `if:` that would run it on those
+  events) unless **CHANGELOG** and this section document an intentional widening of the **PR** gate.
+
+### Replayt float job install and version truth (acceptance)
+
+- Use the same contributor entrypoint **`pip install -e ".[dev]"`** with a **constraint** that resolves **replayt** to the
+  **highest** patch within the target minor (illustrative: **`replayt>=0.2.0,<0.3.0`**).
+- After install, assert **`replayt.__version__`** is inside the same bounds so logs show the resolved patch.
+
+### Replayt float job smoke commands (acceptance)
+
+1. **Import smoke:** prove **`replayt`** and **`replayt_ux_showcase`** import in one process.
+2. **Demo subprocess:** **`python -m replayt_ux_showcase.demo`** exits **0**; output meets the same subprocess bar as
+   **`docs/demo.md`** / **`tests/test_demo.py`** (success, **`[replayt-demo]`** timeline lines).
+
+### Replayt float job non-goals (acceptance)
+
+- This job does **not** replace **`jobs.test`**: it does **not** run **`ruff`**, the **80%** **`demo.py`** **cov** gate, the
+  full **`tests/`** contract suite, **Playwright**, or **`pip-audit`**.
+- **`tests/test_replayt_public_api_boundary.py`** and **`tests/test_docs_examples_replayt_pins.py`** remain **PR**-gated
+  via **`jobs.test`** unless a future backlog explicitly adds them here.
+
+### Replayt float job documentation and inventory (acceptance)
+
+- Shipped: **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) row **`EX-REPLAYT-MINOR-FLOAT`**,
+  [Replayt and Python matrix](#replayt-and-python-matrix) / [Supported vs tested](#supported-vs-tested-replayt-and-python)
+  **Verified in CI today** wording, **`.github/workflows/replayt-minor-float.yml`**, and **`tests/test_design_principles_contract.py`**
+  (**`test_ci_replayt_minor_float_job_matches_spec`**) stay updated together when the float job changes.
+
+### Backlog traceability: Optional CI matrix job — second replayt semver line
+
+**Normalized user story:** As an integrator, I want evidence that this repo stays healthy on **more than one fixed patch**
+of **replayt** within a minor line, without forcing maintainers to double **PR** **pytest** runtime.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ---------------------- |
+| **Triggers** off the default **PR** path | [Replayt float job triggers](#replayt-float-job-triggers-acceptance) | **`on:`** in workflow YAML — **`schedule`** + **`workflow_dispatch`** only until explicitly revised |
+| **Float** latest patch in one minor line inside PEP 508 range | [Replayt float job install and version truth](#replayt-float-job-install-and-version-truth-acceptance) | Constraint file or equivalent; **`replayt.__version__`** assert in logs |
+| **Import smoke** + **demo subprocess** | [Replayt float job smoke commands](#replayt-float-job-smoke-commands-acceptance) | CI steps or minimal **pytest** with **`--no-cov`** — not full **`jobs.test`** |
+| **Honest “verified in CI today”** | [Replayt float job documentation and inventory](#replayt-float-job-documentation-and-inventory-acceptance), **`docs/compat.md`** | New **EX-*** row + matrix prose updated with workflow |
+| **CHANGELOG** on ship | [Changelog, semver, and release notes](#changelog-semver-and-release-notes) | **Unreleased** when workflow lands |
+
+**Builder checklist (phase 3):** *(shipped — **`replayt-minor-float.yml`**, **EX-REPLAYT-MINOR-FLOAT**, contract test)*
+
+1. Keep **`jobs.replayt-minor-float-smoke`** on **`schedule`** + **`workflow_dispatch`** only (separate workflow file).
+2. Keep install + asserts + smoke steps per [Replayt float job install and version truth](#replayt-float-job-install-and-version-truth-acceptance) and [Replayt float job smoke commands](#replayt-float-job-smoke-commands-acceptance).
+3. When changing pins or steps, update **`docs/compat.md`**, [Replayt and Python matrix](#replayt-and-python-matrix) / [Supported vs tested](#supported-vs-tested-replayt-and-python), **`tests/test_design_principles_contract.py`**, and **CHANGELOG** **Unreleased** in one change set.
 
 ### README badges (acceptance)
 
@@ -692,7 +759,7 @@ when additional cells become required.
 
 | Dimension | Supported (policy) | Verified in CI today | Migration / notes |
 | --------- | ------------------- | -------------------- | ------------------ |
-| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` in `[project].dependencies` (PEP 508); MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | **0.1.0**, **0.2.0**, and **0.4.25** pinned per **`strategy.matrix.replayt-version`** on `pip install -e ".[dev]" -c …` in the **test** job (`.github/workflows/ci.yml`); see [CI exercise row inventory](compat.md#ci-exercise-row-inventory) | The `<0.5` cap excludes 0.5+ until maintainers widen the range after compatibility checks; any change to bounds updates this cell, contract tests, pins, matrix, inventory, and **CHANGELOG** together; other in-range releases remain **policy-only** until added to the matrix; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
+| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` in `[project].dependencies` (PEP 508); MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | **0.1.0**, **0.2.0**, and **0.4.25** pinned per **`strategy.matrix.replayt-version`** on `pip install -e ".[dev]" -c …` in the **test** job (**`.github/workflows/ci.yml`**); see [CI exercise row inventory](compat.md#ci-exercise-row-inventory). Additionally, **`.github/workflows/replayt-minor-float.yml`** (**`schedule`** / **`workflow_dispatch`** only) floats **latest** **0.2.x** with **`replayt>=0.2.0,<0.3.0`** — **EX-REPLAYT-MINOR-FLOAT**; [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job). | The `<0.5` cap excludes 0.5+ until maintainers widen the range after compatibility checks; any change to bounds updates this cell, contract tests, pins, matrix, inventory, and **CHANGELOG** together; other in-range releases remain **policy-only** until added to the matrix; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
 | **Python** | `>=3.11` per `requires-python` | **3.11** and **3.12** on `ubuntu-latest` via **`strategy.matrix.python-version`** in the **test** job, combined with **`replayt-version`** as in **compat.md** | Add or drop matrix rows with `requires-python`, **compat.md**, and contract tests in one change set |
 
 ---
@@ -712,9 +779,12 @@ the two differ.
   The **test** job uses a **`python-version`** × **`replayt-version`** matrix (**3.11** / **3.12** × **0.1.0** / **0.2.0** /
   **0.4.25**), each cell pinning **replayt** via **pip** **`-c`**. That is **not** the same as “every **replayt** release
   in the PEP 508 range is regression-tested” until more pins are added to the matrix and inventory.
+  An **optional** **schedule**/**manual** job in **`.github/workflows/replayt-minor-float.yml`** proves **latest patch** on **0.2.x**
+  ([Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), **EX-REPLAYT-MINOR-FLOAT**); it does **not**
+  run on default **push**/**pull_request** and does **not** replace per-patch matrix cells.
 - **No false claims** — Documentation (including **README**, this file, and **compat.md**) MUST NOT imply CI exercises
-  matrix cells that are not implemented in **`.github/workflows/ci.yml`** (or documented follow-up jobs). When new rows
-  ship, update the **Verified in CI today** columns here and in **compat.md** in the same change set as the workflow.
+  matrix cells that are not implemented in **`.github/workflows/ci.yml`**, named companion workflows, or **compat.md** inventory rows.
+  When new rows ship, update the **Verified in CI today** columns here and in **compat.md** in the same change set as the workflow.
 
 ### CI exercise rows (matrix jobs and best-effort)
 
@@ -741,9 +811,9 @@ a **concrete** workflow job (or **`strategy.matrix`** combination) or be explici
      like *supported by policy*, *not regression-tested per minor*, or *not required in default CI* (see [Showcase stack matrix](#showcase-stack-matrix)
      for stacks marked **Not required**).
 
-- **Adding or removing rows** — Update **`.github/workflows/ci.yml`**, the [Replayt and Python matrix](#replayt-and-python-matrix),
-  **`docs/compat.md`** (quick reference + inventory), **`CHANGELOG`**, and **`tests/test_design_principles_contract.py`**
-  (when the contract encodes matrix coordinates or inventory rules) **in one change set**.
+- **Adding or removing rows** — Update **`.github/workflows/ci.yml`** (and any companion workflow such as **`replayt-minor-float.yml`**),
+  the [Replayt and Python matrix](#replayt-and-python-matrix), **`docs/compat.md`** (quick reference + inventory), **`CHANGELOG`**, and
+  **`tests/test_design_principles_contract.py`** (when the contract encodes matrix coordinates or inventory rules) **in one change set**.
 
 ### Compatibility shims (consumer-side)
 
