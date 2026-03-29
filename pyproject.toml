@@ -9,11 +9,16 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+  "pip-audit>=2.7.0",
+  "playwright>=1.48.0",
   "pytest>=8.0",
   "pytest-cov>=5.0.0",
+<<<<<<< HEAD
   "pytest-playwright>=0.5.0,<0.7.0",
+=======
+  "pytest-playwright>=0.5.0",
+>>>>>>> origin/mc/backlog-ef4adea7
   "ruff>=0.6.0",
-  "pip-audit>=2.7.0",
 ]
 
 [build-system]
@@ -27,6 +32,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.pytest.ini_options]
+testpaths = ["tests"]
 addopts = [
   "--cov=replayt_ux_showcase.demo",
   "--cov-fail-under=80",
@@ -36,4 +42,7 @@ addopts = [
 ]
 markers = [
   "playwright: Chromium load smoke for shipped docs/examples/*.html (see README; CI job examples-playwright-smoke)",
+]
+markers = [
+  "browser_smoke: Playwright smoke for docs/examples (isolated from default pytest-cov addopts; see README).",
 ]

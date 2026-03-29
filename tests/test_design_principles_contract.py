@@ -87,11 +87,22 @@ def test_dev_optional_dependencies_match_baseline_package_set() -> None:
     names = {Requirement(d.strip()).name.lower() for d in dev}
     assert names == {
         "pip-audit",
+<<<<<<< HEAD
+=======
+        "playwright",
+>>>>>>> origin/mc/backlog-ef4adea7
         "pytest",
         "pytest-cov",
         "pytest-playwright",
         "ruff",
+<<<<<<< HEAD
     }, f"dev extras must match DESIGN_PRINCIPLES baseline; got {sorted(names)}"
+=======
+    }, (
+        "dev extras must match DESIGN_PRINCIPLES.md Dev optional dependency set (baseline); "
+        f"got {sorted(names)}"
+    )
+>>>>>>> origin/mc/backlog-ef4adea7
 
 
 def test_build_system_requires_have_version_constraints() -> None:
@@ -170,6 +181,21 @@ def test_ci_runs_ruff_lint_and_format_check() -> None:
     ci = CI_YML.read_text(encoding="utf-8")
     assert "ruff check" in ci
     assert "ruff format --check" in ci
+
+
+def test_ci_main_pytest_ignores_playwright_package() -> None:
+    """Default pytest job keeps pytest-cov addopts; Playwright tests live under a separate path (see DESIGN_PRINCIPLES)."""
+    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "--ignore=tests/docs_examples_playwright" in ci
+
+
+def test_ci_runs_docs_examples_playwright_smoke() -> None:
+    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "docs-examples-playwright:" in ci
+    assert "playwright install --with-deps chromium" in ci
+    assert "tests/docs_examples_playwright" in ci
+    assert "--no-cov" in ci
+    assert "--browser chromium" in ci
 
 
 def test_readme_ci_badge_uses_repository_slug() -> None:
