@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 - Phase **2** spec (*Rewrite the README intro around audience, outcome, and scope*): **`docs/DESIGN_PRINCIPLES.md`** — new [README intro and repo orientation](docs/DESIGN_PRINCIPLES.md#readme-intro-and-repo-orientation) contract covering above-the-fold placement, required audience/outcome/non-goal copy, real-doc link targets, and Builder checklist; **`docs/MISSION.md`** — explicit **Non-goals** section so the README rewrite can point at stable repo boundaries instead of stale “main app / publish app” wording from the backlog text.
+- Phase **3** Builder (*Rewrite the README intro around audience, outcome, and scope*): **`README.md`** — new top-of-file orientation block under the **H1** covering the intended audience, shipped repo surfaces (**`docs/examples/`**, **`docs/playbook/`**, **`docs/design-kit/`**, **`src/replayt_ux_showcase/`**), explicit non-goals, and direct next-step links to **Quick start**, **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/PATTERNS.md`**, and **`docs/playbook/README.md`**.
 
 <<<<<<< HEAD
 - Phase **8** CI fix (*Figma design kit stub: tokens + component list*): **`ruff format`** on **`tests/test_design_kit_docs.py`** so **`ruff format --check`** passes in **GitHub Actions** (matrix **test** job was failing on Ruff formatting for that file).
