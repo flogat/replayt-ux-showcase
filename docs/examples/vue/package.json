@@ -1,0 +1,21 @@
+{
+  "name": "ux-showcase-examples-vue-p07",
+  "private": true,
+  "description": "Copy-paste Vue 3 timeline player example; not published to npm. See README.md.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.3"
+  }
+}
