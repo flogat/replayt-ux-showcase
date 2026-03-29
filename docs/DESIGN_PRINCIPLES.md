@@ -475,7 +475,7 @@ copy the pattern; “CI” means automated verification exists.
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**, **P-02**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
+(**P-01**, **P-02**, **P-03**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
 **[`docs/compat.md` — Vanilla UI pattern catalog](compat.md#vanilla-ui-pattern-catalog)**.
 
@@ -498,6 +498,27 @@ with explicit **loading**, **error**, and **keyboard focus** behavior.
 | **CHANGELOG** + mission pattern count | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, [P-02 Builder checklist](examples/PATTERNS.md#builder-acceptance-checklist-implementation) | **CHANGELOG** **Unreleased**; **MISSION** table |
 
 **Shipped for this backlog (phase 3):** **`docs/examples/player-session-metadata-bar.html`**, **P-02** marked **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **CHANGELOG** **Unreleased** **Added** entries, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**. Further edits to **P-02** should keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin contract tests in the same change set when contracts or filenames change.
+
+#### Backlog traceability: Timeline scrubber strip example (replayt public events API)
+
+**Normalized user story:** As integrator, I want a **vanilla** timeline **scrubber** that uses **`sessionData.events`**
+and **replayt’s published JS API** for seek/scrub, with **documented** event-order assumptions, **throttling**, and a
+**limitations** callout when CDN builds omit APIs.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ------------------------ |
+| **`timeline-scrubber.html`** or clearly separated section | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-03** [Delivery shape](examples/PATTERNS.md#delivery-shape-normative) | File on disk + **CHANGELOG** when **Shipped**; optional **`tests/test_examples.py`** markers (Builder) |
+| Seek/scrub UX + published JS only | **P-03** [Scrub / seek interactions](examples/PATTERNS.md#scrub--seek-interactions-normative) | Code review; symbols listed in-snippet |
+| Event ordering assumptions | **P-03** [`sessionData` and events](examples/PATTERNS.md#sessiondata-and-events-normative) | Comment block present per spec |
+| Throttling / final seek on commit | **P-03** [Throttling and coalescing](examples/PATTERNS.md#throttling-and-coalescing-normative) | Code review + optional contract strings in **`tests/test_examples.py`** |
+| Limitations / upgrade note for CDN | **P-03** [Limitations and CDN builds](examples/PATTERNS.md#limitations-and-cdn-builds-normative) | Visible copy or view-source comment |
+| **replayt** CDN pin in PEP 508 range | **P-03** [replayt pin and file placement](examples/PATTERNS.md#replayt-pin-and-file-placement) | **`tests/test_docs_examples_replayt_pins.py`** once HTML exists |
+| Pattern inventory + mission table | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** | **P-03** → **Shipped** with HTML; counts updated |
+
+**Shipped (phase 3):** **`docs/examples/timeline-scrubber.html`**, **P-03** marked **Shipped** in **`docs/examples/PATTERNS.md`**,
+**[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **`tests/test_examples.py`** contract markers,
+**CHANGELOG** **Unreleased** **Added** entry, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**.
+Further edits to **P-03** should keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin contract tests aligned when contracts change.
 
 ---
 

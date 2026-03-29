@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt timeline scrubber (P-03)</title>
+    <!--
+      P-03 — replayt browser symbols this file calls (confirm against replayt release notes for your CDN pin):
+        - window.replayt.player.init({ container, data, theme })
+        - Seek: optional, in try-order — controller.seekToMs(ms), controller.goto(ms), window.replayt.player.seekToMs(ms),
+          window.replayt.player.goto(ms) where controller is the return value of init when present.
+
+      Event ordering (handoff): replayt does not document a single ordering guarantee for sessionData.events across
+      all minors in this repo’s supported range. Integrators should verify field names and ordering against replayt
+      release notes for their pin. This demo sorts a copied event list by extractEventTimeMs(ev) once before computing
+      the scrub range so the strip stays stable even if the source array arrives unsorted.
+
+      Throttling (handoff): high-frequency scrub input is coalesced with requestAnimationFrame (at most one seek call
+      per frame while dragging). The change event and pointerup perform a final applySeekMs so the committed thumb
+      position matches the player.
+
+      Tab order (handoff): status and limitations copy are non-focusable; the range slider (#timeline-scrubber) comes
+      before the player container in DOM order so keyboard users reach the scrub control before embedded player focusables.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        :root {
+            --surface-border: #e0e0e0;
+            --surface-muted: #f4f4f5;
+            --text: #222;
+            --warn: #b42318;
+            --replayt-primary: #007bff;
+        }
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: var(--text);
+        }
+        .instructions {
+            background: var(--surface-muted);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--surface-border);
+        }
+        .scrub-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0.75rem 0 1rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+            background: #fff;
+        }
+        .scrub-row label {
+            font-weight: 600;
+            min-width: 7rem;
+        }
+        #timeline-scrubber {
+            flex: 1 1 200px;
+            min-width: 160px;
+            accent-color: var(--replayt-primary);
+        }
+        #timeline-scrubber:focus-visible {
+            outline: 2px solid var(--replayt-primary);
+            outline-offset: 2px;
+        }
+        #scrub-readout {
+            font-variant-numeric: tabular-nums;
+            min-width: 12rem;
+        }
+        #player {
+            width: 100%;
+            height: 55vh;
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+        }
+        .player-placeholder,
+        .status-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            margin: 0;
+            color: #555;
+            font-size: 0.95rem;
+            text-align: center;
+            padding: 1rem;
+        }
+        .status-banner.is-error {
+            color: var(--warn);
+            font-weight: 600;
+        }
+        .limitations {
+            margin-top: 1.25rem;
+            padding: 0.75rem 1rem;
+            border-left: 4px solid var(--surface-border);
+            background: var(--surface-muted);
+            font-size: 0.9rem;
+        }
+        .limitations h2 {
+            margin: 0 0 0.35rem;
+            font-size: 1rem;
+        }
+        .limitations p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Timeline scrubber + player (P-03)</h1>
+    <div class="instructions">
+        <p><strong>P-03:</strong> Horizontal scrubber mapped to <code>sessionData.events</code> timestamps and
+            <code>metadata.startTs</code> / <code>metadata.durationMs</code>. The scrub range uses the min and max of
+            (sorted event times, session start, start + duration). Replace sample events with your replayt API payload.</p>
+    </div>
+    <p id="scrub-status" class="status-banner" aria-live="polite">Initializing…</p>
+    <div class="scrub-row">
+        <label for="timeline-scrubber">Session timeline</label>
+        <input type="range" id="timeline-scrubber" min="0" max="1000" value="0"
+            aria-label="Session timeline scrubber" disabled>
+        <span id="scrub-readout" aria-hidden="true">—</span>
+    </div>
+    <div id="player"></div>
+    <section class="limitations" aria-labelledby="limitations-heading">
+        <h2 id="limitations-heading">Limitations</h2>
+        <p>Some CDN builds omit or rename seek and event APIs. Pin a replayt version whose browser bundle matches the
+            symbols above; upgrade if <code>init</code> works but seek hooks are missing. This page shows a warning when
+            no seek entry point is found.</p>
+    </section>
+    <script>
+        (function () {
+            const statusEl = document.getElementById('scrub-status');
+            const scrubber = document.getElementById('timeline-scrubber');
+            const readout = document.getElementById('scrub-readout');
+            const playerEl = document.getElementById('player');
+
+            const startTs = Date.now() - 180000;
+            const sessionData = {
+                events: [
+                    { timestamp: startTs + 2000, type: 'custom', label: 'first paint' },
+                    { timestamp: startTs + 45000, type: 'custom', label: 'mid session' },
+                    { timestamp: startTs + 120000, type: 'custom', label: 'late event' },
+                    { timestamp: startTs + 8000, type: 'custom', label: 'out-of-order in source' },
+                ],
+                metadata: {
+                    startTs,
+                    durationMs: 180000,
+                    viewport: { width: 1920, height: 1080 },
+                },
+            };
+
+            function extractEventTimeMs(ev) {
+                if (!ev || typeof ev !== 'object') return null;
+                const raw = ev.timestamp ?? ev.time ?? ev.ts;
+                return typeof raw === 'number' && !Number.isNaN(raw) ? raw : null;
+            }
+
+            function sortedEventTimes(events) {
+                const times = [];
+                for (const ev of events) {
+                    const t = extractEventTimeMs(ev);
+                    if (t !== null) times.push(t);
+                }
+                times.sort((a, b) => a - b);
+                return times;
+            }
+
+            function computeRangeMs(data) {
+                const meta = data.metadata || {};
+                const start = typeof meta.startTs === 'number' ? meta.startTs : null;
+                const dur = typeof meta.durationMs === 'number' ? meta.durationMs : null;
+                const evTimes = sortedEventTimes(data.events || []);
+                const candidates = [];
+                if (start !== null) candidates.push(start);
+                if (start !== null && dur !== null) candidates.push(start + dur);
+                for (const t of evTimes) candidates.push(t);
+                if (!candidates.length) return null;
+                const minT = Math.min.apply(null, candidates);
+                const maxT = Math.max.apply(null, candidates);
+                if (minT === maxT) return { minMs: minT, maxMs: minT + 1 };
+                return { minMs: minT, maxMs: maxT };
+            }
+
+            function formatClock(ms) {
+                const s = Math.max(0, Math.floor(ms / 1000));
+                const m = Math.floor(s / 60);
+                const r = s % 60;
+                return `${m}:${String(r).padStart(2, '0')}`;
+            }
+
+            function pickSeekSink(controller, playerNs) {
+                if (controller && typeof controller.seekToMs === 'function') {
+                    return function (ms) { controller.seekToMs(ms); };
+                }
+                if (controller && typeof controller.goto === 'function') {
+                    return function (ms) { controller.goto(ms); };
+                }
+                if (playerNs && typeof playerNs.seekToMs === 'function') {
+                    return function (ms) { playerNs.seekToMs(ms); };
+                }
+                if (playerNs && typeof playerNs.goto === 'function') {
+                    return function (ms) { playerNs.goto(ms); };
+                }
+                return null;
+            }
+
+            let rangeInfo = null;
+            let seekSink = null;
+            let rafId = null;
+            let pendingMs = null;
+
+            function setStatus(msg, isError) {
+                statusEl.textContent = msg;
+                statusEl.className = 'status-banner' + (isError ? ' is-error' : '');
+            }
+
+            function applySeekMs(ms) {
+                if (!seekSink || rangeInfo === null) return;
+                const clamped = Math.min(rangeInfo.maxMs, Math.max(rangeInfo.minMs, ms));
+                seekSink(clamped);
+            }
+
+            function updateReadout(ms) {
+                if (rangeInfo === null) {
+                    readout.textContent = '—';
+                    scrubber.removeAttribute('aria-valuetext');
+                    return;
+                }
+                readout.textContent = `${formatClock(ms)} / ${formatClock(rangeInfo.minMs)}–${formatClock(rangeInfo.maxMs)}`;
+                scrubber.setAttribute('aria-valuetext', formatClock(ms));
+            }
+
+            function syncAriaValue(ms) {
+                if (rangeInfo === null) return;
+                const span = rangeInfo.maxMs - rangeInfo.minMs;
+                const ratio = span > 0 ? (ms - rangeInfo.minMs) / span : 0;
+                const stepped = Math.round(ratio * 1000);
+                scrubber.setAttribute('aria-valuenow', String(stepped));
+            }
+
+            function onScrubInput() {
+                if (rangeInfo === null || scrubber.disabled) return;
+                const span = rangeInfo.maxMs - rangeInfo.minMs;
+                const ratio = Number(scrubber.value) / 1000;
+                const ms = rangeInfo.minMs + ratio * span;
+                pendingMs = ms;
+                if (rafId !== null) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(function () {
+                    rafId = null;
+                    if (pendingMs === null) return;
+                    const v = pendingMs;
+                    pendingMs = null;
+                    updateReadout(v);
+                    syncAriaValue(v);
+                    applySeekMs(v);
+                });
+            }
+
+            function onScrubCommit() {
+                if (rangeInfo === null || scrubber.disabled) return;
+                if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+                pendingMs = null;
+                const span = rangeInfo.maxMs - rangeInfo.minMs;
+                const ratio = Number(scrubber.value) / 1000;
+                const ms = rangeInfo.minMs + ratio * span;
+                updateReadout(ms);
+                syncAriaValue(ms);
+                applySeekMs(ms);
+            }
+
+            function mount() {
+                rangeInfo = computeRangeMs(sessionData);
+                const events = sessionData.events || [];
+
+                if (!events.length) {
+                    setStatus('No events in sessionData; add events from your replayt API to use the scrubber.', true);
+                    scrubber.disabled = true;
+                    playerEl.replaceChildren();
+                    const ph = document.createElement('p');
+                    ph.className = 'player-placeholder';
+                    ph.textContent = 'Player not initialized (empty timeline).';
+                    playerEl.appendChild(ph);
+                    return;
+                }
+
+                if (!rangeInfo) {
+                    setStatus('Could not derive a time range from events and metadata.', true);
+                    scrubber.disabled = true;
+                    return;
+                }
+
+                scrubber.min = '0';
+                scrubber.max = '1000';
+                scrubber.value = '0';
+                scrubber.disabled = false;
+                scrubber.setAttribute('aria-valuemin', '0');
+                scrubber.setAttribute('aria-valuemax', '1000');
+                scrubber.setAttribute('aria-valuenow', '0');
+                updateReadout(rangeInfo.minMs);
+                syncAriaValue(rangeInfo.minMs);
+
+                const rtPlayer = window.replayt && window.replayt.player;
+                if (!rtPlayer || typeof rtPlayer.init !== 'function') {
+                    setStatus('replayt player not available (check script URL or CDN build).', true);
+                    seekSink = null;
+                    playerEl.replaceChildren();
+                    const ph = document.createElement('p');
+                    ph.className = 'player-placeholder';
+                    ph.textContent = 'replayt player not loaded.';
+                    playerEl.appendChild(ph);
+                    return;
+                }
+
+                playerEl.replaceChildren();
+                let controller = null;
+                try {
+                    controller = rtPlayer.init({
+                        container: playerEl,
+                        data: sessionData,
+                        theme: 'light',
+                    });
+                } catch (e) {
+                    setStatus('Player init failed (see console).', true);
+                    const ph = document.createElement('p');
+                    ph.className = 'player-placeholder';
+                    ph.textContent = 'Init error.';
+                    playerEl.appendChild(ph);
+                    return;
+                }
+
+                seekSink = pickSeekSink(controller, rtPlayer);
+                if (!seekSink) {
+                    setStatus('Player loaded, but no published seek hook matched (seekToMs / goto). See Limitations.', true);
+                } else {
+                    setStatus('Scrub to seek; keyboard: Tab to the slider, then arrow keys. Pointer drag uses rAF-throttled seeks.');
+                }
+
+                applySeekMs(rangeInfo.minMs);
+            }
+
+            scrubber.addEventListener('input', onScrubInput);
+            scrubber.addEventListener('change', onScrubCommit);
+            scrubber.addEventListener('pointerup', onScrubCommit);
+
+            mount();
+        })();
+    </script>
+</body>
+</html>
