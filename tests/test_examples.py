@@ -130,3 +130,51 @@ def test_patterns_md_links_keyboard_model():
     """PATTERNS.md links the shared checklist from Related and per-pattern notes."""
     text = (REPO_ROOT / "docs/examples/PATTERNS.md").read_text(encoding="utf-8")
     assert "a11y/keyboard-model.md" in text
+
+
+def test_react_timeline_player_p06_files_exist():
+    """P-06 ships under docs/examples/react/ (see docs/examples/PATTERNS.md)."""
+    base = REPO_ROOT / "docs/examples/react"
+    for rel in (
+        "README.md",
+        "package.json",
+        "index.html",
+        "vite.config.js",
+        "src/main.jsx",
+        "src/App.jsx",
+    ):
+        path = base / rel
+        assert path.is_file(), f"P-06 file missing: {path}"
+
+
+def test_react_timeline_player_p06_contract_markers():
+    """Light contract: P-03 parity strings, replayt init, tab order, limitations, scrub id, CDN pin (P-06)."""
+    app = (REPO_ROOT / "docs/examples/react/src/App.jsx").read_text(encoding="utf-8")
+    assert "Event ordering (P-03):" in app
+    assert "requestAnimationFrame" in app
+    assert "Limitations" in app
+    assert 'id="timeline-scrubber-react"' in app
+    assert "Tab order (handoff):" in app
+    assert "applySeekMs" in app
+    assert "durationMs" in app and "metadata" in app
+    assert "replayt.player.init" in app
+    idx = (REPO_ROOT / "docs/examples/react/index.html").read_text(encoding="utf-8")
+    assert "cdn.jsdelivr.net/npm/replayt@" in idx
+
+
+def test_react_timeline_player_readme_private_and_runbook():
+    """README states non-goal and documents install + dev server (P-06)."""
+    text = (REPO_ROOT / "docs/examples/react/README.md").read_text(encoding="utf-8")
+    assert "Not an npm package" in text or "not published" in text.lower()
+    assert "npm install" in text
+    assert "npm run dev" in text
+    assert "FRONTEND_SUPPLY_CHAIN.md" in text
+
+
+def test_p06_react_links_keyboard_model():
+    """P-06 subtree references the shared keyboard / focus checklist."""
+    readme = (REPO_ROOT / "docs/examples/react/README.md").read_text(encoding="utf-8")
+    app = (REPO_ROOT / "docs/examples/react/src/App.jsx").read_text(encoding="utf-8")
+    needle = "keyboard-model.md"
+    assert needle in readme, "react/README.md should link keyboard-model.md"
+    assert needle in app, "react/src/App.jsx should link keyboard-model.md"

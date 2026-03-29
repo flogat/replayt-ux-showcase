@@ -533,14 +533,14 @@ copy the pattern; “CI” means automated verification exists.
 | ----- | ------------------- | --- | ----- |
 | Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) plus any future file/smoke tests | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
 | Optional **npm** bundler preview | Yes (documented) — **[`docs/examples/build.md`](examples/build.md)** | Not required in default **CI** (pytest-first) | Root **`package.json`** with **`"private": true`**; **Vite** *or* **esbuild**; **not** an implied public **npm** package for this repo |
-| React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
+| React | **^18**; **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/react/`** (**Shipped**) | Optional browser automation later; **pytest** pin contract covers **`docs/examples/react/*.{html,md}`** today | Copy-paste subtree + **README** per **P-06**; **not** a published npm package from this repo |
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
 | Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |
 
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**, **P-02**, **P-03**, **P-04**, **P-05**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
+(**P-01**–**P-05**), plus registered **framework** subtrees (**P-06** **React**, **Shipped**), each with shipped vs spec-only status and normative acceptance criteria. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
 **[`docs/compat.md` — Vanilla UI pattern catalog](compat.md#vanilla-ui-pattern-catalog)**.
 
@@ -637,6 +637,22 @@ replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#
 | **CHANGELOG** / **MISSION** when shipped | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** Builder checklist | **P-04** → **Shipped** in phase **3** with **MISSION** count **4** |
 
 **Shipped (phase 3):** **`docs/examples/embed-container-states.html`**, **P-04** marked **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **`tests/test_examples.py`** contract markers, **CHANGELOG** **Unreleased** entries, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**, **[`docs/demo.md`](demo.md)** **Builder alignment** note updated. **Spec lead (phase 2)** registered **P-04** and the cross-surface table before HTML landed.
+
+#### Backlog traceability: Ship React timeline player snippet
+
+**Scope:** **`docs/examples/react/`** — see **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** in **`docs/examples/PATTERNS.md`**.
+
+**Normalized user story:** As a **React** integrator, I want a **self-contained** **`docs/examples/react/`** tree with a **timeline scrubber** and player embed that mirrors **[`basic-player.html`](examples/basic-player.html)** (`sessionData`, **`replayt.player.init`**) and **P-03** timeline intent, plus a **README** with **Vite** (preferred) or **esbuild** notes and **replayt** / **React** pin guidance, without treating the folder as a **published** npm product.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| **P-06** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-06** | **Shipped**: **`docs/examples/react/`** + **README** per **P-06** checklist |
+| **`sessionData`** + **`replayt.player.init`** parity with **P-01** | **P-06** [Relationship to P-01 and P-03](examples/PATTERNS.md#relationship-to-p-01-and-p-03) | Code review; **`tests/test_examples.py`** markers |
+| Timeline scrub UX aligned with **P-03** | **P-06** sections (tooling, limitations, a11y) | Code review |
+| **Published** replayt JS only | **P-06** [replayt JavaScript surface](examples/PATTERNS.md#replayt-javascript-surface-normative) | Code review; symbols listed in-snippet |
+| **README**: copy-paste, pins, runbook, non-goal | **P-06** [README and folder layout](examples/PATTERNS.md#p-06-readme-and-folder-layout-normative) | **Spec gate** / review |
+| **replayt** pins in **`docs/examples/react/*.{html,md}`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** |
+| **MISSION** / **README** layout | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`README.md`](../README.md)** | **P-06** **Shipped**; framework row + layout table updated |
 
 ---
 

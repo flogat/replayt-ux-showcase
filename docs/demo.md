@@ -28,7 +28,7 @@ Integrators ship **web** embeds that spend real time in **loading**, **failure**
 | Phase (web embed vocabulary) | What operators see today (`python -m replayt_ux_showcase.demo`) | Normative web spec |
 | ---------------------------- | -------------------------------------------------------------- | ------------------ |
 | **Loading** (no `sessionData` yet) | Not modeled; run starts with data in memory | **[P-04](examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery)** — skeleton + status region |
-| **Ready** (valid session, init OK) | **`[replayt-demo]`** timeline logs and ASCII progress snapshot | **P-01** / **P-04** after successful init |
+| **Ready** (valid session, init OK) | **`[replayt-demo]`** timeline logs and ASCII progress snapshot | **P-01** / **P-04** after successful init; **React** parity: **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** (**Shipped** — [`docs/examples/react/`](examples/react/)) |
 | **Failure** (fetch/init/payload) | Unrecoverable errors propagate; **WARN** for bad events continues | **P-04** — visible error + **retry** where recoverable |
 | **Retry** | N/A in static demo | **P-04** — focusable control |
 
