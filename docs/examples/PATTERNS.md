@@ -1,9 +1,9 @@
-# Vanilla examples — UI pattern catalog
+# Examples — UI pattern catalog
 
-This file is the **canonical inventory** for distinct, copy-paste **vanilla HTML/JS** patterns under
-`docs/examples/`. It supports the mission success criterion “**5+ patterns**” and gives **Spec gate** / **Builder**
-a single place to check **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code
-lands.
+This file is the **canonical inventory** for distinct, copy-paste integrator examples under `docs/examples/`: **vanilla
+HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**). It supports the mission
+success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
+**what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
 **Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID).
 
@@ -19,8 +19,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
 | **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
 | **P-05** | [`fixture-replay.html`](fixture-replay.html) | **Shipped** | **Offline fixture** for **reviewers** and **LLM** harnesses: **inlined** synthetic **`sessionData`**, **no** runtime session fetch, **no** secrets, **no** live/stochastic model calls; pinned **replayt** player script only. |
+| **P-06** | [`react/`](react/) ([`README.md`](react/README.md), [`src/App.jsx`](react/src/App.jsx)) | **Shipped** | **React 18** timeline player: same **`sessionData`** / **`replayt.player.init`** contract as **P-01**, timeline scrub UX aligned with **P-03**; **Vite**-first (or **esbuild** notes); **not** an npm-published package. |
 
-**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct vanilla patterns), satisfying the mission **5+** target. Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** is a **framework** subtree; it does not change the vanilla count. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -420,3 +421,84 @@ inlined, synthetic **`sessionData`** (no API or `fetch` for the session payload)
 | **Deterministic** fixture | [P-05 determinism](#p-05-determinism-normative) |
 | **replayt** pin + local open docs | [P-05 replayt pin and open instructions](#p-05-replayt-pin-and-open-instructions-normative), **`README.md`**, **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** |
 | Traceability in design principles | [Offline deterministic fixture page](../DESIGN_PRINCIPLES.md#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows) |
+---
+
+## P-06 — React timeline player (basic-player + scrubber parity)
+
+### User story
+
+As a **React** integrator, I want a **self-contained** example under **`docs/examples/react/`** that embeds the replayt
+player with a **timeline scrubber**, using the **same** `sessionData` root shape and **published** **`window.replayt`**
+consumer APIs as **[`basic-player.html`](basic-player.html)**, with **copy-paste**-friendly layout, **pin** guidance for
+**replayt** (npm and/or CDN), and optional **local preview** notes (**Vite** preferred; **esbuild** alternative prose
+allowed) — **without** implying this repository publishes a **React** or **showcase** package to npm.
+
+### Relationship to P-01 and P-03
+
+- **P-01** defines the **minimal** embed: `sessionData` with `events` + `metadata`, `replayt.player.init({ container, data, theme })`, theme note, and links to the shared a11y checklist. **P-06** **must** keep that **init** contract and data root; React-specific wiring (e.g. `useRef` for `container`) is an implementation detail.
+- **P-03** defines **timeline** behavior: scrub control, defensive ordering of `events`, **throttling** / final seek on commit, **limitations** note for CDN builds, and **tab order** (scrub before player when both are focusable). **P-06** **must** meet the same **normative intent** in React (hooks/effects/components), citing **P-03** in comments where behavior is mirrored.
+
+### `sessionData` and event shapes (normative)
+
+- **Root shape:** Same as **P-01**: an object with **`events`** (array) and **`metadata`** (object). Use the same field names illustrated in [`basic-player.html`](basic-player.html) (`metadata.startTs`, `metadata.viewport.width` / `height`) unless the Builder documents an **additive** extension; do **not** invent a parallel schema.
+- **Event payloads:** Event objects should be **compatible** with the **schema-level** story in **[`docs/demo.md`](../demo.md#replayt-primitives-usage)** and **replayt** docs for the pinned version (types such as `click`, `scroll`, `keypress`, etc.). The shipped snippet should include **enough non-empty `events`** to exercise the scrubber (not an empty array as the only shipped state).
+- **Synthetic vs live:** A **static** literal in source (recommended for copy-paste stability) or a clearly marked placeholder for `fetch` is acceptable; if the snippet uses **`fetch`**, it **must** remain a **documented** public HTTP pattern (no private replayt endpoints), consistent with **P-04** spirit for errors (user-visible failure path documented in README or in-app).
+
+### replayt JavaScript surface (normative)
+
+- **Published consumer API only:** All replayt calls **must** use **documented public** browser entry points — same boundary as **P-03** (e.g. `window.replayt.player.init`, optional seek helpers such as `seekToMs` / `goto` on the object returned from `init` if present). List **exact symbols** used in a file header or top-of-module comment block.
+- **No Python / no showcase package imports:** The example is **front-end** only; it does **not** import `replayt_ux_showcase` or assume this repo is installed as a **Python** package for the snippet to run.
+
+### React and tooling (normative)
+
+- **React:** Target **React 18** (`react` / `react-dom` ^18) — aligns with [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix).
+- **Bundler:** **Preferred** delivery: **Vite** (`npm create vite@latest` style) with a short README path: install, `npm run dev`, expected URL. **Allowed:** a concise **esbuild** (or similar) subsection in **`docs/examples/react/README.md`** for integrators who skip Vite.
+- **Script loading:** Either (a) **pinned** **CDN** `<script>` in **`index.html`** that loads **`replayt`**’s browser bundle before the app bundle, or (b) **npm** dependency on **`replayt`** and import from the package path documented by **replayt** for the pinned version. Any **explicit** **replayt** version in **`docs/examples/react/*.{html,md}`** must satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (**`tests/test_docs_examples_replayt_pins.py`**).
+- **Repository boundary:** Files live only under **`docs/examples/react/`** (plus cross-links from **README** / this catalog). Do **not** add a second canonical snippet tree at the repo root; optional root **`package.json`** remains the **maintainer** bundler recipe per **[`build.md`](build.md)**, not a substitute for **`react/`**.
+
+### P-06 README and folder layout (normative)
+
+- **`docs/examples/react/README.md`** (**Shipped** **P-06** must include):
+  - **Copy-paste** orientation: what to copy into an existing app vs run as a standalone mini-project.
+  - **Version pins:** **replayt** semver (npm and/or CDN) **inside** the PEP 508 band in **`pyproject.toml`**; **React 18** range; link to **[`docs/FRONTEND_SUPPLY_CHAIN.md`](../FRONTEND_SUPPLY_CHAIN.md)** for CDN vs bundled tradeoffs.
+  - **Runbook:** `npm install`, `npm run dev` (or equivalent), and any prerequisite (**Node** version) in one place.
+  - **Non-goal:** State explicitly that this folder is **not** a published npm package from this repository.
+- **Source files:** At minimum, one **React** module (or **JSX**/**TSX** if the Builder chooses TypeScript) that mounts the player and implements the timeline; **`index.html`** + small entry (**`main.jsx`**) acceptable. Exact filenames are a **Builder** choice; update the [Pattern inventory](#pattern-inventory) row if the primary entry differs from “see README.”
+
+### Accessibility and keyboard (normative)
+
+- Follow **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)** — scrubber keys, focus visibility, **Escape** where overlays exist, tab order consistent with **P-03** (scrub control before player focusables when both exist).
+- Include a short **handoff comment** (JSX comment or README bullet) describing **tab order** intent.
+
+### Limitations note (normative)
+
+- Include the same **class** of **CDN / build limitations** callout as **P-03** (visible copy or view-source comment): some builds may omit or rename seek APIs; integrators should **pin** a **replayt** version whose JS matches the snippet.
+
+### Builder acceptance checklist (implementation)
+
+**P-06** is **Shipped**; delivery met the items below. Keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, pin tests, and **`tests/test_examples.py`** aligned when this pattern changes.
+
+1. **`docs/examples/react/`** exists with **`README.md`** meeting [P-06 README and folder layout](#p-06-readme-and-folder-layout-normative).
+2. React source implements **`sessionData`** + **`replayt.player.init`** per [Relationship to P-01 and P-03](#relationship-to-p-01-and-p-03) and timeline behavior per **P-03** intent.
+3. [Pattern inventory](#pattern-inventory) lists **P-06** as **Shipped** with the correct paths.
+4. **`tests/test_docs_examples_replayt_pins.py`** scans **`*.html`**, **`*.md`** under **`docs/examples/react/`**; **`tests/test_examples.py`** includes file-presence and light **P-06** contract markers.
+5. **CHANGELOG** **Unreleased** records the example; **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** framework row is **Shipped**.
+6. **[`README.md`](../../README.md)** project layout mentions **`docs/examples/react/`** as **Shipped**.
+
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-06**.
+
+---
+
+## Backlog traceability: Ship React timeline player snippet under docs/examples/react/
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| Self-contained **React** example under **`docs/examples/react/`** | [P-06 README and folder layout](#p-06-readme-and-folder-layout-normative), [React and tooling](#react-and-tooling-normative) |
+| **Vite** or **esbuild** notes | [React and tooling](#react-and-tooling-normative) |
+| Mirrors **basic-player** `sessionData` + **`replayt.player.init`** | [Relationship to P-01 and P-03](#relationship-to-p-01-and-p-03), [`sessionData` and event shapes](#sessiondata-and-event-shapes-normative) |
+| Timeline / scrub UX aligned with **P-03** | [Relationship to P-01 and P-03](#relationship-to-p-01-and-p-03), [Limitations note](#limitations-note-normative) |
+| **Published** replayt JS only | [replayt JavaScript surface](#replayt-javascript-surface-normative) |
+| README: copy-paste + **version pin** guidance | [P-06 README and folder layout](#p-06-readme-and-folder-layout-normative) |
+| **Not** an npm-published showcase package | [React and tooling](#react-and-tooling-normative) |
+| Shared **keyboard / focus** checklist | [Accessibility and keyboard](#accessibility-and-keyboard-normative) |
+| Traceability in design principles | [Backlog traceability: Ship React timeline player snippet](../DESIGN_PRINCIPLES.md#backlog-traceability-ship-react-timeline-player-snippet) |

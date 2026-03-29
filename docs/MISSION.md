@@ -28,10 +28,11 @@ Delegates upstream: core capture/replay logic.
 
 ### Pattern coverage tracking
 
-**Source of truth:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) — pattern IDs (**P-01**–**P-05**, …), filenames, status (**Shipped** / **Spec only** / **Planned**), and per-pattern acceptance criteria.
+**Source of truth:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) — pattern IDs (**P-01**–**P-05** vanilla, **P-06** React, …), filenames, status (**Shipped** / **Spec only** / **Planned**), and per-pattern acceptance criteria.
 
 | Metric | Target | Current (update when patterns ship) |
 | ------ | ------ | ------------------------------------- |
 | Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **5** shipped (**P-01**–**P-05** — [`PATTERNS.md`](examples/PATTERNS.md)), including **`fixture-replay.html`** (**P-05**: deterministic offline fixture for reviewers / **LLM** harnesses). |
+| **React** framework example (`docs/examples/react/`) | **1** timeline player + **README** | **P-06** — [**Shipped**](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity): [`docs/examples/react/README.md`](examples/react/README.md), Vite + **`replayt.player.init`** + scrubber parity with **P-03**. |
 
 When a pattern moves to **Shipped**, update this table and the inventory in **`docs/examples/PATTERNS.md`** in the same change set as the new or updated **`*.html`** file and **CHANGELOG** **Unreleased**.
