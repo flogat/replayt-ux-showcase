@@ -23,6 +23,7 @@ Delegates upstream: core capture/replay logic.
 
 - CI automated tests: Demos render/load across supported replayt versions (smoke/integration via pytest + browser automation); compatibility matrix green.
 - Playbook: Handovers pass checklist (<1 dev-day).
+- Player / timeline keyboard and focus: shared **[`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md)** checklist (tab order, roving composites when applicable, scrubber keys, **Escape**), linked from **`docs/examples/`** patterns.
 - Coverage: **5+** distinct UI patterns; tracked via **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** (canonical inventory), **CHANGELOG**, and **[compat digest](compat.md#vanilla-ui-pattern-catalog)**.
 
 ### Pattern coverage tracking

@@ -21,6 +21,7 @@ is tracked separately in code and CHANGELOG):
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
 | Distinct vanilla UI patterns (mission: **5+**), per-pattern acceptance | [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog), [examples/PATTERNS.md](examples/PATTERNS.md), [MISSION.md](MISSION.md#pattern-coverage-tracking) |
+| Timeline / player **keyboard** and **focus** (handoff checklist) | [`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md), [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog) (shared contract), [examples/PATTERNS.md](examples/PATTERNS.md) (per-pattern rules) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 
 ### Traceability to automated checks
@@ -523,6 +524,26 @@ target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#patt
 
 New patterns **must** be registered in **`docs/examples/PATTERNS.md`** before or in the same change set as the new
 **`docs/examples/*.html`** file (see [Single home for copy-paste demos](#one-way-to-do-it-canonical-patterns)).
+
+**Shared accessibility contract:** Vanilla patterns that embed a player, metadata chrome, scrubbers, or future
+focus-managed event lists **should** follow **[`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md)** — tab order,
+roving `tabindex` when composites apply, scrubber keys, and **Escape** for dismissible layers. Per-pattern normative
+text remains in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**; the a11y doc is the single cross-pattern
+checklist for design–engineering handoff.
+
+#### Backlog traceability: Keyboard and focus model for timeline/player controls
+
+**Normalized user story:** As a designer or integrator, I want a **single** documented **keyboard and focus** contract
+for timeline/player embeds (tab order, list roving when applicable, scrubber and **Escape** behavior) so handoffs reuse
+one checklist instead of re-negotiating accessibility per file.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| Canonical a11y doc exists | **[`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md)** | File present; sections cover tab order, roving tabindex, scrubber keys, **Escape**, focus visibility, Builder checklist |
+| Linked from **P-01** instructions | **[`docs/examples/basic-player.html`](examples/basic-player.html)** | Instructions link to **`../a11y/keyboard-model.md`** |
+| Linked from pattern catalog / shipped examples | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**, **P-02** / **P-03** / **P-04** comment blocks | Cross-links or “see keyboard model” references; **Tab order (handoff)** comments retained |
+| Traceability from design principles | [Acceptance criteria (traceability)](#acceptance-criteria-traceability) row *Timeline / player keyboard and focus* | **Spec gate** / **Design gate** |
+| Mission playbook alignment | **[`docs/MISSION.md`](MISSION.md)** (handoff under one dev-day) | Reviewer checklist includes this doc when touching player UX |
 
 #### Offline deterministic fixture page for LLM and reviewer workflows
 
