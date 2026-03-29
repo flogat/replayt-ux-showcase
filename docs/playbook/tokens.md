@@ -52,7 +52,7 @@
 | `rux-color-border` | Default hairline | `--rux-color-border` | `#e0e0e0` | `rux: { border: 'var(--rux-color-border)' }` | **P-01** `#player` border |
 | `rux-color-text` | Primary text | `--rux-color-text` | `#111827` | `rux: { text: 'var(--rux-color-text)' }` | Body copy |
 | `rux-color-text-muted` | Secondary text | `--rux-color-text-muted` | `#6b7280` | `rux: { 'text-muted': 'var(--rux-color-text-muted)' }` | Hints, timestamps |
-| `rux-color-primary` | Brand / link / focus ring | `--rux-color-primary` | `#007bff` | `rux: { primary: 'var(--rux-color-primary)' }` | Align with **P-01** `--replayt-primary` if desired |
+| `rux-color-primary` | Brand / link / focus ring | `--rux-color-primary` | `#007bff` | `rux: { primary: 'var(--rux-color-primary)' }` | Match **P-01** `--replayt-primary` when you wire the player theme that way |
 | `rux-color-danger` | Error text / border | `--rux-color-danger` | `#b91c1c` | `rux: { danger: 'var(--rux-color-danger)' }` | **P-04** failure copy |
 | `rux-color-focus-ring` | Focus visible ring | `--rux-color-focus-ring` | `var(--rux-color-primary)` | `rux: { 'focus-ring': 'var(--rux-color-focus-ring)' }` | Match [`keyboard-model.md`](../a11y/keyboard-model.md) visibility expectations |
 
