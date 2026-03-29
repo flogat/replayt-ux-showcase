@@ -320,10 +320,11 @@ outside **`replayt.__all__`**, so the repo cannot accidentally couple demos to u
 
 ## Static HTML examples: browser smoke (Playwright)
 
-Normative spec for the backlog item **CI smoke: load static HTML examples with Playwright**: what an **optional**
-**Playwright**-based check, “no console errors”, a **small browser matrix**, and **README** local run instructions
-mean. **Implementation** (workflow YAML, **`pytest-playwright`** or equivalent, **`[project.optional-dependencies].dev`**
-pins, and any contract tests) is **Builder** work.
+Normative spec for the backlog item **CI smoke: load static HTML examples with Playwright**: what the **optional**
+**Playwright** check, “no console errors”, a **small browser matrix**, and **README** local run instructions mean.
+**Shipped in this repo:** **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`**, **`pytest-playwright`**
+under **`[project.optional-dependencies].dev`**, **`tests/playwright/test_static_html_examples_load.py`**, and
+**`test_ci_examples_playwright_smoke_job_matches_spec`** in **`tests/test_design_principles_contract.py`**.
 
 ### Goal
 
@@ -336,8 +337,7 @@ pins, and any contract tests) is **Builder** work.
 - **MUST** serve files over **HTTP** with document root **`docs/examples/`** (same rationale as
   **[P-05 replayt pin and open instructions](examples/PATTERNS.md#p-05-replayt-pin-and-open-instructions-normative)**:
   **`file://`** often blocks cross-origin **CDN** `<script>` loads).
-- **MAY** use **stdlib** **`http.server`**, a small **pytest** fixture (background thread), or tooling recommended by
-  **`pytest-playwright`** — **Builder** picks one approach and documents it in **[`README.md`](../README.md)**.
+- **Shipped:** **stdlib** **`http.server`** (**`ThreadingHTTPServer`**) with a session-scoped **pytest** fixture (background thread) in **`tests/playwright/test_static_html_examples_load.py`**. Local runs are documented in **[`README.md`](../README.md#optional-playwright-smoke-static-html-examples)**.
 - **URL shape:** tests open **`http://127.0.0.1:<port>/<filename>.html`** (or equivalent **loopback** binding documented
   in **README**).
 
@@ -371,9 +371,9 @@ pins, and any contract tests) is **Builder** work.
 ### Pages in scope (acceptance)
 
 - **Include:** every **Shipped** vanilla **`docs/examples/*.html`** file registered in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**
-  (today **P-01**–**P-05**, **P-09**). **Builder** MAY discover files by glob + allowlist or maintain an explicit list in
-  **`tests/`** — either way, **Shipped** set changes in **PATTERNS.md** **SHOULD** trigger the same change set as test
-  updates when filenames are added or removed.
+  (today **P-01**–**P-05**, **P-09**). **Shipped tests** keep an explicit allowlist (**`SHIPPED_ROOT_HTML`**) plus
+  **`test_shipped_root_html_inventory_matches_allowlist`** so **`docs/examples/*.html`** cannot drift silently; **PATTERNS.md**
+  and that allowlist **SHOULD** change in the same change set when **Shipped** filenames are added or removed.
 - **Exclude (this backlog):** framework dev **`index.html`** trees under **`docs/examples/react/`**, **`vue/`**,
   **`svelte/`** — they require **Vite** (or similar); cover them in a separate backlog unless maintainers explicitly
   extend this spec.
@@ -391,15 +391,15 @@ opens each **Shipped** vanilla **`*.html`** page in **Playwright** (**Chromium**
 or uncaught **page** exceptions — with **README** instructions for local runs — so static demos stay loadable as **replayt**
 and browsers evolve.
 
-| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
-| ---------------------------- | --------------- | --------------------------------------- |
-| Optional **CI** gate | [CI shape](#ci-shape-acceptance) | New **`ci.yml`** job or scoped **`pytest`** invocation; non-zero exit on regression |
-| **HTTP** root **`docs/examples/`** | [How pages are opened](#how-pages-are-opened-acceptance) | Logs / code review; failure if **`file://`** is the default |
-| No **error**-level **console** or **`pageerror`** on load | [Assertions](#assertions-acceptance) | Automated assertion in **`tests/`** or job script |
-| **Chromium**-first matrix | [CI shape](#ci-shape-acceptance) | **`playwright install chromium`** (or documented equivalent) only, unless expanded |
-| **`replayt`** install matches policy | [CI shape](#ci-shape-acceptance) | **`pip install -e ".[dev]" -c`** with pinned **replayt** for chosen cell(s) |
-| **README** local run | [Local run (README)](#local-run-readme-acceptance) | Section present; **CONTRIBUTING** / **Quick start** cross-link optional but encouraged |
-| Inventory + contract tests | [Traceability to automated checks](#traceability-to-automated-checks); **`docs/compat.md`** | **EX-PLAYWRIGHT-SMOKE** (or successor ID) when the job ships; update **`test_design_principles_contract.py`** if **CI** structure is asserted |
+| Backlog acceptance criterion | Where specified | How verified |
+| ---------------------------- | --------------- | ------------- |
+| Optional **CI** gate | [CI shape](#ci-shape-acceptance) | **`jobs.examples-playwright-smoke`**; non-zero exit on regression |
+| **HTTP** root **`docs/examples/`** | [How pages are opened](#how-pages-are-opened-acceptance) | **`examples_http_base_url`** fixture in **`tests/playwright/test_static_html_examples_load.py`** |
+| No **error**-level **console** or **`pageerror`** on load | [Assertions](#assertions-acceptance) | **`test_static_example_loads_without_console_errors_or_pageerrors`** |
+| **Chromium**-first matrix | [CI shape](#ci-shape-acceptance) | **`python -m playwright install chromium`** in **`ci.yml`**; **`--browser chromium`** on **`pytest`** |
+| **`replayt`** install matches policy | [CI shape](#ci-shape-acceptance) | **`pip install -e ".[dev]" -c`** with **`replayt==0.4.25`** in this job (see **EX-PLAYWRIGHT-SMOKE**) |
+| **README** local run | [Local run (README)](#local-run-readme-acceptance) | [Optional Playwright smoke](../README.md#optional-playwright-smoke-static-html-examples) |
+| Inventory + contract tests | [Traceability to automated checks](#traceability-to-automated-checks); **`docs/compat.md`** | **EX-PLAYWRIGHT-SMOKE**; **`test_ci_examples_playwright_smoke_job_matches_spec`** |
 
 ---
 
@@ -780,7 +780,7 @@ copy the pattern; “CI” means automated verification exists.
 
 | Stack | Supported (intent) | CI | Notes |
 | ----- | ------------------- | --- | ----- |
-| Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) today; optional **Playwright** load smoke per [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright) when **Builder** ships it | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
+| Vanilla HTML/JS | Yes (`docs/examples/`) | **`tests/test_docs_examples_replayt_pins.py`** on every **`jobs.test`** cell; optional **`jobs.examples-playwright-smoke`** (**Chromium**, **Shipped** root **`*.html`**) per [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright) | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
 | Optional **npm** bundler preview | Yes (documented) — **[`docs/examples/build.md`](examples/build.md)** | Not required in default **CI** (pytest-first) | Root **`package.json`** with **`"private": true`**; **Vite** *or* **esbuild**; **not** an implied public **npm** package for this repo |
 | React | **^18**; **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/react/`** (**Shipped**) | Optional browser automation later; **pytest** pin contract covers **`docs/examples/react/*.{html,md}`** today | Copy-paste subtree + **README** per **P-06**; **not** a published npm package from this repo |
 | Vue | **^3**; **[P-07](examples/PATTERNS.md#p-07--vue-3-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/vue/`** (**Shipped**) | **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/vue/*.{html,md,vue}`** | Same boundary as **P-06**: **Vite** + **`@vitejs/plugin-vue`**, **`private`** subtree **`package.json`**, **not** a published npm product |
