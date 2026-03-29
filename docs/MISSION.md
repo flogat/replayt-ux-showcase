@@ -31,6 +31,6 @@ Delegates upstream: core capture/replay logic.
 
 | Metric | Target | Current (update when patterns ship) |
 | ------ | ------ | ------------------------------------- |
-| Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **1** shipped (**P-01** `basic-player.html`); **P-02** session metadata chrome specified, pending implementation |
+| Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **2** shipped (**P-01** `basic-player.html`, **P-02** `player-session-metadata-bar.html`); **3** more toward the **5+** mission target |
 
 When a pattern moves to **Shipped**, update this table and the inventory in **`docs/examples/PATTERNS.md`** in the same change set as the new or updated **`*.html`** file and **CHANGELOG** **Unreleased**.

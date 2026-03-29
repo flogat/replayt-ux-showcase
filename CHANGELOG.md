@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `docs/examples/player-session-metadata-bar.html`: **P-02** vanilla example — metadata bar above the player, same **`sessionData`** shape as **`basic-player.html`**, loading placeholder, user-visible errors when **`sessionId`** / **`durationMs`** / **`viewport`** are missing or invalid after load, and bar focusable controls before the player in DOM order (backlog phase **3**, *Ship session metadata chrome pattern (viewport, duration, session id)*).
+- `tests/test_examples.py`: asserts **`player-session-metadata-bar.html`** exists and keeps minimal **P-02** contract markers (loading copy, validation strings, tab-order comment, **replayt** script pin) aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
 - `tests/test_docs_examples_replayt_pins.py`: **pytest** contract for **`docs/examples/**/*.{html,md}`** — **replayt** CDN (`replayt@…`) and PEP 508-style pins checked against the **`replayt`** line in **`pyproject.toml`**, with **`<!-- replayt-examples:pin-exempt -->`** skipping the next script line, URL line, or fenced block (backlog phase 3, Contract test: examples reference replayt in supported semver range).
 
 ### Documentation

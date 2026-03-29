@@ -15,7 +15,7 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | ID | Artifact | Status | Summary |
 | -- | -------- | ------ | ------- |
 | **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note. |
-| **P-02** | `player-session-metadata-bar.html` (planned) | **Spec only** — implement in Builder phase | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
+| **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
 
 **Mission trajectory:** P-01 is the first shipped pattern. This backlog (**P-02**) moves the repo toward **5+** distinct
 patterns; additional rows (timeline chrome, error boundary, framework variants, etc.) are **future** backlogs unless
@@ -106,8 +106,9 @@ When **P-02** ships, the PR **must**:
 4. Mention the new file in **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** so the shipped count stays
    accurate.
 
-**Out of scope for this backlog (spec only here):** new pytest/browser automation — optional follow-up when the repo
-adopts automated checks for static examples (see [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix)).
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`** (CDN pin vs **`pyproject.toml`**) and
+**`tests/test_examples.py`** (example files on disk plus light **P-02** contract strings). Full browser automation remains
+out of scope until the [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix) adds it.
 
 ---
 

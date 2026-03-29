@@ -490,11 +490,11 @@ with explicit **loading**, **error**, and **keyboard focus** behavior.
 
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | ------------------------ |
-| Second vanilla snippet, bar above player | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-02** | **Spec gate** — rules complete; **Builder** adds `player-session-metadata-bar.html` |
-| Same `sessionData` shape as P-01 (additive `metadata`) | **P-02** [`sessionData` contract](examples/PATTERNS.md#sessiondata-contract-compatibility-with-p-01) | Code review + inventory update |
-| Loading placeholder | **P-02** [Loading state](examples/PATTERNS.md#loading-state-normative) | Manual / future browser smoke |
-| Error when required metadata missing | **P-02** [Error state](examples/PATTERNS.md#error-state-normative) | Manual / future browser smoke |
-| Keyboard focus order (bar before player) | **P-02** [Keyboard focus and accessibility](examples/PATTERNS.md#keyboard-focus-and-accessibility-normative) | Manual / future a11y check |
+| Second vanilla snippet, bar above player | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-02** | **`docs/examples/player-session-metadata-bar.html`** shipped; **`tests/test_examples.py`** file presence + marker checks |
+| Same `sessionData` shape as P-01 (additive `metadata`) | **P-02** [`sessionData` contract](examples/PATTERNS.md#sessiondata-contract-compatibility-with-p-01) | Code review + **`tests/test_examples.py`** markers (`sessionId`, `durationMs`, `viewport`) |
+| Loading placeholder | **P-02** [Loading state](examples/PATTERNS.md#loading-state-normative) | **`tests/test_examples.py`** asserts loading copy; manual spot-check in browser optional |
+| Error when required metadata missing | **P-02** [Error state](examples/PATTERNS.md#error-state-normative) | **`tests/test_examples.py`** asserts validation/error strings; **`Simulate invalid metadata`** control in the snippet |
+| Keyboard focus order (bar before player) | **P-02** [Keyboard focus and accessibility](examples/PATTERNS.md#keyboard-focus-and-accessibility-normative) | **`tests/test_examples.py`** asserts tab-order comment block; manual tab order in browser optional |
 | **CHANGELOG** + mission pattern count | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, [P-02 Builder checklist](examples/PATTERNS.md#builder-acceptance-checklist-implementation) | **CHANGELOG** **Unreleased**; **MISSION** table |
 
 **Builder checklist (phase 3):**
