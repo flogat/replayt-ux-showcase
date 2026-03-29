@@ -36,7 +36,8 @@ def test_contributing_exists_with_pins_principles_table() -> None:
     assert "`.github/workflows/ci.yml`" in text
     assert (
         "unreleased-pattern-coverage-and-mission-tracking" in text
-        or "DESIGN_PRINCIPLES.md#unreleased-pattern-coverage-and-mission-tracking" in text
+        or "DESIGN_PRINCIPLES.md#unreleased-pattern-coverage-and-mission-tracking"
+        in text
     )
 
 
