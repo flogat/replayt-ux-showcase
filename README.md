@@ -93,6 +93,7 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/DEPENDENCY_AUDIT.md` | **`pip-audit`** (**Python** / **PyPI**): **CI** alignment, local reproduction, fix vs pin vs upstream, documented **`--ignore-vuln`** overrides |
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
+<<<<<<< HEAD
 | `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
 | `docs/examples/react/` | **P-06** React timeline player + README (**Shipped** — **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)**) |
 | `docs/examples/vue/` | **P-07** Vue 3 minimal player + scrubber + README (**Shipped** — **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-07--vue-3-timeline-player-basic-player--scrubber-parity)**) |
@@ -107,6 +108,9 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/playbook/README.md` | **Design-to-code handoff**: tokens (**[`tokens.md`](docs/playbook/tokens.md)**), anatomy (**[`component-anatomy.md`](docs/playbook/component-anatomy.md)**), printable checklist (**[`handoff-checklist.md`](docs/playbook/handoff-checklist.md)**) |
 | `docs/design-kit/README.md` | **Figma** design kit spec: library access, **Figma** → **`rux-*`** mapping (**F3**), change requests, interim **`design-tokens.json`** (**F5**), shipped examples ↔ **`--rux-*`**, component inventory (**BC1–BC4**) — see **[`docs/DESIGN_PRINCIPLES.md`](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export)** |
 | `docs/a11y/keyboard-model.md` | Shared **keyboard / focus** checklist for player and timeline embeds (tab order, scrubber keys, **Escape**) |
+=======
+| `docs/examples/` | Copy-paste static HTML/JS examples for integrators (not npm packages—see **Examples** below) |
+>>>>>>> origin/mc/backlog-b7eb5287
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
 | `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract |
@@ -115,3 +119,10 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
 | `CONTRIBUTING.md` | Contributor guide: **CHANGELOG** / semver, **DESIGN_PRINCIPLES** + pins same change set |
 | `.gitignore` | Ignores `path/` (doc placeholders), `.orchestrator/`, `.cursor/skills/`, and `AGENTS.md` (local tooling) |
+
+### Examples (`docs/examples/`)
+
+- **[`docs/examples/basic-player.html`](docs/examples/basic-player.html)** — vanilla CSS minimal player layout; reference for the [basic player example contract](docs/DESIGN_PRINCIPLES.md#basic-player-example-contract-static-html).
+- **[`docs/examples/tailwind-player.html`](docs/examples/tailwind-player.html)** — **Tailwind** utilities + CSS variables for the same [basic player example contract](docs/DESIGN_PRINCIPLES.md#basic-player-example-contract-static-html); details under [DESIGN_PRINCIPLES — Tailwind backlog traceability](docs/DESIGN_PRINCIPLES.md#backlog-traceability-tailwind-based-player-layout-example).
+
+These files are **illustrative copy-paste** starters only. They are **not** published **npm** packages and do not extend the Python package surface—see [`docs/DESIGN_PRINCIPLES.md` — Module and directory boundaries](docs/DESIGN_PRINCIPLES.md#module-and-directory-boundaries).

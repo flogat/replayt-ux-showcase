@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+<<<<<<< HEAD
 - Phase **2** spec (*Rewrite the README intro around audience, outcome, and scope*): **`docs/DESIGN_PRINCIPLES.md`** — new [README intro and repo orientation](docs/DESIGN_PRINCIPLES.md#readme-intro-and-repo-orientation) contract covering above-the-fold placement, required audience/outcome/non-goal copy, real-doc link targets, and Builder checklist; **`docs/MISSION.md`** — explicit **Non-goals** section so the README rewrite can point at stable repo boundaries instead of stale “main app / publish app” wording from the backlog text.
 - Phase **3** Builder (*Rewrite the README intro around audience, outcome, and scope*): **`README.md`** — new top-of-file orientation block under the **H1** covering the intended audience, shipped repo surfaces (**`docs/examples/`**, **`docs/playbook/`**, **`docs/design-kit/`**, **`src/replayt_ux_showcase/`**), explicit non-goals, and direct next-step links to **Quick start**, **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/PATTERNS.md`**, and **`docs/playbook/README.md`**.
 - Phase **8** CI fix (*Figma design kit stub: tokens + component list*): **`ruff format`** on **`tests/test_design_kit_docs.py`** so **`ruff format --check`** passes in **GitHub Actions** (matrix **test** job was failing on Ruff formatting for that file).
@@ -126,6 +127,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Phase **6** security hardening (*Bundled upstream reference docs workflow*): **`scripts/refresh-reference-docs/copy_markdown_snapshots.py`** — reject **`--subdir`** / **`--version`** values that are absolute paths, contain **`..`**, or resolve outside **`docs/reference-documentation/`** (maintainer **CLI** defense in depth); **`tests/test_reference_documentation_docs.py`** — regression cases for unsafe segments.
 - `tests/test_changelog_release_policy_docs.py`: **ruff format** (line wrap) and **LF** line endings so **`ruff format --check`** / Linux CI stay consistent (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
 - `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Second UI pattern: event overlay / heatmap on static canvas* — **P-10** contract tests).
+=======
+- `docs/DESIGN_PRINCIPLES.md`: **Showcase stack matrix** and basic player contract notes now match **`tests/test_examples.py`** coverage for **`tailwind-player.html`** (phase 5 architecture review, same backlog).
+- `docs/examples/basic-player.html`: HTML comment states illustrative copy-paste / not an **npm** package, matching the static player contract (phase 5, same backlog).
+- `docs/examples/tailwind-player.html`: **Tailwind** Play CDN layout + CSS variables for theming; same **`sessionData`** / **`replayt.player.init`** contract as **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
+- `README.md`: **Examples** links **`basic-player.html`** and **`tailwind-player.html`**, contract anchors, illustrative-not-npm disclaimer; **Tailwind** entry is present tense (phase 2–3, Add Tailwind-based player layout example under docs/examples/).
+- `docs/DESIGN_PRINCIPLES.md`: basic player static HTML contract, **Showcase stack matrix** row for **Tailwind**, migration path row, and backlog traceability for **`docs/examples/tailwind-player.html`** (phase 2 spec, same backlog).
+
+### Tests
+
+- `tests/test_examples.py`: **`tailwind-player.html`** presence and contract parity with **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
+>>>>>>> origin/mc/backlog-b7eb5287
 
 ## [0.2.0] - 2026-03-28
 
