@@ -21,6 +21,7 @@ is tracked separately in code and CHANGELOG):
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
 | Distinct vanilla UI patterns (mission: **5+**), per-pattern acceptance | [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog), [examples/PATTERNS.md](examples/PATTERNS.md), [MISSION.md](MISSION.md#pattern-coverage-tracking) |
+| Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 
 ### Traceability to automated checks
 
@@ -516,12 +517,28 @@ copy the pattern; “CI” means automated verification exists.
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**, **P-02**, **P-03**, **P-04**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
+(**P-01**, **P-02**, **P-03**, **P-04**, **P-05**, …), shipped vs spec-only status, and normative acceptance criteria for each pattern. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
 **[`docs/compat.md` — Vanilla UI pattern catalog](compat.md#vanilla-ui-pattern-catalog)**.
 
 New patterns **must** be registered in **`docs/examples/PATTERNS.md`** before or in the same change set as the new
 **`docs/examples/*.html`** file (see [Single home for copy-paste demos](#one-way-to-do-it-canonical-patterns)).
+
+#### Offline deterministic fixture page for LLM and reviewer workflows
+
+**Normalized user story:** As a **reviewer** or **automation agent**, I want a **registered vanilla example** (primary filename **`docs/examples/fixture-replay.html`**, or an alias recorded in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**) that initializes the replay player from **only** inlined, synthetic **`sessionData`**—with **no runtime network retrieval of session payloads**, **no secrets**, and **no live / non-reproducible model calls**—plus short prose in **[`README.md`](../README.md)** and **[`docs/REPLAYT_ECOSYSTEM_IDEA.md`](REPLAYT_ECOSYSTEM_IDEA.md)** on how to open it locally for harness and human review.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder) |
+| ---------------------------- | --------------- | ------------------------------- |
+| Artifact path + pattern registration | **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** — inventory row | **`docs/examples/fixture-replay.html`** (or approved alias) on disk; **P-05** → **Shipped** in **`docs/examples/PATTERNS.md`** |
+| Inlined synthetic **`sessionData`** only | **P-05** [sessionData and offline boundary](examples/PATTERNS.md#p-05-sessiondata-and-offline-boundary-normative) | Code review: literal / constant in-page; no `fetch` / **XHR** / **WebSocket** / **EventSource** (or equivalent) for session payloads |
+| **No secrets**; **no** non-reproducible model calls in this path | **P-05** [Forbidden behaviors](examples/PATTERNS.md#p-05-forbidden-behaviors-normative); [LLM boundaries](#llm-boundaries) | Code review; no API keys, tokens, or env-specific endpoints in source |
+| **Deterministic** fixture data | **P-05** [Determinism](examples/PATTERNS.md#p-05-determinism-normative) | No `Date.now()` / `new Date()` / `Math.random()` (or equivalent) in **`sessionData`** or other harness-scraped copy unless documented test-only and stable |
+| **replayt** JS pin in supported range | **P-05** [replayt pin and open instructions](examples/PATTERNS.md#p-05-replayt-pin-and-open-instructions-normative) | **`tests/test_docs_examples_replayt_pins.py`** once **HTML** exists |
+| Reviewer / agent **open** instructions | **`README.md`**, **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** | Linked sections describe local open path (see **P-05**); **CHANGELOG** **Unreleased** when **Shipped** |
+| Mission pattern count | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** | When **P-05** ships, table moves from **4** to **5** shipped vanilla patterns (if **P-05** is the fifth) |
+
+**Spec status (phase 2):** Normative criteria live under **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)**. Implementation, **`tests/test_examples.py`** markers (if any), and **CHANGELOG** **Unreleased** **Added** entries are **Builder** (phase **3**) work.
 
 #### Backlog traceability: Ship session metadata chrome pattern (viewport, duration, session id)
 
@@ -632,7 +649,8 @@ metering in CI.
 | Rule | Detail |
 | ---- | ------ |
 | **Secrets** | Never commit API keys, tokens, or `.env` with real credentials. Examples use placeholders only. |
-| **replayt LLM helpers** | If an example uses **replayt**’s mock or workflow LLM utilities (e.g. `MockLLMClient`, `run_with_mock`), keep it **offline/deterministic** in CI and document that in the demo’s spec or header comment. |
+| **Offline fixture page** | **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** (`docs/examples/fixture-replay.html` or registered alias) is the **canonical** vanilla surface for **deterministic**, **no-session-fetch** review and **LLM** harnesses: inlined synthetic **`sessionData`**, **no** runtime network retrieval of session payloads, **no** secrets, **no** live or stochastic model calls **in that file’s code path**. See **P-05** for the **replayt** script pin, local open instructions, and how this differs from **P-01**–**P-04** (which may demonstrate `fetch` or other network stories). |
+| **replayt LLM helpers** | If an example uses **replayt**’s mock or workflow LLM utilities (e.g. `MockLLMClient`, `run_with_mock`), keep it **offline/deterministic** in CI and document that in the demo’s spec or header comment. **P-05** MUST NOT depend on such helpers unless the **P-05** spec is explicitly revised to allow a documented mock path that remains **deterministic** and **secret-free**. |
 | **Future “live” demos** | Require an explicit maintainer decision, opt-in env vars documented in **README** or **docs/demo.md**, and must not run by default in CI. |
 | **Costs** | CI and default contributor workflows must not incur model spend. |
 
@@ -661,4 +679,4 @@ metering in CI.
 | **Design / DX** | Tokens and handoff checklist alignment (playbook docs); clarity on what is example-only vs maintained API |
 | **Security / compliance** | No secrets in repo; LLM and third-party boundaries; supply-chain audit expectations in CI |
 | **Release / tag consumers** | SemVer and CHANGELOG for removals; matrix “policy vs CI” truth at the version they pin |
-| **Automation agents (LLM tooling)** | Respect [LLM boundaries](#llm-boundaries); treat this file and `tests/` as normative for boundaries—do not invent alternate package layouts or secret-handling rules; for **vanilla** examples, use **only** documented visible copy, **`aria-live` / `role="status"`** text, or optional hooks (e.g. `data-demo-state`) **where a pattern spec says so**—see **[P-04](examples/PATTERNS.md#p-04-status-live-region-normative)** |
+| **Automation agents (LLM tooling)** | Respect [LLM boundaries](#llm-boundaries); treat this file and `tests/` as normative for boundaries—do not invent alternate package layouts or secret-handling rules; for **vanilla** replay **fixtures** (no fetched session payloads), prefer **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** once **Shipped**; for **loading / failure / status** scraping in other patterns, use **only** documented visible copy, **`aria-live` / `role="status"`** text, or optional hooks (e.g. `data-demo-state`) **where a pattern spec says so**—see **[P-04](examples/PATTERNS.md#p-04-status-live-region-normative)** |

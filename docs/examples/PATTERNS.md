@@ -18,8 +18,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
 | **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
 | **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
+| **P-05** | **`fixture-replay.html`** (planned) | **Spec only** | **Offline fixture** for **reviewers** and **LLM** harnesses: **inlined** synthetic **`sessionData`**, **no** runtime session fetch, **no** secrets, **no** live/stochastic model calls; pinned **replayt** player script only. |
 
-**Mission trajectory:** **P-01** through **P-04** are shipped. At least **one** more registered pattern is needed to reach the mission **5+** target. Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-04** are shipped. **P-05** is registered (**Spec only**) for the deterministic fixture page; shipping it satisfies the mission **5+** target if no other pattern ships first. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -329,3 +330,93 @@ available, when **fetch fails**, and when **init or data** fails after load— i
 | **Published** replayt JS only | [P-04 async sessionData acquisition](#p-04-async-sessiondata-acquisition-normative), [P-04 replayt pin and file placement](#p-04-replayt-pin-and-file-placement) |
 | Same operator story as **console** demo doc | **[`docs/demo.md`](../demo.md#cross-surface-operator-story-console-demo-and-web-embed)** |
 | Pattern inventory + mission trajectory | [Pattern inventory](#pattern-inventory), [Mission](../MISSION.md#pattern-coverage-tracking) |
+
+---
+
+## P-05 Offline deterministic fixture page for LLM and reviewer workflows
+
+### User story
+
+As a **reviewer** or **automation agent**, I want a **single vanilla HTML** file that renders a replay using **only**
+inlined, synthetic **`sessionData`** (no API or `fetch` for the session payload), aligned with
+**[LLM boundaries](../DESIGN_PRINCIPLES.md#llm-boundaries)**, so local opens and harness runs are **predictable** and
+**secret-free**.
+
+### Relationship to P-01 and P-04
+
+- **P-01** ([`basic-player.html`](basic-player.html)) may mention fetching real **`sessionData`** from a backend. **P-05**
+  is the **dedicated** pattern for the **opposite** job: **fixture** data lives **entirely in the document** (or in
+  **static** literals the script assigns without I/O).
+- **P-04** models **async** acquisition (including simulated `fetch`). **P-05** **must not** use that acquisition story
+  for **`sessionData`**—no staged “loading” that resolves from the network for the payload. A **minimal** “ready” UI is
+  allowed once **`sessionData`** is a constant and **`replayt.player.init`** (or equivalent public API) has run.
+
+### P-05 sessionData and offline boundary (normative)
+
+- **`sessionData` source:** The object passed to **`replayt.player.init`** (or the **documented** public equivalent for
+  the pinned **replayt** JS version) **must** originate from an **inline** JavaScript literal or **static** assignment in
+  the same file (or a **non-network** embedding pattern documented in-snippet, e.g. a `const` assembled only from fixed
+  primitives—**not** loaded from another URL).
+- **Forbidden for session payloads:** `fetch`, **`XMLHttpRequest`**, **`WebSocket`**, **`EventSource`**, **`import()`** to
+  remote modules, or any other runtime I/O whose purpose is to obtain or mutate **`sessionData`** from a **network** or
+  **environment-specific** source.
+- **Allowed:** One **pinned** **replayt** browser bundle via **`<script src="…">`** (same **CDN** / semver story as
+  **P-01**–**P-04** and [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins)). That script load is **not** a **session** fetch; it is the **player** dependency. Optional future work (separate backlog) may vendor the bundle for air-gapped workflows; this spec does **not** require it for **Shipped**.
+
+### P-05 forbidden behaviors (normative)
+
+- **No secrets:** No API keys, bearer tokens, signed URLs with secrets, private hostnames tied to credentials, or
+  **`import.meta.env`** / **`process.env`**-style reads that could pull real credentials into the page.
+- **No live model calls:** No `fetch` or SDK calls to hosted **LLM** / inference endpoints, telemetry that sends session
+  content off-device, or **replayt** workflow runners that invoke non-deterministic models **from this file**.
+- **No non-reproducible model paths:** Do not embed or call helpers whose **default** behavior is stochastic or
+  time-dependent **model** output (contrast with fixed **`MockLLMClient`** narratives elsewhere—**P-05** stays **static
+  replay** only unless this spec is revised).
+
+### P-05 determinism (normative)
+
+- **`sessionData`:** Use **fixed** timestamps, ids, and event payloads (e.g. numeric literals, fixed strings). **Do not**
+  use `Date.now()`, `new Date()`, `Math.random()`, or environment-derived values **inside `sessionData`** or in
+  **harness-scraped** visible strings that are meant to be stable across runs.
+- **Comments:** The file **must** include a short **header comment** stating that the page is a **deterministic fixture**
+  for reviewers and agents and that **`sessionData`** is **synthetic** and **stable**.
+
+### P-05 replayt pin and open instructions (normative)
+
+- **Primary path:** **`docs/examples/fixture-replay.html`**. If renamed, update this inventory row, **CHANGELOG**
+  **Unreleased**, and cross-links in **`README.md`** / **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** in the same change set.
+- **Pin:** **`<script src=…>`** **must** satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (**`tests/test_docs_examples_replayt_pins.py`** once the file exists).
+- **Local open (documentation, not code):** **`README.md`** and **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** **must** tell reviewers
+  and harness authors to open the page via a **local static server** rooted sensibly (e.g. from the repo: `cd docs/examples`
+  then `python -m http.server`, then browse to `/fixture-replay.html`) so the **CDN** **replayt** script can load under
+  typical browser **mixed-content / file URL** rules. **Optional:** note that **`file://`** may fail to load **CDN**
+  scripts in some browsers—do not claim **fully air-gapped** behavior unless a **vendored** script path is also shipped
+  (future backlog).
+
+### Builder acceptance checklist (implementation)
+
+**P-05** is **Spec only** until the **Builder** lands the **HTML** file and flips the inventory row to **Shipped**.
+
+1. Add **`docs/examples/fixture-replay.html`** (or approved alias) implementing the normative sections above.
+2. [Pattern inventory](#pattern-inventory) lists **P-05** as **Shipped** with the correct filename.
+3. Update **`README.md`** and **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** with the **local open** instructions (if not already
+   present from an earlier phase).
+4. **CHANGELOG** **Unreleased** records the example; **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**
+   pattern table reflects **5** shipped vanilla patterns when **P-05** is the fifth shipped file.
+5. **`tests/test_docs_examples_replayt_pins.py`** scans the new **`*.html`**. Optional: **`tests/test_examples.py`**
+   minimal markers (determinism comment, no `fetch` of session, **replayt** pin)—**Builder** choice aligned with this spec.
+
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`** once **HTML** exists; no **P-05**-specific
+**pytest** contract is required by this **phase 2** spec.
+
+---
+
+## Backlog traceability: Offline deterministic fixture page for LLM and reviewer workflows
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| Inlined synthetic **`sessionData`**, no session over the wire | [P-05 sessionData and offline boundary](#p-05-sessiondata-and-offline-boundary-normative) |
+| **No secrets**; **no** live / stochastic model usage in this path | [P-05 forbidden behaviors](#p-05-forbidden-behaviors-normative), [LLM boundaries](../DESIGN_PRINCIPLES.md#llm-boundaries) |
+| **Deterministic** fixture | [P-05 determinism](#p-05-determinism-normative) |
+| **replayt** pin + local open docs | [P-05 replayt pin and open instructions](#p-05-replayt-pin-and-open-instructions-normative), **`README.md`**, **`docs/REPLAYT_ECOSYSTEM_IDEA.md`** |
+| Traceability in design principles | [Offline deterministic fixture page](../DESIGN_PRINCIPLES.md#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows) |
