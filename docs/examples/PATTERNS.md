@@ -4,7 +4,8 @@ This file is the **canonical inventory** for distinct, copy-paste integrator exa
 HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**; **Vue** — **P-07**; **Svelte**
 — **P-08**). **P-09** is the **vanilla** teaching example for **event overlays** (**Shipped** as **`event-overlay.html`**).
 **P-10** is the **vanilla** pattern for **click heatmap / density on a static viewport-sized stage** (**Shipped** as
-**[`click-heatmap-canvas.html`](click-heatmap-canvas.html)** — see [P-10 — Click heatmap on static canvas](#p-10--click-heatmap-on-static-canvas-session-click-coordinates)). It supports the mission
+**[`click-heatmap-canvas.html`](click-heatmap-canvas.html)** — see [P-10 — Click heatmap on static canvas](#p-10--click-heatmap-on-static-canvas-session-click-coordinates)). **P-11** is the **vanilla**
+**Tailwind CSS** layout twin of **P-01** (**Spec only** until **`basic-player-tailwind.html`** ships — see [P-11 — Basic player chrome (Tailwind CSS layout parity)](#p-11--basic-player-chrome-tailwind-css-layout-parity)). This catalog supports the mission
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
@@ -29,8 +30,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-08** | [`svelte/`](svelte/) ([`README.md`](svelte/README.md), [`src/App.svelte`](svelte/src/App.svelte)) | **Shipped** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
 | **P-09** | [`event-overlay.html`](event-overlay.html) | **Shipped** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
 | **P-10** | [`click-heatmap-canvas.html`](click-heatmap-canvas.html) | **Shipped** | **Click heatmap on static canvas (or SVG)**: map **`click`** events’ **`x`/`y`** onto a **viewport-sized** stage; **density** / aggregation visualization; **`SAMPLE_SESSION_DATA`**-aligned **§1** literal (with extra **click** samples for visible hotspots); **accessible** name + focus order per normative section below — **distinct** from **P-09** (no requirement to duplicate scrub-linked callout lane as the primary teaching goal). |
+| **P-11** | [`basic-player-tailwind.html`](basic-player-tailwind.html) (planned) | **Spec only** | **Tailwind CSS** layout parity with **P-01**: same **`replayt.player.init`** path, §1 **`rux-showcase-session-fixture`** + adapter, instruction panel + player chrome via **utility classes**; copy-paste **Tailwind `content` / `@source`** paths documented — [normative section](#p-11--basic-player-chrome-tailwind-css-layout-parity). |
 
-**Mission trajectory:** **P-01** through **P-05**, **P-09**, and **P-10** are shipped (**7** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. **P-10** is **Shipped** as **`click-heatmap-canvas.html`** (**Playwright** inventory + **`tests/test_examples.py`** markers ship with the file). Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05**, **P-09**, and **P-10** are shipped (**7** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-11** is registered as **Spec only** (Tailwind twin of **P-01**); when **`basic-player-tailwind.html`** ships, increment the **Shipped** vanilla count to **8** in this paragraph, **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**, and **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** in the **same** change set. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. **P-10** is **Shipped** as **`click-heatmap-canvas.html`** (**Playwright** inventory + **`tests/test_examples.py`** markers ship with the file). Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -943,6 +945,104 @@ Shared checklist: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**
 | Accessible name + visible summary + **Tab order (handoff)** | [P-10 Accessibility and keyboard](#p-10-accessibility-and-keyboard-normative), [`keyboard-model.md`](../a11y/keyboard-model.md) |
 | **replayt** pin when script present; optional player | [P-10 replayt JavaScript dependency](#p-10-replayt-javascript-dependency-normative) |
 | **pytest** / **Playwright** when **Shipped** | [P-10 Verification intent](#p-10-verification-intent-builder--tester--not-phase-2) |
+
+---
+
+## P-11 — Basic player chrome (Tailwind CSS layout parity)
+
+### User story
+
+As an integrator who standardizes on **Tailwind CSS** for app chrome, I want a **copy-paste vanilla** page under
+**`docs/examples/`** that **reproduces the layout and instruction panel** of **[`basic-player.html`](basic-player.html)** (**P-01**)
+using **Tailwind utility classes**, documents the **Tailwind content-scanning paths** I need so classes are not purged when I
+drop the file into my repo, and keeps the **same** **`replayt` player** initialization assumptions as **P-01** (fixture,
+adapter, **`replayt.player.init`**).
+
+### P-11 Relationship to P-01 (normative — replayt contract)
+
+- **Fixture:** The page **must** ship the **same** **§1** canonical JSON as **P-01** inside
+  **`<script type="application/json" id="rux-showcase-session-fixture">…</script>`**, **byte-for-byte** equal to
+  **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`** so **[`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §5** /
+  **`tests/test_session_schema_examples.py`** can register the file when **Shipped** (add path to **`_FIXTURE_HTML_FILES`** in the **same** change set).
+- **Adapter:** **must** use the **same** wall-clock anchor (**`ADAPTER_EPOCH_MS`**) and **`adaptConsoleSessionToReplaytMs`**
+  semantics as **P-01** (or an equivalent pure function with a short comment proving parity). **Do not** invent a third
+  timestamp story — see [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §2.
+- **Init:** **must** call **`replayt.player.init`** with **`container`**, **`data`**, and **`theme`** matching **P-01**
+  (**`document.getElementById('player')`**, adapted payload, **`theme: 'light'`** unless a documented deviation is approved in review).
+- **CDN / pin:** Any **`<script src=…replayt…>`** **must** satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (same PEP 508 band as **`pyproject.toml`**).
+
+### P-11 Layout parity (normative — Tailwind surface)
+
+- **Page shell:** Centered column **~`max-w-6xl` / 72rem** (or documented equivalent), horizontal padding, vertical spacing
+  comparable to **P-01**’s body (**`padding: 2rem`** intent — e.g. **`p-8`** on the outer wrapper).
+- **Instruction panel:** **Above** the player in **DOM order**; visually distinct **muted** surface, **rounded** corners,
+  **padding** — equivalent to **P-01** **`.instructions`** (background, **`1rem`** padding, **`0.5rem`** radius intent).
+- **Player container:** **`#player`** — full width of the column, height **~`60vh`**, **border** + **rounded** corners
+  matching **P-01**’s **`#player`** block.
+- **Heading:** Preserve an **`h1`** (or **`h1`**-equivalent with documented **`role="heading"`** / level) with the same
+  integrator-facing title intent as **P-01** (emoji optional; copy may tighten but **must** remain obviously the “basic player” teaching page).
+- **Prose:** Instruction **bullet list** **must** cover the **same teaching points** as **P-01** (fixture / **`SESSION_SCHEMA`** §1 link,
+  §2 adapter note, **theme** / **`--rux-color-primary`** ↔ **`--replayt-primary`**, timeline extension hint, **`keyboard-model.md`** link).
+  Relative links **must** resolve from **`docs/examples/`** like **P-01** (**`../playbook/tokens.md`**, **`../a11y/keyboard-model.md`**, **`SESSION_SCHEMA.md`**).
+
+### P-11 Theme variables (normative)
+
+**`replayt`** reads **`--replayt-primary`** for tinting. **P-11** **must** keep **`--replayt-primary`** (and supporting **`--rux-*`**
+tokens **P-01** relies on) **defined** on **`:root`** or an equivalent ancestor so the player matches **P-01**’s theme story.
+
+- **Allowed:** A **small** **`<style>`** block on **`:root`** for **`--rux-*`** / **`--replayt-primary`** only, with **Tailwind**
+  handling layout/spacing/typography utilities on markup.
+- **Allowed:** **Tailwind v4** **`@theme`** / **`@layer`** extensions **if** the built CSS still emits the **same** custom properties
+  the player expects — document the build step in-snippet and in **[`docs/examples/build.md`](build.md)** when a bundler path is introduced.
+
+### P-11 Tailwind delivery and content paths (normative)
+
+- **Primary file:** **`docs/examples/basic-player-tailwind.html`** (rename only with catalog + **CHANGELOG** + **compat** updates).
+- **Integrator-visible documentation:** The HTML **must** include a **prominent** comment block (and/or a short visible “Build / copy-paste”
+  aside) listing **concrete `content` globs** (Tailwind **v3** `tailwind.config` / **v4** `@source` / CLI **`--content`**) that include **this file’s path**
+  when copied into a typical app tree (example: `"./docs/examples/basic-player-tailwind.html"` from repo root, or `"./src/**/*.{html,js}"` when the snippet lives in **`src/`**).
+- **Tailwind distribution:** **Either** (a) document **Tailwind Play CDN** / standalone script with an explicit **“not for production”** maintainer note **in-snippet**, **or** (b) document a **built CSS** link produced locally (**Vite**, **Tailwind CLI**, etc.) and cross-link **[`docs/examples/build.md`](build.md)** for an optional **private** **`package.json`** recipe. Pick **one** primary story in the **Shipped** file so integrators are not left guessing.
+- **Purge safety:** Call out **dynamic class** pitfalls (**`safelist`** or equivalent) **only if** the snippet uses patterns that
+  require it; otherwise state that all classes are **static** in the markup.
+
+### P-11 Accessibility and keyboard (normative)
+
+Shared checklist: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**. **P-11** **must** link there from the instruction
+panel (same as **P-01**) and preserve **sensible tab order** (instruction links **before** player focusables — mirrors **P-01** DOM order).
+
+### P-11 Verification intent (Builder / Tester — not phase 2)
+
+When **Shipped**:
+
+1. Add **`docs/examples/basic-player-tailwind.html`** to **`_FIXTURE_HTML_FILES`** in **`tests/test_session_schema_examples.py`** (fixture byte parity with **`SAMPLE_SESSION_DATA`**).
+2. Extend **`tests/test_examples.py`** with **light** contract markers (Tailwind / layout parity intent comment, **`rux-showcase-session-fixture`**, **`adaptConsoleSessionToReplaytMs`**, **`replayt.player.init`**, **keyboard-model** link).
+3. Add the file to the **Shipped** root **`*.html`** list in **`tests/playwright/test_static_html_examples_load.py`**.
+4. **`tests/test_docs_examples_replayt_pins.py`** covers any versioned **replayt** **`<script>`**.
+
+### P-11 Builder acceptance checklist (implementation)
+
+**P-11** is **Spec only** until the checklist below is satisfied; then flip the [inventory](#pattern-inventory) row to **Shipped**.
+
+1. **`docs/examples/basic-player-tailwind.html`** implements the normative sections above.
+2. [Pattern inventory](#pattern-inventory) lists **P-11** as **Shipped** with filename **`basic-player-tailwind.html`**.
+3. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** vanilla **Shipped** count becomes **8**; **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest lists **P-11** as **Shipped**.
+4. **`CHANGELOG`** **Unreleased** records the new example; **[`README.md`](../../README.md)** project layout row added if table lists sibling examples.
+5. **`tests/test_session_schema_examples.py`**, **`tests/test_examples.py`**, **`tests/playwright/test_static_html_examples_load.py`** updated per [P-11 Verification intent](#p-11-verification-intent-builder--tester--not-phase-2).
+6. **[`docs/examples/build.md`](build.md)** gains a **Tailwind** subsection **if** the **Shipped** snippet depends on a documented bundler (**optional** if Play CDN-only).
+
+---
+
+## Backlog traceability: Tailwind basic player chrome (vanilla **P-11**)
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| **`basic-player-tailwind.html`** (or equivalent) registered | [Pattern inventory](#pattern-inventory), [P-11 — Basic player chrome (Tailwind CSS layout parity)](#p-11--basic-player-chrome-tailwind-css-layout-parity) |
+| Layout + instruction panel parity with **P-01** | [P-11 Layout parity](#p-11-layout-parity-normative--tailwind-surface) |
+| Tailwind **content** / **`@source`** copy-paste documentation | [P-11 Tailwind delivery and content paths](#p-11-tailwind-delivery-and-content-paths-normative) |
+| Same **`replayt.player.init`** assumptions as **P-01** | [P-11 Relationship to P-01](#p-11-relationship-to-p-01-normative--replayt-contract) |
+| Theme **`--replayt-primary`** / **`--rux-*`** story preserved | [P-11 Theme variables](#p-11-theme-variables-normative) |
+| **a11y** cross-link + tab order | [P-11 Accessibility and keyboard](#p-11-accessibility-and-keyboard-normative) |
+| **pytest** / **Playwright** when **Shipped** | [P-11 Verification intent](#p-11-verification-intent-builder--tester--not-phase-2) |
 
 ---
 

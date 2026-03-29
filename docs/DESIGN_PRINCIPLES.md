@@ -30,6 +30,7 @@ is tracked separately in code and CHANGELOG):
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 | **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
 | **Click heatmap / static canvas** (session **`click`** **`x`/`y`** density on viewport-sized stage) | **[P-10](examples/PATTERNS.md#p-10--click-heatmap-on-static-canvas-session-click-coordinates)** (**[`click-heatmap-canvas.html`](examples/click-heatmap-canvas.html)** **Shipped**), [`SESSION_SCHEMA.md` §1](examples/SESSION_SCHEMA.md#1-showcase-session-fixture-canonical), [`keyboard-model.md`](a11y/keyboard-model.md), [Backlog traceability: Click heatmap **P-10**](#backlog-traceability-click-heatmap-on-static-canvas-vanilla-p-10) |
+| **Tailwind CSS** basic player chrome (**P-01** layout / init parity, documented **`content` / `@source`**) | **[P-11](examples/PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity)** (**[`basic-player-tailwind.html`](examples/basic-player-tailwind.html)** **Spec only** until **Shipped**), [`SESSION_SCHEMA.md` §3–§5](examples/SESSION_SCHEMA.md#3-shipped-examples-p-01-and-p-02), [`keyboard-model.md`](a11y/keyboard-model.md), [Backlog traceability: Tailwind basic player **P-11**](#backlog-traceability-tailwind-basic-player-chrome-vanilla-p-11), [`examples/build.md`](examples/build.md) (optional **Tailwind** bundler note) |
 | **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
 | **Session fixture** (`SAMPLE_SESSION_DATA` ↔ **`docs/examples`**) | [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [examples/PATTERNS.md — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), [`docs/demo.md`](demo.md) |
 | **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
@@ -790,7 +791,7 @@ copy the pattern; “CI” means automated verification exists.
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**–**P-05**, **P-09**, and **P-10** **Shipped**; **P-09** is **`event-overlay.html`**; **P-10** is **`click-heatmap-canvas.html`**), plus **framework** subtrees
+(**P-01**–**P-05**, **P-09**, and **P-10** **Shipped**; **P-11** **`basic-player-tailwind.html`** is **Spec only** until **Shipped** — **Tailwind** twin of **P-01**; **P-09** is **`event-overlay.html`**; **P-10** is **`click-heatmap-canvas.html`**), plus **framework** subtrees
 (**P-06** **React**, **P-07** **Vue**, **P-08** **Svelte** — all **Shipped**),
 each with normative acceptance criteria in **`docs/examples/PATTERNS.md`**. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
@@ -998,6 +999,27 @@ and **[offline / deterministic fixture](#offline-deterministic-fixture-page-for-
 | **Playwright** smoke + **MISSION** / **compat** / **README** | **P-10** [Verification intent](examples/PATTERNS.md#p-10-verification-intent-builder--tester--not-phase-2), **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** | Root **`click-heatmap-canvas.html`** in **Shipped** inventory; vanilla count **7** |
 
 **Shipped:** **`docs/examples/click-heatmap-canvas.html`**; **P-10** **Shipped** in **`docs/examples/PATTERNS.md`**; **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** vanilla count **7**; **`tests/test_examples.py`** markers; **Playwright** **Shipped** list; **CHANGELOG** **Unreleased**; **`README.md`** and **`docs/compat.md`** digest; no **replayt** **`<script>`** in the shipped page (pin test N/A until one is added).
+
+#### Backlog traceability: Tailwind basic player chrome (vanilla **P-11**)
+
+**Scope:** **[P-11](examples/PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity)** in **`docs/examples/PATTERNS.md`** — primary file **`docs/examples/basic-player-tailwind.html`** (**Spec only** until **Builder** ships the HTML).
+
+**Normalized user story:** As an integrator, I want a **vanilla** example that matches **[`basic-player.html`](examples/basic-player.html)**’s **page chrome** and **`replayt.player.init`** story using **Tailwind CSS** utilities, with **copy-paste-safe** **Tailwind** **`content` / `@source`** documentation so production builds do not strip classes.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| **P-11** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-11** | **`basic-player-tailwind.html`** on disk; inventory → **Shipped** |
+| **P-01** fixture + adapter + **`init`** parity | **P-11** [Relationship to P-01](examples/PATTERNS.md#p-11-relationship-to-p-01-normative--replayt-contract) | **`tests/test_session_schema_examples.py`** (**`_FIXTURE_HTML_FILES`**); code review |
+| Layout + instruction panel parity (**Tailwind** utilities) | **P-11** [Layout parity](examples/PATTERNS.md#p-11-layout-parity-normative--tailwind-surface) | Code review; **`tests/test_examples.py`** markers |
+| **`--replayt-primary`** / **`--rux-*`** preserved | **P-11** [Theme variables](examples/PATTERNS.md#p-11-theme-variables-normative) | Code review |
+| **Tailwind** scanning paths documented | **P-11** [Tailwind delivery and content paths](examples/PATTERNS.md#p-11-tailwind-delivery-and-content-paths-normative) | Code review |
+| **a11y** link + tab order | **P-11** [Accessibility and keyboard](examples/PATTERNS.md#p-11-accessibility-and-keyboard-normative), **[`keyboard-model.md`](a11y/keyboard-model.md)** | Code review |
+| **replayt** **CDN** pin | **P-11** [Relationship to P-01](examples/PATTERNS.md#p-11-relationship-to-p-01-normative--replayt-contract) | **`tests/test_docs_examples_replayt_pins.py`** |
+| **Playwright** smoke + **MISSION** / **compat** / **README** | **P-11** [Verification intent](examples/PATTERNS.md#p-11-verification-intent-builder--tester--not-phase-2), **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** | Root **`basic-player-tailwind.html`** in **Shipped** inventory; vanilla count **8** |
+
+**Spec only (phase 2):** normative text and inventory row in **`docs/examples/PATTERNS.md`**; cross-links in **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/SESSION_SCHEMA.md`**, **`docs/DESIGN_PRINCIPLES.md`**, optional **[`docs/examples/build.md`](examples/build.md)** **Tailwind** note.
+
+**Shipped (target):** **`docs/examples/basic-player-tailwind.html`**; **P-11** **Shipped** in **`docs/examples/PATTERNS.md`**; **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** vanilla count **8**; **`tests/test_session_schema_examples.py`**, **`tests/test_examples.py`**, **`tests/playwright/test_static_html_examples_load.py`**; **CHANGELOG** **Unreleased**; **`README.md`** and **`docs/compat.md`** digest.
 
 ---
 

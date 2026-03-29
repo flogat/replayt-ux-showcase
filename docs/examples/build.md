@@ -87,3 +87,13 @@ Running **`npm run build`** is **not** executed in **CI** (optional future backl
 This recipe expects the **`replayt`** package on the **npm** registry with a **`dist/player.min.js`** browser bundle
 (aligned with **jsDelivr** paths in **`docs/examples/*.html`**). If resolution fails, adjust **`entry.mjs`** when the
 upstream layout changes.
+
+---
+
+## Tailwind CSS (vanilla **P-11** companion)
+
+**Normative pattern:** **[`docs/examples/PATTERNS.md` — P-11](PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity)** (**`basic-player-tailwind.html`**).
+
+- **Integrator default:** **P-11** is a **standalone** **`docs/examples/*.html`** snippet; **Tailwind** is documented **in the file** (Play CDN and/or built CSS) with explicit **`content` / `@source`** globs so class lists survive purge.
+- **Optional maintainer extension:** If **Shipped** **P-11** uses **Vite + Tailwind** (or **Tailwind CLI**) instead of Play CDN, document the **local** recipe **here** in a short subsection (or bullet list) while keeping **[Module and directory boundaries](../DESIGN_PRINCIPLES.md#module-and-directory-boundaries)** — root **`package.json`** stays **`private`**, **no** new **npm** **CI** job required by this note.
+- **Pins:** Any **replayt** **npm** / CDN example lines added **here** stay inside **`pyproject.toml`** (**`tests/test_docs_examples_replayt_pins.py`** applies to this **Markdown** file).
