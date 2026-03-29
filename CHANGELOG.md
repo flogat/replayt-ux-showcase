@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Phase **3** (*Harden replayt public-API boundary lint or import guard*): **`tests/test_replayt_public_api_boundary.py`** — **AST** scan of **`src/replayt_ux_showcase/**/*.py`** against **`replayt.__all__`** and private **`replayt._*`** first-segment submodule paths; **`docs/DESIGN_PRINCIPLES.md`** and **`docs/compat.md`** traceability (**EX-REPLAYT-PY-API**); **`tests/test_demo.py`** no longer asserts **`demo.py`** is **`replayt`**-free (package-wide test covers **`demo.py`**).
+
 ### Documentation
 
 - Phase **2** spec (*Harden replayt public-API boundary lint or import guard*): **`docs/DESIGN_PRINCIPLES.md`** — [Normative import rules](docs/DESIGN_PRINCIPLES.md#normative-import-rules-showcase-python) for **`src/replayt_ux_showcase/**/*.py`**, traceability rows, [Backlog traceability](docs/DESIGN_PRINCIPLES.md#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard) + **Builder** acceptance table (target **`tests/test_replayt_public_api_boundary.py`**); **`docs/compat.md`** — **`replayt.__all__`** digest for **0.4.25** next to the Python API story; **shims** cross-link updated.

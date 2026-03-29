@@ -45,10 +45,9 @@ and **CHANGELOG** **Unreleased** in the **same** change set as **`pyproject.toml
 | `resolve_approval_on_store` |
 | `run_with_mock` |
 
-**Automated guard:** **`pytest`** module **`tests/test_replayt_public_api_boundary.py`** (target name from design
-principles) is **not** shipped yet (backlog phase **3**); until then **`tests/test_demo.py`** enforces a stricter rule
-(**`demo.py`** does not import **`replayt`**). When the guard lands, it runs inside every **EX-311-RT-*** / **EX-312-RT-***
-cell, same as other default **`tests/`** discovery.
+**Automated guard:** **`tests/test_replayt_public_api_boundary.py`** runs under default **`pytest`** in every **test** matrix
+cell (**EX-REPLAYT-PY-API** in [CI exercise row inventory](#ci-exercise-row-inventory)), same discovery as other contract
+tests. It checks **`src/replayt_ux_showcase/**/*.py`** against **`replayt.__all__`** for the installed pin.
 
 ## CI exercise row inventory
 
@@ -65,6 +64,7 @@ a claim to best-effort — then **remove** or relabel the row).
 | **EX-312-RT-0-2-0** | `jobs.test` | `python-version: "3.12"`, `replayt-version: "0.2.0"` | Same as **EX-311-RT-0-2-0** on **3.12** |
 | **EX-312-RT-0-4-25** | `jobs.test` | `python-version: "3.12"`, `replayt-version: "0.4.25"` | Same as **EX-311-RT-0-4-25** on **3.12** |
 | **EX-EXAMPLES-PINS** | (bundled) | Runs inside every **`jobs.test`** matrix cell via **pytest** | **`tests/test_docs_examples_replayt_pins.py`** |
+| **EX-REPLAYT-PY-API** | (bundled) | Runs inside every **`jobs.test`** matrix cell via **pytest** | **`tests/test_replayt_public_api_boundary.py`** — showcase **`*.py`** vs **`replayt.__all__`** / private **`replayt._*`** paths |
 | **EX-SUPPLY-CHAIN** | `jobs.supply-chain` | `ubuntu-latest`, **Python 3.12** (setup-python) | Editable dev install (**replayt** resolves to latest in-range, not matrix-pinned) + **`pip-audit`** per **`docs/DEPENDENCY_AUDIT.md`** |
 
 **Not listed as exercise rows:** optional **npm** `dev`/`build` for **Vue** / **Svelte** subtrees under **`docs/examples/`**
@@ -88,6 +88,7 @@ remains **local** unless a future backlog adds workflow jobs.
 | **Install + tests** | One full gate per **Python** × **replayt** matrix cell (**EX-311-RT-*** … **EX-312-RT-***): editable **`".[dev]"`** install with **`-c`** **replayt** pin, **ruff**, **`python -m pytest tests`** with **`[tool.pytest.ini_options]`** | Reproduce locally with the same **`replayt==…`** constraint file or **`pip install "replayt==…"`** before **`pip install -e ".[dev]"`**, on a **supported** **Python**. |
 | **replayt resolution** | Explicit **`replayt-version`** per cell (**0.1.0**, **0.2.0**, **0.4.25**) | Other releases in-range are **policy** until new inventory rows + matrix pins prove them. |
 | **Example pins** | **EX-EXAMPLES-PINS** — bundled in **pytest** on every **test** cell | Snippet pins are checked on each **Python** × **replayt** matrix cell; not separate jobs per pattern file. |
+| **Showcase Python vs replayt** | **EX-REPLAYT-PY-API** — bundled in **pytest** on every **test** cell | **`src/replayt_ux_showcase/**/*.py`** import surface checked against **`replayt.__all__`** for the matrix pin. |
 | **Lint / supply chain** | **ruff** inside each **test** row; **`pip-audit`** in **EX-SUPPLY-CHAIN** | Failures block merge when those steps are required. |
 
 **Future matrix rows:** When maintainers add or change **replayt** pins in **`ci.yml`**, update this inventory, **Verified in CI today** in **`docs/DESIGN_PRINCIPLES.md`**, and **`tests/test_design_principles_contract.py`** in the **same** change set.

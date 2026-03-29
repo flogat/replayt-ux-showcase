@@ -116,6 +116,7 @@ def test_compat_ci_exercise_inventory_ids_match_ci_matrix() -> None:
     for inv_id in _compat_exercise_row_inventory_ids():
         assert f"**{inv_id}**" in compat, f"compat.md CI inventory missing {inv_id}"
     assert "**EX-EXAMPLES-PINS**" in compat
+    assert "**EX-REPLAYT-PY-API**" in compat
     assert "**EX-SUPPLY-CHAIN**" in compat
 
 
