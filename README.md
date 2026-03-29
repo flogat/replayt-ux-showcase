@@ -4,7 +4,7 @@ Replayt integrators land here for a reference showcase they can copy into real e
 
 - **Audience:** Replayt integrators first; contributors and design-to-code handoff reviewers second. Scope and success criteria live in **[docs/MISSION.md](docs/MISSION.md)**.
 - **What ships here:** **[Quick start](#quick-start)** for the local checks, copy-paste patterns in **[docs/examples/](docs/examples/)**, the handoff guide in **[docs/playbook/README.md](docs/playbook/README.md)**, design-kit rules in **[docs/design-kit/README.md](docs/design-kit/README.md)**, and the Python demo package in **[`src/replayt_ux_showcase/`](src/replayt_ux_showcase/)**.
-- **Out of scope:** **replayt** core capture, storage, and replay APIs; a hosted product or standalone app surface; a published **npm** package or framework SDK; replacement upstream docs. Version coverage and upgrade notes live in **[docs/compat.md](docs/compat.md)**.
+- **Out of scope:** **replayt** core capture, storage, and replay APIs; a hosted product or standalone app surface; a published **npm** package or framework SDK. Upstream **replayt** docs stay canonical. Version coverage and upgrade notes live in **[docs/compat.md](docs/compat.md)**.
 - **Read next:** **[docs/MISSION.md](docs/MISSION.md)** for repo boundaries, **[docs/compat.md](docs/compat.md)** for supported versions, **[docs/examples/PATTERNS.md](docs/examples/PATTERNS.md)** for shipped pattern inventory, and **[docs/playbook/README.md](docs/playbook/README.md)** for design-dev handoff.
 
 ## Overview
