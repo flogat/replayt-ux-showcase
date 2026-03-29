@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Phase **3** (*CI smoke: load static HTML examples with Playwright*): **`pytest-playwright`** in **`[project.optional-dependencies].dev`**; **`tests/playwright/test_static_html_examples_load.py`** — loopback **HTTP** server rooted at **`docs/examples/`**, **Chromium** load checks for **Shipped** root **`*.html`** (inventory guard + **console** / **`pageerror`** / **warning** policy); **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`** (**Python 3.12**, **`replayt==0.4.25`**, **`playwright install chromium --with-deps`**, **`pytest`** without the **demo** **cov** gate); **`[tool.pytest.ini_options]`** **`-m "not playwright"`** so default **`pytest`** skips browser tests; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE** and **CI matrix coverage** row; **`docs/DESIGN_PRINCIPLES.md`**, **`README.md`**, **`CONTRIBUTING.md`**, **`tests/test_design_principles_contract.py`** updated for the job and **dev** baseline.
+
 ### Documentation
 
 - Phase **2** spec (*CI smoke: load static HTML examples with Playwright*): **`docs/DESIGN_PRINCIPLES.md`** — [Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright) (goals, **HTTP** serve root, **console** / **`pageerror`** assertions, **Chromium**-first **CI**, **replayt** **`-c`** pin policy, page scope vs framework subtrees, **README** local-run contract); acceptance traceability + [GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow) optional-job row + [Showcase stack matrix](docs/DESIGN_PRINCIPLES.md#showcase-stack-matrix) vanilla row; **`docs/compat.md`** quick reference + **CI matrix coverage** future row; **`docs/MISSION.md`** success bullet; **`README.md`** **CI** blurb + [Optional Playwright smoke](README.md#optional-playwright-smoke-static-html-examples) placeholder; **`CONTRIBUTING.md`** — when to edit **DESIGN_PRINCIPLES** **/** **compat** with optional Playwright job.

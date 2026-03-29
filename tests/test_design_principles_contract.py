@@ -83,9 +83,13 @@ def test_dev_optional_dependencies_match_baseline_package_set() -> None:
     """Aligns with DESIGN_PRINCIPLES.md Dev optional dependency set (baseline)."""
     dev = _project_table()["optional-dependencies"]["dev"]
     names = {Requirement(d.strip()).name.lower() for d in dev}
-    assert names == {"pip-audit", "pytest", "pytest-cov", "ruff"}, (
-        f"dev extras must be exactly pytest, pytest-cov, ruff, pip-audit; got {sorted(names)}"
-    )
+    assert names == {
+        "pip-audit",
+        "pytest",
+        "pytest-cov",
+        "pytest-playwright",
+        "ruff",
+    }, f"dev extras must match DESIGN_PRINCIPLES baseline; got {sorted(names)}"
 
 
 def test_build_system_requires_have_version_constraints() -> None:
@@ -118,6 +122,20 @@ def test_compat_ci_exercise_inventory_ids_match_ci_matrix() -> None:
     assert "**EX-EXAMPLES-PINS**" in compat
     assert "**EX-REPLAYT-PY-API**" in compat
     assert "**EX-SUPPLY-CHAIN**" in compat
+    assert "**EX-PLAYWRIGHT-SMOKE**" in compat
+
+
+def test_ci_examples_playwright_smoke_job_matches_spec() -> None:
+    """Optional Playwright job: Chromium, replayt 0.4.25 pin, no pytest-cov gate on this step."""
+    ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "examples-playwright-smoke:" in ci
+    assert "python -m playwright install chromium" in ci
+    assert "replayt-constraint.txt" in ci
+    assert "replayt==0.4.25" in ci or "0.4.25" in ci
+    assert "tests/playwright" in ci
+    assert "--override-ini=" in ci and "addopts=" in ci
+    assert "--no-cov" in ci
+    assert "--browser chromium" in ci
 
 
 def test_ci_installs_editable_with_dev_extras() -> None:

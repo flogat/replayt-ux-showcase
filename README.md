@@ -14,7 +14,7 @@ This project builds on **[replayt](https://pypi.org/project/replayt/)**. Read
 
 [![CI](https://github.com/flogat/replayt-ux-showcase/actions/workflows/ci.yml/badge.svg)](https://github.com/flogat/replayt-ux-showcase/actions/workflows/ci.yml)
 
-Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Normative requirements (tests with the **pytest-cov** gate, **ruff**, **replayt** install path, supply chain, badges) are in **[docs/DESIGN_PRINCIPLES.md — GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow)**. Optional **Playwright** load smoke for **Shipped** vanilla **`docs/examples/*.html`** is specified in **[Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)** (not wired in **CI** until **Builder** implements it).
+Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Normative requirements (tests with the **pytest-cov** gate, **ruff**, **replayt** install path, supply chain, badges) are in **[docs/DESIGN_PRINCIPLES.md — GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow)**. Optional **Playwright** load smoke for **Shipped** vanilla **`docs/examples/*.html`** runs in the **`examples-playwright-smoke`** job (see **[Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)** and [Optional Playwright smoke](#optional-playwright-smoke-static-html-examples) below).
 
 ## Reference documentation
 
@@ -31,7 +31,7 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). The **dev** extra pulls in **pytest-cov**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. Use **`python -m pytest`** from the repo root to match **CI** (same **`[tool.pytest.ini_options]`** as **`pytest`**).
+Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). Default collection skips **`@pytest.mark.playwright`** tests (**`-m "not playwright"`** in **`addopts`**) so the main suite stays fast and does not require browser binaries. The **dev** extra pulls in **pytest-cov**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. Use **`python -m pytest`** from the repo root to match **CI** (same **`[tool.pytest.ini_options]`** as **`pytest`**).
 
 **Design-to-code handoff (integrators):** After you can run the Python checks above, use **[`docs/playbook/README.md`](docs/playbook/README.md)** for **Tailwind-friendly** token tables, **timeline and overlay** component anatomy, and a **printable** checklist (accessibility, loading, error states). It links **[`docs/a11y/keyboard-model.md`](docs/a11y/keyboard-model.md)** and **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md)** for normative pattern rules. **Figma** library access, variable → **`rux-*`** mapping, and interim **`design-tokens.json`** live in **[`docs/design-kit/README.md`](docs/design-kit/README.md)** (**F1–F8**).
 
@@ -42,7 +42,16 @@ Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`**
 
 ### Optional Playwright smoke (static HTML examples)
 
-Normative acceptance (what to automate, **HTTP** root **`docs/examples/`**, **Chromium**-first **CI**, **console** / **`pageerror`** assertions, **`replayt`** pin via **`-c`**) lives in **[`docs/DESIGN_PRINCIPLES.md` — Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)**. **Builder** will add **`pytest-playwright`** (or equivalent) to **dev** extras, a **`ci.yml`** job or scoped **`pytest`** invocation, and **README** commands here; until then this subsection is the placeholder anchor called out by design principles.
+Normative detail: **[`docs/DESIGN_PRINCIPLES.md` — Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)**. Tests live in **`tests/playwright/test_static_html_examples_load.py`** (loopback **HTTP** root **`docs/examples/`**, **Chromium**, fail on **console** **`error`**, **`pageerror`**, and **console** **`warning`** unless allowlisted in that file).
+
+**Local run** (after **`pip install -e ".[dev]"`**):
+
+```bash
+python -m playwright install chromium
+python -m pytest tests/playwright -q --override-ini="addopts=" --no-cov --browser chromium
+```
+
+**CI:** **`jobs.examples-playwright-smoke`** uses **Python 3.12**, **`replayt==0.4.25`** with the same **`-c`** constraint pattern as **`jobs.test`**, then **`python -m playwright install chromium --with-deps`** and the **`pytest`** line above. **`docs/compat.md`** lists **EX-PLAYWRIGHT-SMOKE**.
 
 ## Troubleshooting
 
@@ -91,7 +100,7 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
 | `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract |
 | `pyproject.toml` | Package metadata, dependencies, **pytest**/**ruff** config |
-| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**) |
+| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**; optional **`examples-playwright-smoke`** — **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`**) |
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
 | `CONTRIBUTING.md` | Contributor guide: **CHANGELOG** / semver, **DESIGN_PRINCIPLES** + pins same change set |
 | `.gitignore` | Ignores `path/` (doc placeholders), `.orchestrator/`, `.cursor/skills/`, and `AGENTS.md` (local tooling) |
