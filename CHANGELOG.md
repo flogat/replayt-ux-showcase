@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **6** security review (*CHANGELOG and release process for integrator-facing semver*): reviewed branch diff vs **`master`** (**`CONTRIBUTING.md`**, **`README.md`**, **`docs/DESIGN_PRINCIPLES.md`**, **`docs/examples/PATTERNS.md`**, **`CHANGELOG.md`**, **`tests/test_changelog_release_policy_docs.py`**); no new credentials, **CI** / dependency manifest changes, or runtime attack surface; contract tests read only fixed repo paths via **`pathlib`** (**UTF-8**); supply-chain gates (**`pip-audit`**, **ruff**, **pytest** + coverage) unchanged per **`docs/DESIGN_PRINCIPLES.md`**.
+- Phase **5** architecture review (*CHANGELOG and release process for integrator-facing semver*): **`CONTRIBUTING.md`**, **`docs/DESIGN_PRINCIPLES.md`** — semver guidance wording (plain language for tagging: MINOR vs PATCH, no “emphasize” phrasing).
+- Phase **3** (*CHANGELOG and release process for integrator-facing semver*): **`tests/test_changelog_release_policy_docs.py`** — contract tests for **`CONTRIBUTING.md`** (changelog guidance, pins ↔ **DESIGN_PRINCIPLES** table), **DESIGN_PRINCIPLES** [Changelog, semver, and release notes](docs/DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) structure, and **CHANGELOG** **Unreleased** mention of the module; **`docs/DESIGN_PRINCIPLES.md`** — [Traceability to automated checks](docs/DESIGN_PRINCIPLES.md#traceability-to-automated-checks) row + backlog verification column updates; **`CONTRIBUTING.md`** — **Tests** paragraph aligned with Builder (removed stale spec-only note).
+- Phase **2** spec (*CHANGELOG and release process for integrator-facing semver*): **`CONTRIBUTING.md`** — local setup pointers, **`CHANGELOG.md`** **Unreleased** expectations, semver summary link, and **when to edit `docs/DESIGN_PRINCIPLES.md`** alongside **`pyproject.toml`** / **CI** / **compat** pins; **`docs/DESIGN_PRINCIPLES.md`** — [Changelog, semver, and release notes](docs/DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (Python **API** vs **docs/examples** **MINOR**/**PATCH** guidance, **Unreleased** pattern / mission tracking, backlog traceability table); **`docs/examples/PATTERNS.md`** — **Release notes** blurb + cross-links; **`README.md`** — Contributing link and layout row.
+
 ### Added
 
 - Phase **3** (*Harden replayt public-API boundary lint or import guard*): **`tests/test_replayt_public_api_boundary.py`** — **AST** scan of **`src/replayt_ux_showcase/**/*.py`** against **`replayt.__all__`** and private **`replayt._*`** first-segment submodule paths; **`docs/DESIGN_PRINCIPLES.md`** and **`docs/compat.md`** traceability (**EX-REPLAYT-PY-API**); **`tests/test_demo.py`** no longer asserts **`demo.py`** is **`replayt`**-free (package-wide test covers **`demo.py`**).
@@ -67,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `tests/test_changelog_release_policy_docs.py`: **ruff format** (line wrap) and **LF** line endings so **`ruff format --check`** / Linux CI stay consistent (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
 - `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Offline deterministic fixture page for LLM and reviewer workflows*).
 
 ## [0.2.0] - 2026-03-28

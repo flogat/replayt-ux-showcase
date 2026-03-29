@@ -28,6 +28,7 @@ is tracked separately in code and CHANGELOG):
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 | **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
 | **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
+| **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
 
 ### Traceability to automated checks
 
@@ -53,6 +54,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)); includes **`docs/examples/build.md`** when present |
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T3**, **A1–A3**, **H1–H3**) | `tests/test_playbook_docs.py` |
+| **`CONTRIBUTING.md`**, [Changelog, semver, and release notes](#changelog-semver-and-release-notes) headings and semver tables, pins ↔ **DESIGN_PRINCIPLES** table, **CHANGELOG** **Unreleased** mention | `tests/test_changelog_release_policy_docs.py` |
 | **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | `tests/test_design_kit_docs.py` (sections **F1–F8**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
@@ -846,9 +848,72 @@ an API.
    release when external users could have linked to them, unless a security issue forces immediate removal.
 3. **Remove** in a subsequent release with **Removed** in CHANGELOG and a short migration bullet (e.g. “replace
    `old-demo.html` with `new-demo.html`”).
-4. **Semver** — This package follows SemVer for **Python package** behavior (`pyproject.toml` version). Purely
-   documentary moves can ship in patch releases; **removal** of a documented example or CLI behavior is at least
-   **minor** unless explicitly marked experimental.
+4. **Semver** — See [Changelog, semver, and release notes](#changelog-semver-and-release-notes) for how **PATCH** vs
+   **MINOR** apply to the **Python package surface** versus **docs/examples**; the bullets above remain the deprecation
+   *process*.
+
+---
+
+## Changelog, semver, and release notes
+
+This repository is a **reference**: integrators **copy** `docs/examples/` and sometimes **vendor** snippets without
+installing **`replayt-ux-showcase`** from PyPI. Release notes and version bumps must stay legible for **both** audiences.
+
+**Canonical changelog:** [`CHANGELOG.md`](../CHANGELOG.md) ([Keep a Changelog](https://keepachangelog.com/en/1.0.0/)).
+**Package version:** `[project].version` in **`pyproject.toml`**, kept aligned with **`replayt_ux_showcase.__version__`**
+(see [Traceability to automated checks](#traceability-to-automated-checks)).
+
+### Python package API (`replayt_ux_showcase`)
+
+SemVer applies to **documented, stable** Python behavior: imports, **`__version__`**, and **CLI** / **`python -m`**
+entrypoints described as supported in **README** or package docs.
+
+| Bump | Use when |
+| ---- | -------- |
+| **MAJOR** | Breaking changes to that stable surface (removed symbols, incompatible CLI defaults) after any announced deprecation horizon, or other SemVer-major semantics maintainers adopt. |
+| **MINOR** | Backward-compatible **API** additions, new optional behaviors, or maintainer decisions that **expand** what tag consumers may rely on (without breaking existing use). |
+| **PATCH** | Bug fixes and internal refactors that do **not** change the stable contract; **narrow** dependency or docs-only fixes that do not remove integrator-facing guarantees. |
+
+### Docs and examples (integrator copy-paste surface)
+
+Treat **`docs/examples/`** (and registered **P-xx** patterns in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**)
+as **user-facing deliverables**, not “internal docs,” when choosing a semver bump—even when the PyPI wheel is unchanged.
+
+| Bump (for a **tagged** showcase release) | Typical triggers |
+| ---------------------------------------- | ---------------- |
+| **MINOR** | A pattern moves to **Shipped** (new **P-xx** row or new framework subtree), **additive** copy-paste contracts integrators are expected to adopt, **widening** the declared **replayt** PEP 508 range, new **CI** matrix coordinates that **expand** documented support, or **filename / contract** changes that are **breaking** for vendored snippets (prefer deprecation first—see [Deprecation and removal](#deprecation-and-removal)). |
+| **PATCH** | Corrections to examples that fix **bugs** in copied snippets without changing the pattern **ID** or **intent**; typo/clarity edits; **pin updates** that keep snippets **inside** the same declared **replayt** band; dependency pins that are **compatible** tightening only. |
+
+**MAJOR** for the package is reserved for rare, explicit breaking events on the **Python** surface (or a coordinated
+maintainer decision to signal large integrator migration). Do **not** use **MAJOR** for routine HTML example churn;
+prefer **MINOR** + migration notes when vendored filenames or contracts must change.
+
+### Unreleased: pattern coverage and mission tracking
+
+Mission success includes **5+** distinct vanilla UI patterns, tracked in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**,
+**[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md` — vanilla catalog](compat.md#vanilla-ui-pattern-catalog)**,
+and **CHANGELOG**.
+
+When a pattern moves to **Shipped** (or a **new** **P-xx** is registered as **Spec only** in a user-visible way), add
+**`CHANGELOG.md`** bullets under **`[Unreleased]`** in the **same change set** as the inventory / mission / digest
+updates, so release consumers can see **trajectory toward** (and maintenance of) the **5+** goal. Prefer **`### Added`**
+or **`### Documentation`** per Keep a Changelog; name the **pattern ID**, primary artifact path, and cross-surface
+updates (**PATTERNS**, **MISSION**, **compat** when applicable).
+
+Maintainer checklist: **[`CONTRIBUTING.md`](../CONTRIBUTING.md)** — *When to edit `docs/DESIGN_PRINCIPLES.md` in the same
+change set as pins*.
+
+#### Backlog traceability: CHANGELOG and release process for integrator-facing semver
+
+**Normalized user story:** As a maintainer or integrator, I want a **written** semver and **CHANGELOG** policy that
+separates **Python package** bumps from **docs/examples** impact, and **Unreleased** notes that track **pattern**
+milestones toward the mission **5+** goal, with a contributor checklist for **DESIGN_PRINCIPLES** when **pins** move.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | --------------------- |
+| **MINOR** vs **PATCH** rules for **Python** vs **examples** | [Python package API](#python-package-api-replayt_ux_showcase), [Docs and examples](#docs-and-examples-integrator-copy-paste-surface) | **`tests/test_changelog_release_policy_docs.py`** keeps normative headings and tables present; release tagging stays maintainer review |
+| **Unreleased** tracks **Shipped** / mission-relevant pattern work | [Unreleased: pattern coverage and mission tracking](#unreleased-pattern-coverage-and-mission-tracking); **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** release-note blurb | **`tests/test_changelog_release_policy_docs.py`** + **CHANGELOG** hygiene in PRs that ship patterns |
+| **CONTRIBUTING** + **pins** ↔ **DESIGN_PRINCIPLES** same change set | [`CONTRIBUTING.md`](../CONTRIBUTING.md) — *When to edit `docs/DESIGN_PRINCIPLES.md` in the same change set as pins* | **`tests/test_changelog_release_policy_docs.py`** |
 
 ---
 
