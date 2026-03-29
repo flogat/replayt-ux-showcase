@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CHANGELOG** **Unreleased** (phase **5** architect): one **`Added`** group and consolidated **P-04** / **P-03** documentation bullets (no duplicate **`### Added`** headings).
 - Phase **6** security review (*Empty, loading, and failure states for the embed container*): **`docs/examples/embed-container-states.html`** updates the live region and visible errors with **`textContent`** only (no **`innerHTML`** for dynamic strings); **replayt** script pin remains **`replayt@0.1.0`** on **jsDelivr**, within **`pyproject.toml`**. Init failures log via **`console.error`** for developer tooling only—not copied into **`#embed-status`**.
 
+### Fixed
+
+- `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Offline deterministic fixture page for LLM and reviewer workflows*).
+
 ## [0.2.0] - 2026-03-28
 
 ### Changed

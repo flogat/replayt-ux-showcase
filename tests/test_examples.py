@@ -81,9 +81,7 @@ def test_fixture_replay_html_exists():
 
 def test_fixture_replay_contract_markers():
     """Light contract: deterministic fixture header, no session fetch(, stable literals story, pin (P-05)."""
-    text = (REPO_ROOT / "docs/examples/fixture-replay.html").read_text(
-        encoding="utf-8"
-    )
+    text = (REPO_ROOT / "docs/examples/fixture-replay.html").read_text(encoding="utf-8")
     assert "Deterministic offline fixture" in text
     assert "synthetic and stable" in text
     assert "fetch(" not in text
