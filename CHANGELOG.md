@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 - Phase **2** spec (*Figma design kit stub: tokens export + link from docs*): **`docs/design-kit/README.md`** — acceptance **F1–F8** (library access, duplication, **Figma** → **`rux-*`** mapping vs **[`docs/playbook/tokens.md`](docs/playbook/tokens.md)**, change requests, interim **`design-tokens.json`** schema and versioning); **`docs/DESIGN_PRINCIPLES.md`** — traceability row, **`docs/`** module boundary, [Design kit (Figma) and token export](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export) + backlog traceability table; cross-links from **`docs/playbook/README.md`**, **`docs/playbook/tokens.md`**, **`README.md`** (**Quick start** + layout), **`docs/MISSION.md`**, **`docs/compat.md`**.
+- Phase **5** architecture review (*Figma design kit stub: tokens export + link from docs*): **`docs/compat.md`** — vanilla catalog blurb now matches default **CI**: **`tests/test_design_kit_docs.py`** runs with **`pytest`** (replaces stale “**CI** optional” wording for the design kit).
 
 ### Changed
 
