@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*CI smoke: load static HTML examples with Playwright*): **`docs/DESIGN_PRINCIPLES.md`** — [Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright) (goals, **HTTP** serve root, **console** / **`pageerror`** assertions, **Chromium**-first **CI**, **replayt** **`-c`** pin policy, page scope vs framework subtrees, **README** local-run contract); acceptance traceability + [GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow) optional-job row + [Showcase stack matrix](docs/DESIGN_PRINCIPLES.md#showcase-stack-matrix) vanilla row; **`docs/compat.md`** quick reference + **CI matrix coverage** future row; **`docs/MISSION.md`** success bullet; **`README.md`** **CI** blurb + [Optional Playwright smoke](README.md#optional-playwright-smoke-static-html-examples) placeholder; **`CONTRIBUTING.md`** — when to edit **DESIGN_PRINCIPLES** **/** **compat** with optional Playwright job.
+
 ### Changed
 
 - Phase **3** (*Normalize session schema examples between Python demo and basic-player.html*): **`docs/examples/basic-player.html`** — **`rux-showcase-session-fixture`** JSON matches **`SAMPLE_SESSION_DATA`**; **`adaptConsoleSessionToReplaytMs`** before **`init`**; links **`SESSION_SCHEMA.md`**. **`docs/examples/player-session-metadata-bar.html`** — viewport validation and chrome line prefer **`w`/** **`h`**, fallback **`width`/** **`height`**. **`tests/test_session_schema_examples.py`** — drift guard vs **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`**. **`docs/examples/SESSION_SCHEMA.md`** §3, **`docs/DESIGN_PRINCIPLES.md`** traceability row for the same check.

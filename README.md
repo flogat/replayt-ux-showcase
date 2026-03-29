@@ -14,7 +14,7 @@ This project builds on **[replayt](https://pypi.org/project/replayt/)**. Read
 
 [![CI](https://github.com/flogat/replayt-ux-showcase/actions/workflows/ci.yml/badge.svg)](https://github.com/flogat/replayt-ux-showcase/actions/workflows/ci.yml)
 
-Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Normative requirements (tests with the **pytest-cov** gate, **ruff**, **replayt** install path, supply chain, badges) are in **[docs/DESIGN_PRINCIPLES.md — GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow)**.
+Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Normative requirements (tests with the **pytest-cov** gate, **ruff**, **replayt** install path, supply chain, badges) are in **[docs/DESIGN_PRINCIPLES.md — GitHub Actions CI workflow](docs/DESIGN_PRINCIPLES.md#github-actions-ci-workflow)**. Optional **Playwright** load smoke for **Shipped** vanilla **`docs/examples/*.html`** is specified in **[Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)** (not wired in **CI** until **Builder** implements it).
 
 ## Reference documentation
 
@@ -39,6 +39,10 @@ Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`**
 **[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **[docs/demo.md](docs/demo.md)** defines the console demo contract.
 
 **Contributing** (changelog, semver expectations, when to update **DESIGN_PRINCIPLES** with **pins**): **[`CONTRIBUTING.md`](CONTRIBUTING.md)**.
+
+### Optional Playwright smoke (static HTML examples)
+
+Normative acceptance (what to automate, **HTTP** root **`docs/examples/`**, **Chromium**-first **CI**, **console** / **`pageerror`** assertions, **`replayt`** pin via **`-c`**) lives in **[`docs/DESIGN_PRINCIPLES.md` — Static HTML examples: browser smoke (Playwright)](docs/DESIGN_PRINCIPLES.md#static-html-examples-browser-smoke-playwright)**. **Builder** will add **`pytest-playwright`** (or equivalent) to **dev** extras, a **`ci.yml`** job or scoped **`pytest`** invocation, and **README** commands here; until then this subsection is the placeholder anchor called out by design principles.
 
 ## Troubleshooting
 
