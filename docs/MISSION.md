@@ -27,7 +27,7 @@ Delegates upstream: core capture/replay logic.
 
 ### Pattern coverage tracking
 
-**Source of truth:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) — pattern IDs (**P-01**, **P-02**, …), filenames, status (**Shipped** / **Spec only** / **Planned**), and per-pattern acceptance criteria.
+**Source of truth:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) — pattern IDs (**P-01**, **P-02**, **P-03**, …), filenames, status (**Shipped** / **Spec only** / **Planned**), and per-pattern acceptance criteria.
 
 | Metric | Target | Current (update when patterns ship) |
 | ------ | ------ | ------------------------------------- |
