@@ -570,13 +570,14 @@ copy the pattern; “CI” means automated verification exists.
 | Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) plus any future file/smoke tests | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
 | Optional **npm** bundler preview | Yes (documented) — **[`docs/examples/build.md`](examples/build.md)** | Not required in default **CI** (pytest-first) | Root **`package.json`** with **`"private": true`**; **Vite** *or* **esbuild**; **not** an implied public **npm** package for this repo |
 | React | **^18**; **[P-06](examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/react/`** (**Shipped**) | Optional browser automation later; **pytest** pin contract covers **`docs/examples/react/*.{html,md}`** today | Copy-paste subtree + **README** per **P-06**; **not** a published npm package from this repo |
-| Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
-| Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |
+| Vue | **^3**; **[P-07](examples/PATTERNS.md#p-07--vue-3-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/vue/`** (**Spec only** until **Builder** ships) | Pin contract will cover **`docs/examples/vue/*.{html,md}`** when files land; optional **`*.vue`** scan is a **Builder** follow-up | Same boundary as **P-06**: **Vite** + **`@vitejs/plugin-vue`**, **`private`** subtree **`package.json`**, **not** a published npm product |
+| Svelte | **^4**; **[P-08](examples/PATTERNS.md#p-08--svelte-4-timeline-player-basic-player--scrubber-parity)** under **`docs/examples/svelte/`** (**Spec only** until **Builder** ships) | Same as **Vue** row when sources exist | **Vite** + **`@sveltejs/vite-plugin-svelte`**; same **npm** / directory-boundary rules as **P-06** |
 
 ### Vanilla UI pattern catalog
 
 **Canonical inventory:** **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — distinct copy-paste vanilla patterns
-(**P-01**–**P-05**), plus registered **framework** subtrees (**P-06** **React**, **Shipped**), each with shipped vs spec-only status and normative acceptance criteria. The mission
+(**P-01**–**P-05**), plus registered **framework** subtrees (**P-06** **React**, **Shipped**; **P-07** **Vue** and **P-08**
+**Svelte**, **Spec only** until implemented), each with shipped vs spec-only status and normative acceptance criteria. The mission
 target (**5+** patterns) is **tracked** in **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** and the digest
 **[`docs/compat.md` — Vanilla UI pattern catalog](compat.md#vanilla-ui-pattern-catalog)**.
 
@@ -704,6 +705,24 @@ replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#
 | **README**: copy-paste, pins, runbook, non-goal | **P-06** [README and folder layout](examples/PATTERNS.md#p-06-readme-and-folder-layout-normative) | **Spec gate** / review |
 | **replayt** pins in **`docs/examples/react/*.{html,md}`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** |
 | **MISSION** / **README** layout | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`README.md`](../README.md)** | **P-06** **Shipped**; framework row + layout table updated |
+
+#### Backlog traceability: Vue and Svelte minimal player examples
+
+**Scope:** **`docs/examples/vue/`** (**[P-07](examples/PATTERNS.md#p-07--vue-3-timeline-player-basic-player--scrubber-parity)**) and **`docs/examples/svelte/`** (**[P-08](examples/PATTERNS.md#p-08--svelte-4-timeline-player-basic-player--scrubber-parity)**) — see **`docs/examples/PATTERNS.md`**.
+
+**Normalized user story:** As a **Vue** or **Svelte** integrator, I want **minimal runnable** examples under the respective **`docs/examples/`** subtrees that use the **same replayt-facing data contract** as **[`basic-player.html`](examples/basic-player.html)** (**P-01**), include **timeline scrubber** behavior consistent with **P-03** / shipped **P-06**, support **static production builds** (**`npm run build`**), and **never** imply this repository publishes a framework package to **npm** (subtree **`package.json`** **`private`**, README **non-goal**).
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| **P-07** / **P-08** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-07**, **P-08** | **Spec only** until trees land; then **Shipped** + inventory row updates |
+| **`sessionData`** + **`replayt.player.init`** parity with **P-01** | **P-07** / **P-08** sections (by reference to **P-06** / **P-01**) | Code review |
+| Scrubber UX aligned with **P-03** / **P-06** | **P-07** / **P-08** relationship sections | Code review |
+| **Vite**-first, **static-build**-friendly | **P-07** [Vue and tooling](examples/PATTERNS.md#p-07-vue-and-tooling-normative), **P-08** [Svelte and tooling](examples/PATTERNS.md#p-08-svelte-and-tooling-normative) | README runbook; `npm run build` documented |
+| **Published** replayt JS only; explicit symbols | **P-07** / **P-08** replayt surface sections | Code review |
+| **README**: copy-paste, pins, runbook, non-goal | **P-07** / **P-08** README and folder layout sections | **Spec gate** / review |
+| **`replayt`** pins in subtree **`*.html`**, **`*.md`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** when files exist; optional **`.vue`** / **`.svelte`** extension per **P-07** / **P-08** Builder checklists |
+| **MISSION** / **README** / **compat** digest | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`README.md`](../README.md)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** | **Shipped** rows when examples land |
+| Directory boundary: **not** a published npm package | [Module and directory boundaries](#module-and-directory-boundaries); **P-07** / **P-08** | **`private`**: **true**; no misleading **scope** name |
 
 ---
 

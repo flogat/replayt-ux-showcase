@@ -1,7 +1,8 @@
 # Examples — UI pattern catalog
 
 This file is the **canonical inventory** for distinct, copy-paste integrator examples under `docs/examples/`: **vanilla
-HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**). It supports the mission
+HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**; **Vue** — **P-07**; **Svelte**
+— **P-08**). It supports the mission
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
@@ -20,8 +21,10 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
 | **P-05** | [`fixture-replay.html`](fixture-replay.html) | **Shipped** | **Offline fixture** for **reviewers** and **LLM** harnesses: **inlined** synthetic **`sessionData`**, **no** runtime session fetch, **no** secrets, **no** live/stochastic model calls; pinned **replayt** player script only. |
 | **P-06** | [`react/`](react/) ([`README.md`](react/README.md), [`src/App.jsx`](react/src/App.jsx)) | **Shipped** | **React 18** timeline player: same **`sessionData`** / **`replayt.player.init`** contract as **P-01**, timeline scrub UX aligned with **P-03**; **Vite**-first (or **esbuild** notes); **not** an npm-published package. |
+| **P-07** | [`vue/`](vue/) (planned: **`README.md`**, **`src/*.vue`**, **Vite** entry) | **Spec only** | **Vue 3** minimal timeline player: same **replayt-facing** data and init contract as **P-01**, scrubber parity with **P-03** / **P-06**; **static-build**-friendly (**`npm run build`**); **not** an npm-published package from this repo. |
+| **P-08** | [`svelte/`](svelte/) (planned: **`README.md`**, **`src/*.svelte`**, **Vite** entry) | **Spec only** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
 
-**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** is a **framework** subtree; it does not change the vanilla count. Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05** are shipped (**5** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** is a **shipped** **framework** subtree; **P-07** / **P-08** are **registered** (**Spec only**) until the Builder lands **`docs/examples/vue/`** and **`docs/examples/svelte/`**. Framework examples do not change the vanilla count. Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -502,3 +505,177 @@ allowed) — **without** implying this repository publishes a **React** or **sho
 | **Not** an npm-published showcase package | [React and tooling](#react-and-tooling-normative) |
 | Shared **keyboard / focus** checklist | [Accessibility and keyboard](#accessibility-and-keyboard-normative) |
 | Traceability in design principles | [Backlog traceability: Ship React timeline player snippet](../DESIGN_PRINCIPLES.md#backlog-traceability-ship-react-timeline-player-snippet) |
+
+---
+
+## P-07 — Vue 3 timeline player (basic-player + scrubber parity)
+
+### User story
+
+As a **Vue** integrator, I want a **self-contained** example under **`docs/examples/vue/`** that embeds the replayt
+player with a **timeline scrubber**, using the **same** `sessionData` root shape and **published** **`window.replayt`**
+consumer APIs as **[`basic-player.html`](basic-player.html)**, with **scrubber behavior** matching the normative intent
+of **P-03** and the shipped **P-06** React sample — **copy-paste**-friendly layout, **pin** guidance for **replayt**
+(npm and/or CDN), **Vite**-based **static production build** (`npm run build`), and explicit **non-goal** language that
+this repository does **not** publish a **Vue** or **showcase** package to npm.
+
+### Relationship to P-01, P-03, and P-06
+
+- **P-01** defines the **minimal** embed contract. **P-07** **must** keep **`sessionData`** (`events` + `metadata`),
+  **`replayt.player.init({ container, data, theme })`**, and **published** JS entry points only.
+- **P-03** / **P-06** define **timeline** behavior (scrub control, defensive **`events`** ordering, **throttling** /
+  final seek on commit, **limitations** note, **tab order** when scrubber and player are both focusable). **P-07** **must**
+  meet the same **normative intent** in **Vue 3** (Composition API preferred; Options API allowed if documented).
+- **P-06** is the **reference shape** for “framework subtree + README + Vite”: **P-07** should mirror **folder
+  responsibilities** (README sections, pin table, runbook, **not an npm package** disclaimer) even if filenames differ.
+
+### P-07 sessionData and event shapes (normative)
+
+Same requirements as **P-06** [`sessionData` and event shapes](#sessiondata-and-event-shapes-normative): **P-01** root
+shape, sample **non-empty** `events` for the scrubber, synthetic literal or documented **`fetch`** pattern, **no**
+`replayt_ux_showcase` / Python imports.
+
+### P-07 replayt JavaScript surface (normative)
+
+Same as **P-06** [replayt JavaScript surface](#replayt-javascript-surface-normative): **documented** **`window.replayt`**
+symbols only; list them in a **file header** or top-of-SFC comment block.
+
+### P-07 Vue and tooling (normative)
+
+- **Vue:** Target **Vue 3** (`vue` **^3.4** or compatible **^3** range) — aligns with [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix).
+- **Bundler:** **Vite** with **`@vitejs/plugin-vue`** as the **default** documented path: `npm install`, `npm run dev`,
+  `npm run build` / `npm run preview` (or equivalent static preview) called out in **`docs/examples/vue/README.md`**.
+  **Allowed:** a short **esbuild** (or **Rollup**) subsection in the README for integrators who skip Vite, consistent
+  with **P-06** esbuild notes (CDN **`script`** before app bundle).
+- **Script loading:** Same options as **P-06** — pinned **CDN** `<script>` in **`index.html`** before the app bundle,
+  **or** **npm** `replayt` import per upstream docs for the pinned version. Any **explicit** **replayt** version in
+  **`docs/examples/vue/*.{html,md,vue}`** inside demonstrator snippets must satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (future **`tests/test_docs_examples_replayt_pins.py`** coverage once files exist).
+- **DOM container:** The element passed as **`container`** to **`replayt.player.init`** **must** be a **real** DOM node
+  (e.g. Vue **`ref`** to a mount-target **`div`**, **`onMounted`** / **`watch`** lifecycle for init and teardown
+  documented in README or comments).
+- **Repository boundary:** Files live only under **`docs/examples/vue/`** (plus cross-links). **Do not** imply a
+  published package scope such as **`@replayt-ux-showcase/*`** or a **non-`private`** **`package.json`** without a
+  maintainer decision and **CHANGELOG** entry.
+
+### P-07 README and folder layout (normative)
+
+- **`docs/examples/vue/README.md`** (**Shipped** **P-07** must include): same **class** of sections as **P-06**
+  [P-06 README and folder layout](#p-06-readme-and-folder-layout-normative) — copy-paste vs standalone, **version pins**
+  table (**replayt**, **Vue**), link to **[`docs/FRONTEND_SUPPLY_CHAIN.md`](../FRONTEND_SUPPLY_CHAIN.md)**, **runbook**
+  (**Node** prerequisite, `npm install`, dev + production-shaped preview), **non-goal** (not a published npm product
+  from this repo).
+- **Source files:** At minimum, one **`.vue`** SFC (or small composition split) that mounts the player and implements the
+  timeline; **`index.html`** + **`main.js`**/**`main.ts`** entry acceptable. **`package.json`** in this subtree **must**
+  include **`"private": true`** when shipped.
+
+### P-07 Accessibility and keyboard (normative)
+
+Same as **P-06** [Accessibility and keyboard](#accessibility-and-keyboard-normative): **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**,
+tab order consistent with **P-03**, short handoff comment on **tab order** intent.
+
+### P-07 Limitations note (normative)
+
+Same as **P-06** [Limitations note](#limitations-note-normative): **CDN / build** caveats for seek APIs; **pin** a
+matching **replayt** JS version.
+
+### P-07 Builder acceptance checklist (implementation)
+
+**P-07** is **Spec only** until the following are **Shipped**; then mark the inventory row **Shipped** and complete:
+
+1. **`docs/examples/vue/`** exists with **`README.md`** meeting [P-07 README and folder layout](#p-07-readme-and-folder-layout-normative).
+2. Vue source implements **`sessionData`** + **`replayt.player.init`** and **P-03**-aligned scrubber behavior per [Relationship to P-01, P-03, and P-06](#relationship-to-p-01-p-03-and-p-06).
+3. [Pattern inventory](#pattern-inventory) lists **P-07** as **Shipped** with correct paths.
+4. **`tests/test_docs_examples_replayt_pins.py`** scans new **`*.html`**, **`*.md`**, and **Vue SFC** only if/when the
+  test module is extended to include **`*.vue`** in scope; until then, **manual** / **Spec gate** review of pins in
+  **`index.html`** and README. **`tests/test_examples.py`** — add file-presence and light contract markers when the
+  Builder ships (mirror **P-06**).
+5. **CHANGELOG** **Unreleased** records the example; **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**
+   framework row for **Vue** → **Shipped**.
+6. **[`README.md`](../../README.md)** project layout mentions **`docs/examples/vue/`**.
+
+**Automated checks (when shipped):** **`tests/test_docs_examples_replayt_pins.py`** on scoped files; **`tests/test_examples.py`** markers — **Builder** phase.
+
+---
+
+## Backlog traceability: Vue minimal player under docs/examples/vue/
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| **`docs/examples/vue/`** self-contained tree | [P-07 README and folder layout](#p-07-readme-and-folder-layout-normative), [P-07 Vue and tooling](#p-07-vue-and-tooling-normative) |
+| Same **`sessionData`** + **`replayt.player.init`** as **P-01** | [Relationship to P-01, P-03, and P-06](#relationship-to-p-01-p-03-and-p-06), [P-07 sessionData and event shapes](#p-07-sessiondata-and-event-shapes-normative) |
+| Scrubber UX aligned with **P-03** / **P-06** | [Relationship to P-01, P-03, and P-06](#relationship-to-p-01-p-03-and-p-06), [P-07 Limitations note](#p-07-limitations-note-normative) |
+| **Vite** + **static** `build` path documented | [P-07 Vue and tooling](#p-07-vue-and-tooling-normative) |
+| **Published** replayt JS only | [P-07 replayt JavaScript surface](#p-07-replayt-javascript-surface-normative) |
+| **Not** a published npm package; **`private`** package.json | [P-07 Vue and tooling](#p-07-vue-and-tooling-normative), [P-07 README and folder layout](#p-07-readme-and-folder-layout-normative) |
+| Shared **keyboard / focus** checklist | [P-07 Accessibility and keyboard](#p-07-accessibility-and-keyboard-normative) |
+| Traceability in design principles | [Backlog traceability: Vue and Svelte minimal player examples](../DESIGN_PRINCIPLES.md#backlog-traceability-vue-and-svelte-minimal-player-examples) |
+
+---
+
+## P-08 — Svelte 4 timeline player (basic-player + scrubber parity)
+
+### User story
+
+As a **Svelte** integrator, I want a **self-contained** example under **`docs/examples/svelte/`** that matches **P-07**
+feature and contract depth for the **Svelte** stack: **P-01** **`sessionData`** / **`replayt.player.init`**, **P-03**
+scrubber intent, **Vite** + **`@sveltejs/vite-plugin-svelte`**, **static-build**-friendly output, and clear **non-goal**
+language that this folder is **documentation**, not a published npm product from this repository.
+
+### Relationship to P-01, P-03, P-06, and P-07
+
+Same logical relationships as [P-07 — Relationship to P-01, P-03, and P-06](#relationship-to-p-01-p-03-and-p-06), with
+**Svelte** components (**.svelte** files) and **Svelte** reactivity / lifecycle (`onMount`, `$effect` where appropriate)
+instead of Vue. **P-07** and **P-08** should be **parallel** in scope (no requirement that one ships before the other,
+but both should stay **consistent** if one gains a normative tweak — update both sections in one change set when
+possible).
+
+### P-08 sessionData, replayt surface, a11y, limitations (normative)
+
+By reference: apply the same normative bullets as **P-07** [P-07 sessionData and event shapes](#p-07-sessiondata-and-event-shapes-normative),
+[P-07 replayt JavaScript surface](#p-07-replayt-javascript-surface-normative), [P-07 Accessibility and keyboard](#p-07-accessibility-and-keyboard-normative),
+and [P-07 Limitations note](#p-07-limitations-note-normative), substituting **Svelte** idioms for **Vue**.
+
+### P-08 Svelte and tooling (normative)
+
+- **Svelte:** Target **Svelte 4** (`svelte` **^4**) — aligns with [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix).
+  If the Builder ships on **Svelte 5**, update this row, the **Showcase stack matrix**, and **README** pin tables in the
+  **same** change set.
+- **Bundler:** **Vite** with **`@sveltejs/vite-plugin-svelte`** as the **default** documented path; **`npm run build`**
+  produces integrator-inspectable static assets. **Allowed:** esbuild / Rollup prose mirroring **P-07**.
+- **Script loading**, **repository boundary**, **`private` `package.json`:** Same intent as **P-07** [P-07 Vue and tooling](#p-07-vue-and-tooling-normative)
+  (paths under **`docs/examples/svelte/`** only).
+
+### P-08 README and folder layout (normative)
+
+- **`docs/examples/svelte/README.md`**: mirror **P-07** [P-07 README and folder layout](#p-07-readme-and-folder-layout-normative)
+  (sections, pins table, runbook, non-goal).
+- **Source files:** At least one **`.svelte`** component + **`index.html`** + small JS entry; exact names are a **Builder**
+  choice; update the [Pattern inventory](#pattern-inventory) row if the primary entry differs from “see README.”
+
+### P-08 Builder acceptance checklist (implementation)
+
+**P-08** is **Spec only** until **Shipped**; then:
+
+1. **`docs/examples/svelte/`** + **`README.md`** per [P-08 README and folder layout](#p-08-readme-and-folder-layout-normative).
+2. Svelte source meets **P-01** / **P-03** / **P-06** intent per [Relationship to P-01, P-03, P-06, and P-07](#relationship-to-p-01-p-03-p-06-and-p-07).
+3. [Pattern inventory](#pattern-inventory) → **Shipped**.
+4. Pin tests + **`tests/test_examples.py`** when implemented (mirror **P-06** / **P-07**).
+5. **CHANGELOG** + **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** (**Svelte** row **Shipped**).
+6. **[`README.md`](../../README.md)** project layout row for **`docs/examples/svelte/`**.
+
+**Automated checks (when shipped):** same strategy as **P-07** [P-07 Builder acceptance checklist](#p-07-builder-acceptance-checklist-implementation).
+
+---
+
+## Backlog traceability: Svelte minimal player under docs/examples/svelte/
+
+| Backlog acceptance criterion | Where specified |
+| ---------------------------- | ---------------- |
+| **`docs/examples/svelte/`** self-contained tree | [P-08 README and folder layout](#p-08-readme-and-folder-layout-normative), [P-08 Svelte and tooling](#p-08-svelte-and-tooling-normative) |
+| Same **`sessionData`** + **`replayt.player.init`** as **P-01** | [Relationship to P-01, P-03, P-06, and P-07](#relationship-to-p-01-p-03-p-06-and-p-07) |
+| Scrubber UX aligned with **P-03** / **P-06** | Same section |
+| **Vite** + **static** `build` | [P-08 Svelte and tooling](#p-08-svelte-and-tooling-normative) |
+| **Published** replayt JS only | [P-08 sessionData, replayt surface, a11y, limitations](#p-08-sessiondata-replayt-surface-a11y-limitations-normative) |
+| **Not** a published npm package | [P-08 Svelte and tooling](#p-08-svelte-and-tooling-normative) |
+| **Keyboard / focus** | [P-08 sessionData, replayt surface, a11y, limitations](#p-08-sessiondata-replayt-surface-a11y-limitations-normative) |
+| Traceability in design principles | [Backlog traceability: Vue and Svelte minimal player examples](../DESIGN_PRINCIPLES.md#backlog-traceability-vue-and-svelte-minimal-player-examples) |
