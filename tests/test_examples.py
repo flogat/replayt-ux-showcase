@@ -2,6 +2,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
+_KEYBOARD_MODEL_DOC = REPO_ROOT / "docs/a11y/keyboard-model.md"
+
 
 def test_basic_player_html_exists():
     """Smoke test: vanilla example path from docs/DESIGN_PRINCIPLES.md."""
@@ -90,3 +92,41 @@ def test_fixture_replay_contract_markers():
     assert "sessionData" in text
     assert "replayt.player.init" in text
     assert "cdn.jsdelivr.net/npm/replayt@" in text
+
+
+def test_keyboard_model_doc_exists():
+    """Shared a11y checklist ships (docs/DESIGN_PRINCIPLES.md traceability)."""
+    assert _KEYBOARD_MODEL_DOC.is_file(), f"Missing {_KEYBOARD_MODEL_DOC}"
+
+
+def test_keyboard_model_doc_core_sections():
+    """Contract: tab order, roving lists, scrubber, Escape, focus visibility, Builder checklist."""
+    text = _KEYBOARD_MODEL_DOC.read_text(encoding="utf-8")
+    assert "## 1. Tab order" in text
+    assert "## 2. Roving" in text
+    assert "## 3. Scrubber" in text
+    assert "## 4. `Escape`" in text
+    assert "## 5. Focus visibility" in text
+    assert "## 6. Builder acceptance checklist" in text
+
+
+def test_examples_link_keyboard_model_checklist():
+    """P-01–P-05 vanilla examples reference the shared keyboard/focus doc."""
+    html_names = [
+        "basic-player.html",
+        "player-session-metadata-bar.html",
+        "timeline-scrubber.html",
+        "embed-container-states.html",
+        "fixture-replay.html",
+    ]
+    needle = "keyboard-model.md"
+    for name in html_names:
+        path = REPO_ROOT / "docs/examples" / name
+        text = path.read_text(encoding="utf-8")
+        assert needle in text, f"{name} should reference {needle}"
+
+
+def test_patterns_md_links_keyboard_model():
+    """PATTERNS.md links the shared checklist from Related and per-pattern notes."""
+    text = (REPO_ROOT / "docs/examples/PATTERNS.md").read_text(encoding="utf-8")
+    assert "a11y/keyboard-model.md" in text

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `tests/test_examples.py`: contract asserts **`docs/a11y/keyboard-model.md`** exists with core section headings and that **P-01**–**P-05** **`docs/examples/*.html`** plus **`docs/examples/PATTERNS.md`** reference **`keyboard-model.md`** (phase **3**, *Keyboard and focus model for timeline/player controls*).
 - `docs/examples/fixture-replay.html`: **P-05** vanilla example — **deterministic** header comment, **inlined** synthetic **`sessionData`** (fixed timestamps and ids), **no** `fetch(` / **`Date.now`** / **`Math.random`** in source, **`replayt.player.init`** only; pinned **replayt** on **jsDelivr** (phase **3**, *Offline deterministic fixture page for LLM and reviewer workflows*).
 - `tests/test_examples.py`: asserts **`fixture-replay.html`** exists and keeps minimal **P-05** contract markers aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
 - `tests/test_frontend_supply_chain_doc.py`: contract tests for **`docs/FRONTEND_SUPPLY_CHAIN.md`** (section anchors, **pip-audit** vs **JS** keywords, **README** / **DESIGN_PRINCIPLES** / **compat** links, **CHANGELOG** **Unreleased** mention per doc **A1–A5**; phase **3**, *Document CDN vs bundled replayt with SRI and supply-chain notes*).
