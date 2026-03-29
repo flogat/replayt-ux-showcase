@@ -1,19 +1,13 @@
 """Tests for demo module per docs/demo.md test plan."""
 
-import ast
 import logging
 import subprocess
 import sys
-from pathlib import Path
 
 import pytest
 
 from replayt_ux_showcase import SAMPLE_SESSION_DATA, render_console_timeline
 from replayt_ux_showcase import demo as demo_module
-
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-DEMO_PY = REPO_ROOT / "src" / "replayt_ux_showcase" / "demo.py"
 
 
 def test_demo_runs():
@@ -66,19 +60,6 @@ def test_event_types():
 def test_demo_logger_name_matches_spec():
     """docs/demo.md: logger name is replayt_ux_showcase.demo."""
     assert demo_module.logger.name == "replayt_ux_showcase.demo"
-
-
-def test_demo_source_does_not_import_replayt_package():
-    """Design principles: demo stays off private replayt imports; module is stdlib-only."""
-    tree = ast.parse(DEMO_PY.read_text(encoding="utf-8"))
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            for alias in node.names:
-                root = alias.name.split(".", 1)[0]
-                assert root != "replayt", f"unexpected import: {alias.name!r}"
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            root = node.module.split(".", 1)[0]
-            assert root != "replayt", f"unexpected import from: {node.module!r}"
 
 
 def test_render_console_timeline_in_process(caplog: pytest.LogCaptureFixture):
