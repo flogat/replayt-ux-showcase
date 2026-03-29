@@ -561,8 +561,8 @@ governance, and numbered acceptance **D1–D10**.
 
 ### Policy (summary)
 
-- **Single gate:** Default **CI** MUST keep a non-blocking-false **`pip-audit`** step on the **`pip install -e ".[dev]"`**
-  graph ([GitHub Actions CI workflow](#github-actions-ci-workflow) — **Supply chain** row).
+- **Single gate:** Default **CI** MUST run **`pip-audit`** on the **`pip install -e ".[dev]"`** graph and treat **non-zero**
+  exits as failures ([GitHub Actions CI workflow](#github-actions-ci-workflow) — **Supply chain** row).
 - **Doc ↔ workflow parity:** Any **`--ignore-vuln`** in **`.github/workflows/ci.yml`** MUST appear in
   **`docs/DEPENDENCY_AUDIT.md`** with **CVE ID**, **rationale**, and **removal / revisit** criteria; same change set as
   **CHANGELOG** **Unreleased** when the ignore list changes.
