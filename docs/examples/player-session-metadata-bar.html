@@ -76,7 +76,8 @@
     <h1>Session metadata bar + player</h1>
     <div class="instructions">
         <p><strong>P-02:</strong> Same <code>sessionData</code> root as <code>basic-player.html</code> (<code>events</code> + <code>metadata</code>).
-            After load, <code>metadata.sessionId</code>, <code>metadata.durationMs</code>, and <code>metadata.viewport</code> are required for the bar and player; otherwise the bar shows an error (no silent empty chrome).</p>
+            After load, <code>metadata.sessionId</code>, <code>metadata.durationMs</code>, and <code>metadata.viewport</code> are required for the bar and player; otherwise the bar shows an error (no silent empty chrome).
+            Viewport size prefers <code>viewport.w</code> / <code>viewport.h</code> (<a href="SESSION_SCHEMA.md">SESSION_SCHEMA</a> §1); <code>width</code> / <code>height</code> still accepted.</p>
     </div>
 
     <!--
@@ -129,8 +130,9 @@
             if (!viewport || typeof viewport !== 'object') {
                 return 'Viewport is missing.';
             }
-            const { width, height } = viewport;
-            if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0) {
+            const w = viewport.w ?? viewport.width;
+            const h = viewport.h ?? viewport.height;
+            if (!Number.isFinite(w) || w <= 0 || !Number.isFinite(h) || h <= 0) {
                 return 'Viewport width and height must be positive numbers.';
             }
             return null;
@@ -165,7 +167,9 @@
 
             statusEl.className = 'chrome-line';
             const dur = formatDurationMs(meta.durationMs);
-            statusEl.textContent = `Session ${meta.sessionId} · ${meta.viewport.width}×${meta.viewport.height} · ${dur}`;
+            const vw = meta.viewport.w ?? meta.viewport.width;
+            const vh = meta.viewport.h ?? meta.viewport.height;
+            statusEl.textContent = `Session ${meta.sessionId} · ${vw}×${vh} · ${dur}`;
             lastValidSessionId = meta.sessionId;
             copyBtn.disabled = false;
             badBtn.disabled = false;
@@ -212,7 +216,7 @@
                             startTs: Date.now(),
                             sessionId: 'demo-sess-7f3a',
                             durationMs: 125000,
-                            viewport: { width: 1920, height: 1080 },
+                            viewport: { w: 1920, h: 1080 },
                         },
                     });
                 }, 500);
