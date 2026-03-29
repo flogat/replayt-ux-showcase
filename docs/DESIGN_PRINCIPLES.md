@@ -51,7 +51,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)); includes **`docs/examples/build.md`** when present |
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T3**, **A1–A3**, **H1–H3**) | `tests/test_playbook_docs.py` |
-| **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | **Not** enforced in **CI** today; optional future **`tests/test_design_kit_docs.py`** — see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
+| **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | `tests/test_design_kit_docs.py` (sections **F1–F8**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 
@@ -320,13 +320,13 @@ Normative spec for the backlog item **Figma design kit stub: tokens export + lin
 
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | --------------------- |
-| **Obtain / duplicate library** | [`docs/design-kit/README.md` — F1, F2](design-kit/README.md#required-operator-facing-sections-builder-deliverable) | **Spec gate** / review; optional future **`tests/test_design_kit_docs.py`** |
+| **Obtain / duplicate library** | [`docs/design-kit/README.md`](design-kit/README.md) — **F1**, **F2** | `tests/test_design_kit_docs.py` |
 | **Variables map to playbook tokens** | Same — **F3**; canonical rows in [`tokens.md`](playbook/tokens.md) | Same |
 | **Request changes** | Same — **F4** | Same |
 | **Interim JSON when no public URL** | Same — **F5**, [JSON export schema](design-kit/README.md#json-export-schema-interim-source-of-truth) | Same; **file** **`docs/design-kit/design-tokens.json`** present when maintainers declare no public link |
 | **Discoverable from repo home / playbook** | Same — **F7**, **F8**; [`docs/playbook/README.md`](playbook/README.md) cross-link | Same |
 
-**Builder checklist (phase 3):** Implement **F1–F8** prose in **`docs/design-kit/README.md`**; add **`design-tokens.json`** per **F5** when applicable; link from root **[`README.md`](../README.md)** and playbook index; **CHANGELOG** **Unreleased**; optional contract test module mirroring **`test_playbook_docs.py`**.
+**Shipped (phase 3):** **F1–F8** prose in **`docs/design-kit/README.md`**, **`design-tokens.json`** as interim export (**F5**), root **[`README.md`](../README.md)** / playbook index links, **`tests/test_design_kit_docs.py`**, **CHANGELOG** **Unreleased**.
 
 ---
 

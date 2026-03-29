@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Phase **3** (*Figma design kit stub: tokens export + link from docs*): **`docs/design-kit/design-tokens.json`** — interim export (**`schemaVersion`**, **`exportDate`**, **`tokens[]`**) aligned with **[`docs/playbook/tokens.md`](docs/playbook/tokens.md)**; **`tests/test_design_kit_docs.py`** — **CI** contract for **F1–F8** headings, **F3** semantics coverage, JSON shape, cross-links, **CHANGELOG** **Unreleased** mention; **`docs/DESIGN_PRINCIPLES.md`** — **`docs/design-kit/`** row now references **`test_design_kit_docs.py`**; **`docs/design-kit/README.md`** operator sections **F1–F8** and **F3** mapping table; **`docs/playbook/README.md`** **CI** note; **`README.md`** **Quick start** wording for the design kit.
+
 ### Documentation
 
-- Phase **2** spec (*Figma design kit stub: tokens export + link from docs*): **`docs/design-kit/README.md`** — acceptance **F1–F8** (library access, duplication, **Figma** → **`rux-*`** mapping vs **[`docs/playbook/tokens.md`](docs/playbook/tokens.md)**, change requests, interim **`design-tokens.json`** schema and versioning); **`docs/DESIGN_PRINCIPLES.md`** — traceability row, **`docs/`** module boundary, [Design kit (Figma) and token export](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export) + backlog traceability table (optional future **`tests/test_design_kit_docs.py`**); cross-links from **`docs/playbook/README.md`**, **`docs/playbook/tokens.md`**, **`README.md`** (**Quick start** + layout), **`docs/MISSION.md`**, **`docs/compat.md`**.
+- Phase **2** spec (*Figma design kit stub: tokens export + link from docs*): **`docs/design-kit/README.md`** — acceptance **F1–F8** (library access, duplication, **Figma** → **`rux-*`** mapping vs **[`docs/playbook/tokens.md`](docs/playbook/tokens.md)**, change requests, interim **`design-tokens.json`** schema and versioning); **`docs/DESIGN_PRINCIPLES.md`** — traceability row, **`docs/`** module boundary, [Design kit (Figma) and token export](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export) + backlog traceability table; cross-links from **`docs/playbook/README.md`**, **`docs/playbook/tokens.md`**, **`README.md`** (**Quick start** + layout), **`docs/MISSION.md`**, **`docs/compat.md`**.
 
 ### Changed
 

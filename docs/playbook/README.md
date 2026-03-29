@@ -27,4 +27,4 @@
 2. Walk **component anatomy** in [`component-anatomy.md`](component-anatomy.md) so DOM order, layering, and z-index match the **keyboard model** and pattern **P-02** / **P-03** / **P-04** precedents.
 3. Run [`handoff-checklist.md`](handoff-checklist.md) (print or tick in review) before merge; file gaps as follow-ups with pattern IDs.
 
-**CI:** `tests/test_playbook_docs.py` keeps the four playbook files, acceptance row markers (**T1–T3**, **A1–A3**, **H1–H3**), and integrator entry-point links aligned with [DESIGN_PRINCIPLES — traceability to automated checks](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks).
+**CI:** `tests/test_playbook_docs.py` keeps the four playbook files, acceptance row markers (**T1–T3**, **A1–A3**, **H1–H3**), and integrator entry-point links aligned with [DESIGN_PRINCIPLES — traceability to automated checks](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). `tests/test_design_kit_docs.py` covers **[`docs/design-kit/`](../design-kit/README.md)** (**F1–F8**, interim **`design-tokens.json`**).
