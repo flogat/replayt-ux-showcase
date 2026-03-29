@@ -391,7 +391,7 @@ copy the pattern; “CI” means automated verification exists.
 | Stack | Supported (intent) | CI | Notes |
 | ----- | ------------------- | --- | ----- |
 | Vanilla HTML/JS | Yes (`docs/examples/`) | File/smoke tests as implemented under `tests/` | Default integration path for smallest surface |
-| Tailwind (utility CSS) | Yes when `docs/examples/tailwind-player.html` ships | Optional until a dedicated test or browser job ships; same posture as other static examples | Same **`docs/examples/`** boundaries as vanilla; not an npm-published package unless explicitly released as such |
+| Tailwind (utility CSS) | Yes (`docs/examples/tailwind-player.html`) | `tests/test_examples.py` — file presence plus shared script / **`sessionData`** / **`init`** string contract with **`basic-player.html`** (no browser job yet) | Same **`docs/examples/`** boundaries as vanilla; not an npm-published package unless explicitly released as such |
 | React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
 | Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |
@@ -411,7 +411,7 @@ Normative contract for **minimal** embeddable player demos under **`docs/example
 | **Init hook** | Script that calls **`window.replayt?.player?.init({ container, data, theme })`** (or the current documented public init pattern for the pinned major), using optional chaining so the page fails softly when the script is absent. |
 | **Module boundary** | File header comment and/or instructions MUST state that the page is **illustrative** and **copy-paste** only, **not** a published **npm** package—see **`docs/examples/`** row under [Module and directory boundaries](#module-and-directory-boundaries). |
 
-**Out of scope for this contract:** **pytest** line-coverage gates (those apply to **`src/replayt_ux_showcase/demo.py`** only). Optional **CI** file-presence or smoke tests for static HTML are **Builder** decisions tracked in **CHANGELOG** when added.
+**Out of scope for this contract:** **pytest** line-coverage gates (those apply to **`src/replayt_ux_showcase/demo.py`** only). File-presence and light string-contract checks for static HTML examples live in **`tests/test_examples.py`**; full browser automation remains optional until a dedicated job ships.
 
 ### Backlog traceability: Tailwind-based player layout example
 
@@ -420,7 +420,7 @@ Normative contract for **minimal** embeddable player demos under **`docs/example
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | ---------------------- |
 | **New static example file** | [Basic player example contract](#basic-player-example-contract-static-html) | **`docs/examples/tailwind-player.html`** exists at repo root path above |
-| **Contract parity** | Same table (**Player script**, **Instructions**, **Container**, **Session payload**, **Init hook**) | **Spec gate** / review diff against **`basic-player.html`**; **Builder** keeps shapes and init pattern aligned when either file changes |
+| **Contract parity** | Same table (**Player script**, **Instructions**, **Container**, **Session payload**, **Init hook**) | **`tests/test_examples.py`** (`test_tailwind_player_matches_basic_player_contract`) plus human review; **Builder** keeps shapes and init pattern aligned when either file changes |
 | **Tailwind styling** | This subsection | Layout, spacing, typography, and chrome use **Tailwind** utility classes in the HTML (e.g. **`class="..."`**). Prefer [**Tailwind Play CDN**](https://tailwindcss.com/docs/installation/play-cdn) or an equivalent **documented** zero-build CDN snippet in the file so the example opens standalone; integrators may replace with their own **Tailwind** pipeline. |
 | **Theming via CSS variables** | Same | Page documents integrator theming with **CSS custom properties** (e.g. on **`:root`** or a wrapper), wired into utilities via **`[style]`**, arbitrary properties, or **`@theme`** / **`theme()`** as appropriate to the chosen **Tailwind** version—must be visible in the shipped file or adjacent HTML comment. |
 | **README cross-link** | [Module and directory boundaries](#module-and-directory-boundaries) | **`README.md`** project layout (or immediate **Examples** note) links **`basic-player.html`**, the **Tailwind** file, and this contract section |
