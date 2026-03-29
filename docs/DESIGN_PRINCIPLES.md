@@ -54,6 +54,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)); includes **`docs/examples/build.md`** when present |
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T3**, **A1–A3**, **H1–H3**) | `tests/test_playbook_docs.py` |
+| **`CONTRIBUTING.md`**, [Changelog, semver, and release notes](#changelog-semver-and-release-notes) headings and semver tables, pins ↔ **DESIGN_PRINCIPLES** table, **CHANGELOG** **Unreleased** mention | `tests/test_changelog_release_policy_docs.py` |
 | **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | `tests/test_design_kit_docs.py` (sections **F1–F8**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
@@ -910,9 +911,9 @@ milestones toward the mission **5+** goal, with a contributor checklist for **DE
 
 | Backlog acceptance criterion | Where specified | How verified (target) |
 | ---------------------------- | --------------- | --------------------- |
-| **MINOR** vs **PATCH** rules for **Python** vs **examples** | [Python package API](#python-package-api-replayt_ux_showcase), [Docs and examples](#docs-and-examples-integrator-copy-paste-surface) | **Spec gate** / maintainer review at release time; **Builder** does not need new automated tests for this backlog unless a later item adds release linting |
-| **Unreleased** tracks **Shipped** / mission-relevant pattern work | [Unreleased: pattern coverage and mission tracking](#unreleased-pattern-coverage-and-mission-tracking); **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** release-note blurb | **Spec gate** + **CHANGELOG** hygiene in PRs that ship patterns |
-| **CONTRIBUTING** + **pins** ↔ **DESIGN_PRINCIPLES** same change set | [`CONTRIBUTING.md`](../CONTRIBUTING.md) — *When to edit `docs/DESIGN_PRINCIPLES.md` in the same change set as pins* | Contributor doc review |
+| **MINOR** vs **PATCH** rules for **Python** vs **examples** | [Python package API](#python-package-api-replayt_ux_showcase), [Docs and examples](#docs-and-examples-integrator-copy-paste-surface) | **`tests/test_changelog_release_policy_docs.py`** keeps normative headings and tables present; release tagging stays maintainer review |
+| **Unreleased** tracks **Shipped** / mission-relevant pattern work | [Unreleased: pattern coverage and mission tracking](#unreleased-pattern-coverage-and-mission-tracking); **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** release-note blurb | **`tests/test_changelog_release_policy_docs.py`** + **CHANGELOG** hygiene in PRs that ship patterns |
+| **CONTRIBUTING** + **pins** ↔ **DESIGN_PRINCIPLES** same change set | [`CONTRIBUTING.md`](../CONTRIBUTING.md) — *When to edit `docs/DESIGN_PRINCIPLES.md` in the same change set as pins* | **`tests/test_changelog_release_policy_docs.py`** |
 
 ---
 

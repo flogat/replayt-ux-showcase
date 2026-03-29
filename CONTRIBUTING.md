@@ -37,5 +37,4 @@ so the **canonical spec** stays aligned with **`pyproject.toml`**, **CI**, and c
 
 **CHANGELOG:** Add **`[Unreleased]`** notes in that same change set per [One way to do it — single compatibility story](docs/DESIGN_PRINCIPLES.md#one-way-to-do-it-canonical-patterns).
 
-**Tests:** When pins or headings change, **`tests/test_design_principles_contract.py`** (and related contract tests)
-usually need updates in the **same** PR — see DESIGN_PRINCIPLES [Traceability to automated checks](docs/DESIGN_PRINCIPLES.md#traceability-to-automated-checks). *(This phase is spec-only; the Builder phase applies code/test edits.)*
+**Tests:** **`tests/test_changelog_release_policy_docs.py`** guards **`CONTRIBUTING.md`**, the [Changelog, semver, and release notes](docs/DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) section, and **CHANGELOG** **Unreleased** mentions of that module. When pins or normative headings change, update **`tests/test_design_principles_contract.py`** and related contract tests in the **same** PR — see [Traceability to automated checks](docs/DESIGN_PRINCIPLES.md#traceability-to-automated-checks).
