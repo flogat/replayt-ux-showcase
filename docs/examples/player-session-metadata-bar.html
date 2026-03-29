@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt player with session metadata bar</title>
+    <!-- Assume replayt player CDN; replace with npm/your bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        :root {
+            --chrome-bg: #f4f4f5;
+            --chrome-border: #e0e0e0;
+            --chrome-error: #b42318;
+            --replayt-primary: #007bff;
+        }
+        body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .instructions { background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+        /* Bar matches player width: shared wrapper could be added in real apps */
+        .session-chrome {
+            border: 1px solid var(--chrome-border);
+            border-radius: 8px 8px 0 0;
+            background: var(--chrome-bg);
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0;
+        }
+        .session-chrome .chrome-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.35rem;
+        }
+        .session-chrome .chrome-toolbar button {
+            font: inherit;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--chrome-border);
+            background: #fff;
+            cursor: pointer;
+        }
+        .session-chrome .chrome-toolbar button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .session-chrome .chrome-toolbar button:focus-visible {
+            outline: 2px solid var(--replayt-primary);
+            outline-offset: 2px;
+        }
+        .session-chrome .chrome-line {
+            font-size: 0.875rem;
+            color: #333;
+        }
+        .session-chrome .chrome-error {
+            color: var(--chrome-error);
+            font-weight: 600;
+        }
+        #player {
+            width: 100%;
+            height: 60vh;
+            border: 1px solid var(--chrome-border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .player-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Session metadata bar + player</h1>
+    <div class="instructions">
+        <p><strong>P-02:</strong> Same <code>sessionData</code> root as <code>basic-player.html</code> (<code>events</code> + <code>metadata</code>).
+            After load, <code>metadata.sessionId</code>, <code>metadata.durationMs</code>, and <code>metadata.viewport</code> are required for the bar and player; otherwise the bar shows an error (no silent empty chrome).</p>
+    </div>
+
+    <!--
+      Tab order (handoff): Any focusable control in the metadata bar is declared in the DOM before the
+      player container so keyboard users reach chrome actions before embedded player controls.
+    -->
+    <div id="session-chrome" class="session-chrome" role="region" aria-label="Session metadata">
+        <div class="chrome-toolbar">
+            <button type="button" id="btn-copy-id" disabled>Copy session ID</button>
+            <button type="button" id="btn-bad-metadata" disabled>Simulate invalid metadata</button>
+        </div>
+        <div id="chrome-status" class="chrome-line" aria-live="polite">Loading session…</div>
+        <div id="chrome-detail" class="chrome-line" hidden></div>
+    </div>
+    <div id="player"></div>
+
+    <script>
+        const statusEl = document.getElementById('chrome-status');
+        const detailEl = document.getElementById('chrome-detail');
+        const copyBtn = document.getElementById('btn-copy-id');
+        const badBtn = document.getElementById('btn-bad-metadata');
+        const playerEl = document.getElementById('player');
+
+        let lastValidSessionId = '';
+
+        function formatDurationMs(ms) {
+            if (!Number.isFinite(ms) || ms < 0) return null;
+            const totalSec = Math.floor(ms / 1000);
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            const s = totalSec % 60;
+            if (h > 0) {
+                return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }
+            return `${m}:${String(s).padStart(2, '0')}`;
+        }
+
+        function validateChromeMetadata(meta) {
+            if (!meta || typeof meta !== 'object') {
+                return 'Session metadata is missing.';
+            }
+            const { sessionId, durationMs, viewport } = meta;
+            if (typeof sessionId !== 'string' || !sessionId.trim()) {
+                return 'Session id is missing or invalid.';
+            }
+            if (!Number.isFinite(durationMs) || durationMs < 0) {
+                return 'Duration is missing or invalid (expect non-negative durationMs).';
+            }
+            if (!viewport || typeof viewport !== 'object') {
+                return 'Viewport is missing.';
+            }
+            const { width, height } = viewport;
+            if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0) {
+                return 'Viewport width and height must be positive numbers.';
+            }
+            return null;
+        }
+
+        function clearPlayerUi(message) {
+            playerEl.replaceChildren();
+            if (!message) return;
+            const p = document.createElement('p');
+            p.className = 'player-placeholder';
+            p.setAttribute('role', 'status');
+            p.textContent = message;
+            playerEl.appendChild(p);
+        }
+
+        function applyChrome(sessionData) {
+            const meta = sessionData && sessionData.metadata;
+            const err = validateChromeMetadata(meta);
+
+            detailEl.hidden = true;
+            detailEl.textContent = '';
+
+            if (err) {
+                statusEl.className = 'chrome-line chrome-error';
+                statusEl.textContent = err;
+                copyBtn.disabled = true;
+                badBtn.disabled = false;
+                lastValidSessionId = '';
+                clearPlayerUi('Player stays unloaded until metadata is valid.');
+                return;
+            }
+
+            statusEl.className = 'chrome-line';
+            const dur = formatDurationMs(meta.durationMs);
+            statusEl.textContent = `Session ${meta.sessionId} · ${meta.viewport.width}×${meta.viewport.height} · ${dur}`;
+            lastValidSessionId = meta.sessionId;
+            copyBtn.disabled = false;
+            badBtn.disabled = false;
+
+            if (window.replayt?.player?.init) {
+                playerEl.replaceChildren();
+                window.replayt.player.init({
+                    container: playerEl,
+                    data: sessionData,
+                    theme: 'light',
+                });
+            } else {
+                clearPlayerUi('replayt player not available (check script URL).');
+            }
+        }
+
+        copyBtn.addEventListener('click', async () => {
+            if (!lastValidSessionId) return;
+            try {
+                await navigator.clipboard.writeText(lastValidSessionId);
+            } catch {
+                /* clipboard may be denied; still a no-op for the demo */
+            }
+        });
+
+        badBtn.addEventListener('click', () => {
+            applyChrome({
+                events: [],
+                metadata: {
+                    startTs: Date.now(),
+                    /* sessionId missing on purpose */
+                    durationMs: 120000,
+                    viewport: { width: 1920, height: 1080 },
+                },
+            });
+        });
+
+        function mockFetchSessionData() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        events: [],
+                        metadata: {
+                            startTs: Date.now(),
+                            sessionId: 'demo-sess-7f3a',
+                            durationMs: 125000,
+                            viewport: { width: 1920, height: 1080 },
+                        },
+                    });
+                }, 500);
+            });
+        }
+
+        (async function main() {
+            statusEl.className = 'chrome-line';
+            statusEl.textContent = 'Loading session…';
+            copyBtn.disabled = true;
+            badBtn.disabled = true;
+            clearPlayerUi('Loading session…');
+
+            const sessionData = await mockFetchSessionData();
+            applyChrome(sessionData);
+        })();
+    </script>
+</body>
+</html>
