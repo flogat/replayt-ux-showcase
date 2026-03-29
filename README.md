@@ -33,7 +33,7 @@ pytest
 
 Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). The **dev** extra pulls in **pytest-cov**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. Use **`python -m pytest`** from the repo root to match **CI** (same **`[tool.pytest.ini_options]`** as **`pytest`**).
 
-**Design-to-code handoff (integrators):** After you can run the Python checks above, use **[`docs/playbook/README.md`](docs/playbook/README.md)** for **Tailwind-friendly** token tables, **timeline and overlay** component anatomy, and a **printable** checklist (accessibility, loading, error states). It links **[`docs/a11y/keyboard-model.md`](docs/a11y/keyboard-model.md)** and **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md)** for normative pattern rules.
+**Design-to-code handoff (integrators):** After you can run the Python checks above, use **[`docs/playbook/README.md`](docs/playbook/README.md)** for **Tailwind-friendly** token tables, **timeline and overlay** component anatomy, and a **printable** checklist (accessibility, loading, error states). It links **[`docs/a11y/keyboard-model.md`](docs/a11y/keyboard-model.md)** and **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md)** for normative pattern rules. **Figma** library access, variable → **`rux-*`** mapping, and interim **`design-tokens.json`** live in **[`docs/design-kit/README.md`](docs/design-kit/README.md)** (**F1–F8**).
 
 **Tests and coverage policy** (demo module, **replayt** boundaries, **dev** pins) live in
 **[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **[docs/demo.md](docs/demo.md)** defines the console demo contract.
@@ -70,6 +70,7 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/examples/fixture-replay.html` | **P-05** deterministic offline fixture for reviewers / **LLM** harnesses (**Shipped** — **`docs/examples/PATTERNS.md`**) |
 | `docs/examples/PATTERNS.md` | Canonical UI pattern inventory (mission **5+** tracking, per-pattern acceptance criteria) |
 | `docs/playbook/README.md` | **Design-to-code handoff**: tokens (**[`tokens.md`](docs/playbook/tokens.md)**), anatomy (**[`component-anatomy.md`](docs/playbook/component-anatomy.md)**), printable checklist (**[`handoff-checklist.md`](docs/playbook/handoff-checklist.md)**) |
+| `docs/design-kit/README.md` | **Figma** design kit spec: library access, **Figma** → **`rux-*`** mapping (**F3**), change requests, interim **`design-tokens.json`** (**F5**) — see **[`docs/DESIGN_PRINCIPLES.md`](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export)** |
 | `docs/a11y/keyboard-model.md` | Shared **keyboard / focus** checklist for player and timeline embeds (tab order, scrubber keys, **Escape**) |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |

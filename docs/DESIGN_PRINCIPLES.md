@@ -24,6 +24,7 @@ is tracked separately in code and CHANGELOG):
 | Distinct vanilla UI patterns (mission: **5+**), per-pattern acceptance | [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog), [examples/PATTERNS.md](examples/PATTERNS.md), [MISSION.md](MISSION.md#pattern-coverage-tracking) |
 | Timeline / player **keyboard** and **focus** (handoff checklist) | [`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md), [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog) (shared contract), [examples/PATTERNS.md](examples/PATTERNS.md) (per-pattern rules) |
 | **Design-to-code handoff** (tokens, anatomy, printable checklist) | [`docs/playbook/README.md`](playbook/README.md), [`tokens.md`](playbook/tokens.md), [`component-anatomy.md`](playbook/component-anatomy.md), [`handoff-checklist.md`](playbook/handoff-checklist.md), [README.md](../README.md#quick-start) (integrator quick start link) |
+| **Figma design kit** (library access, variable → **`rux-*`** mapping, change process, interim **JSON** export) | [Design kit (Figma) and token export](#design-kit-figma-and-token-export), [`docs/design-kit/README.md`](design-kit/README.md) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 
 ### Traceability to automated checks
@@ -50,6 +51,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)); includes **`docs/examples/build.md`** when present |
 | **`docs/FRONTEND_SUPPLY_CHAIN.md`** section anchors, keywords, cross-links, and **CHANGELOG** **Unreleased** mention (**A1–A5** in that doc) | `tests/test_frontend_supply_chain_doc.py` |
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T3**, **A1–A3**, **H1–H3**) | `tests/test_playbook_docs.py` |
+| **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | `tests/test_design_kit_docs.py` (sections **F1–F8**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 
@@ -88,7 +90,7 @@ unless the test is being retired on purpose.
 | Area | Owns | Must not |
 | ---- | ---- | -------- |
 | **`src/replayt_ux_showcase/`** | Python package surface (`import replayt_ux_showcase`), console demos, test helpers that exercise replayt through supported APIs | Become a second “core” for capture/replay; depend on unreleased or git-pinned replayt without an explicit maintainer decision recorded in CHANGELOG |
-| **`docs/`** | Mission, principles, demo specs, copy-paste examples, **[`docs/playbook/`](playbook/README.md)** (design-to-code handoff: tokens, anatomy, printable checklist), playbook-oriented markdown | Hold secrets, credentials, or environment-specific endpoints checked into git |
+| **`docs/`** | Mission, principles, demo specs, copy-paste examples, **[`docs/playbook/`](playbook/README.md)** (design-to-code handoff: tokens, anatomy, printable checklist), **[`docs/design-kit/`](design-kit/README.md)** (**Figma** library spec, variable → **`rux-*`** mapping rules, interim **`design-tokens.json`**), playbook-oriented markdown | Hold secrets, credentials, or environment-specific endpoints checked into git |
 | **`docs/examples/`** | Static HTML/JS (and future framework snippets) that integrators copy | Imply they are supported npm packages unless explicitly published as such |
 | **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
@@ -303,6 +305,28 @@ plus **Vite** or **esbuild**) to bundle **replayt** from **npm** for **local pre
 | **Pin alignment** | **build.md** [Single compatibility story](#single-compatibility-story-pins); [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) | **`tests/test_docs_examples_replayt_pins.py`** on **`docs/examples/build.md`**; **`package.json`** semver reviewed when shipped |
 
 **Builder checklist (phase 3):** Add **`package.json`** + minimal bundler config per **B1**–**B8**; link from **README**; **CHANGELOG** **Unreleased**; keep **`.github/workflows/ci.yml`** on **Python** **pytest** + **ruff** + **pip-audit** unless a separate backlog adds **npm** automation.
+
+---
+
+## Design kit (Figma) and token export
+
+Normative spec for the backlog item **Figma design kit stub: tokens export + link from docs**. **Figma** variable names and export tooling are **not** duplicated inside [`tokens.md`](playbook/tokens.md); that file stays the **CSS / Tailwind** contract. **[`docs/design-kit/README.md`](design-kit/README.md)** owns **library access**, **duplication**, **Figma → `rux-*` mapping**, **change requests**, and the interim **`design-tokens.json`** shape.
+
+**Single semantic story:** [`tokens.md`](playbook/tokens.md) semantic names (**`rux-*`**) are authoritative. **Figma** variables MUST map **to** those names (see **F3** in the design-kit README). If playbook tokens are renamed, update **`tokens.md`**, the **Figma** mapping (or **JSON** export), and **CHANGELOG** in one change set.
+
+### Backlog traceability: Figma design kit stub (tokens export + link from docs)
+
+**Normalized user story:** As a designer or integrator, I want a documented path to the **Figma** library (or a duplicate), a clear map from **Figma** variables to playbook **`rux-*`** tokens, instructions to request token changes, and—when no public **Figma** URL exists—a checked-in **JSON** export as the interim source of truth.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | --------------------- |
+| **Obtain / duplicate library** | [`docs/design-kit/README.md`](design-kit/README.md) — **F1**, **F2** | `tests/test_design_kit_docs.py` |
+| **Variables map to playbook tokens** | Same — **F3**; canonical rows in [`tokens.md`](playbook/tokens.md) | Same |
+| **Request changes** | Same — **F4** | Same |
+| **Interim JSON when no public URL** | Same — **F5**, [JSON export schema](design-kit/README.md#json-export-schema-interim-source-of-truth) | Same; **file** **`docs/design-kit/design-tokens.json`** present when maintainers declare no public link |
+| **Discoverable from repo home / playbook** | Same — **F7**, **F8**; [`docs/playbook/README.md`](playbook/README.md) cross-link | Same |
+
+**Shipped (phase 3):** **F1–F8** prose in **`docs/design-kit/README.md`**, **`design-tokens.json`** as interim export (**F5**), root **[`README.md`](../README.md)** / playbook index links, **`tests/test_design_kit_docs.py`**, **CHANGELOG** **Unreleased**.
 
 ---
 

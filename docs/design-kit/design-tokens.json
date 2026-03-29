@@ -1,0 +1,147 @@
+{
+  "schemaVersion": "1.0.0",
+  "exportDate": "2026-03-29",
+  "source": "Hand-maintained interim export aligned with docs/playbook/tokens.md (no public Figma library URL yet).",
+  "tokens": [
+    {
+      "semantic": "rux-space-0",
+      "cssVar": "--rux-space-0",
+      "value": "0",
+      "figmaName": "RUX/Space/0"
+    },
+    {
+      "semantic": "rux-space-1",
+      "cssVar": "--rux-space-1",
+      "value": "0.25rem",
+      "figmaName": "RUX/Space/1"
+    },
+    {
+      "semantic": "rux-space-2",
+      "cssVar": "--rux-space-2",
+      "value": "0.5rem",
+      "figmaName": "RUX/Space/2"
+    },
+    {
+      "semantic": "rux-space-3",
+      "cssVar": "--rux-space-3",
+      "value": "0.75rem",
+      "figmaName": "RUX/Space/3"
+    },
+    {
+      "semantic": "rux-space-4",
+      "cssVar": "--rux-space-4",
+      "value": "1rem",
+      "figmaName": "RUX/Space/4"
+    },
+    {
+      "semantic": "rux-space-6",
+      "cssVar": "--rux-space-6",
+      "value": "1.5rem",
+      "figmaName": "RUX/Space/6"
+    },
+    {
+      "semantic": "rux-space-8",
+      "cssVar": "--rux-space-8",
+      "value": "2rem",
+      "figmaName": "RUX/Space/8"
+    },
+    {
+      "semantic": "rux-font-sans",
+      "cssVar": "--rux-font-sans",
+      "value": "system-ui, sans-serif",
+      "figmaName": "RUX/Font/Family/Sans"
+    },
+    {
+      "semantic": "rux-text-xs",
+      "cssVar": "--rux-text-xs",
+      "value": "0.75rem",
+      "figmaName": "RUX/Font/Size/XS"
+    },
+    {
+      "semantic": "rux-text-sm",
+      "cssVar": "--rux-text-sm",
+      "value": "0.875rem",
+      "figmaName": "RUX/Font/Size/SM"
+    },
+    {
+      "semantic": "rux-text-base",
+      "cssVar": "--rux-text-base",
+      "value": "1rem",
+      "figmaName": "RUX/Font/Size/Base"
+    },
+    {
+      "semantic": "rux-text-lg",
+      "cssVar": "--rux-text-lg",
+      "value": "1.125rem",
+      "figmaName": "RUX/Font/Size/LG"
+    },
+    {
+      "semantic": "rux-font-medium",
+      "cssVar": "--rux-font-medium",
+      "value": "500",
+      "figmaName": "RUX/Font/Weight/Medium"
+    },
+    {
+      "semantic": "rux-font-semibold",
+      "cssVar": "--rux-font-semibold",
+      "value": "600",
+      "figmaName": "RUX/Font/Weight/Semibold"
+    },
+    {
+      "semantic": "rux-color-surface",
+      "cssVar": "--rux-color-surface",
+      "value": "#ffffff",
+      "valueDark": "#111827",
+      "figmaName": "RUX/Color/Surface"
+    },
+    {
+      "semantic": "rux-color-surface-muted",
+      "cssVar": "--rux-color-surface-muted",
+      "value": "#f8f9fa",
+      "valueDark": "#1f2937",
+      "figmaName": "RUX/Color/SurfaceMuted"
+    },
+    {
+      "semantic": "rux-color-border",
+      "cssVar": "--rux-color-border",
+      "value": "#e0e0e0",
+      "valueDark": "#374151",
+      "figmaName": "RUX/Color/Border"
+    },
+    {
+      "semantic": "rux-color-text",
+      "cssVar": "--rux-color-text",
+      "value": "#111827",
+      "valueDark": "#f9fafb",
+      "figmaName": "RUX/Color/Text"
+    },
+    {
+      "semantic": "rux-color-text-muted",
+      "cssVar": "--rux-color-text-muted",
+      "value": "#6b7280",
+      "valueDark": "#9ca3af",
+      "figmaName": "RUX/Color/TextMuted"
+    },
+    {
+      "semantic": "rux-color-primary",
+      "cssVar": "--rux-color-primary",
+      "value": "#007bff",
+      "valueDark": "#3b82f6",
+      "figmaName": "RUX/Color/Primary"
+    },
+    {
+      "semantic": "rux-color-danger",
+      "cssVar": "--rux-color-danger",
+      "value": "#b91c1c",
+      "valueDark": "#f87171",
+      "figmaName": "RUX/Color/Danger"
+    },
+    {
+      "semantic": "rux-color-focus-ring",
+      "cssVar": "--rux-color-focus-ring",
+      "value": "var(--rux-color-primary)",
+      "valueDark": "var(--rux-color-primary)",
+      "figmaName": "RUX/Color/FocusRing"
+    }
+  ]
+}
