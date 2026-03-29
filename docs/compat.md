@@ -14,6 +14,42 @@ in `docs/DESIGN_PRINCIPLES.md`. If anything here disagrees with that document, *
 
 Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix), [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix).
 
+## replayt Python public API (showcase digest)
+
+**Normative rules** (what showcase code may import, submodule bans, **`__all__`** checks): [Design principles —
+**replayt** Python API boundary — Normative import rules](DESIGN_PRINCIPLES.md#normative-import-rules-showcase-python).
+
+**Runtime truth:** after `import replayt`, the published top-level surface is **`replayt.__all__`**. The table below is a
+**human-readable snapshot** for the reference **CI** pin **0.4.25** (see [CI exercise row inventory](#ci-exercise-row-inventory)).
+When **`__all__`** changes in a **replayt** release you still support, update this table, **DESIGN_PRINCIPLES** if needed,
+and **CHANGELOG** **Unreleased** in the **same** change set as **`pyproject.toml`** / matrix / workflow edits.
+
+| Public symbol (`from replayt import …`) |
+| --------------------------------------- |
+| `ApprovalPending` |
+| `ContextSchemaError` |
+| `LogLockError` |
+| `LogMode` |
+| `MockLLMClient` |
+| `ReplaytError` |
+| `RunContext` |
+| `RunFailed` |
+| `RunResult` |
+| `Runner` |
+| `RetryPolicy` |
+| `Workflow` |
+| `__version_tuple__` |
+| `assert_events` |
+| `display_graph` |
+| `display_run` |
+| `resolve_approval_on_store` |
+| `run_with_mock` |
+
+**Automated guard:** **`pytest`** module **`tests/test_replayt_public_api_boundary.py`** (target name from design
+principles) is **not** shipped yet (backlog phase **3**); until then **`tests/test_demo.py`** enforces a stricter rule
+(**`demo.py`** does not import **`replayt`**). When the guard lands, it runs inside every **EX-311-RT-*** / **EX-312-RT-***
+cell, same as other default **`tests/`** discovery.
+
 ## CI exercise row inventory
 
 Enumerates **default** **`.github/workflows/ci.yml`** automation for this repo. Each **ID** is stable copy for **CHANGELOG**
@@ -71,7 +107,7 @@ Full rules: [Deprecation and removal](DESIGN_PRINCIPLES.md#deprecation-and-remov
 
 **Where shims live:** Only under **`src/replayt_ux_showcase/`** (see [Module and directory boundaries](DESIGN_PRINCIPLES.md#module-and-directory-boundaries)). Prefer a dedicated module or thin wrapper re-exporting a stable surface for demos and tests; document the shim in **CHANGELOG** and, when user-visible, in this file or **`docs/demo.md`**.
 
-**Today:** The console demo (`replayt_ux_showcase.demo`) is **stdlib-only**; there is no **replayt** import shim until the demo or examples import **replayt**. When they do, imported names must stay within **replayt**’s published public surface ([replayt Python API boundary](DESIGN_PRINCIPLES.md#replayt-python-api-boundary)).
+**Today:** The console demo (`replayt_ux_showcase.demo`) is **stdlib-only**; there is no **replayt** import shim until the demo or examples import **replayt**. When they do, imported names must stay within **replayt**’s published public surface ([replayt Python API boundary](DESIGN_PRINCIPLES.md#replayt-python-api-boundary), [digest table](#replayt-python-public-api-showcase-digest), [Normative import rules](DESIGN_PRINCIPLES.md#normative-import-rules-showcase-python)).
 
 ## Migration and upgrades
 

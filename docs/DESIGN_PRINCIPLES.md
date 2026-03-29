@@ -27,6 +27,7 @@ is tracked separately in code and CHANGELOG):
 | **Figma design kit** (library access, variable → **`rux-*`** mapping, change process, interim **JSON** export) | [Design kit (Figma) and token export](#design-kit-figma-and-token-export), [`docs/design-kit/README.md`](design-kit/README.md) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 | **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
+| **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
 
 ### Traceability to automated checks
 
@@ -55,6 +56,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`docs/design-kit/`** — **F1–F8** acceptance, **`design-tokens.json`** schema when interim export applies | `tests/test_design_kit_docs.py` (sections **F1–F8**, **F3** ↔ **`tokens.md`** semantics, JSON top-level keys + **`tokens[]`** shape); see [Design kit (Figma) and token export](#design-kit-figma-and-token-export) |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
+| Showcase code: **replayt** imports use only published top-level symbols (**`replayt.__all__`**) and no underscore-private **`replayt` submodules** | **Target (phase 3):** **`tests/test_replayt_public_api_boundary.py`** (name negotiable) runs under default **`pytest`** in every **CI** **test** matrix cell — see [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard); **not** enforced until that module ships |
 
 The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
 **`.github/workflows/ci.yml`** per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
@@ -106,6 +108,34 @@ unless the test is being retired on purpose.
   upstream reference docs). Do not rely on private modules, underscore-prefixed internals, or undocumented symbols.
 - Workflow or mock-LLM helpers from **replayt** are allowed only when they stay **offline** and **deterministic** in
   default CI, per [LLM boundaries](#llm-boundaries).
+
+#### Normative import rules (showcase Python)
+
+These rules apply to **all** `*.py` files under **`src/replayt_ux_showcase/`** (including **`demo.py`** and
+**`__init__.py`**). They do **not** apply to **`tests/`** (tests may introspect **replayt** for contract purposes).
+
+1. **No private submodule paths:** Any **static** import MUST NOT load a **replayt** submodule whose **first dotted
+   segment after `replayt.`** starts with an underscore (e.g. `import replayt._foo`, `from replayt._bar import …`).
+   Imports of **non-underscore** submodules (e.g. `import replayt.something`) are **out of scope** for this backlog
+   unless/until upstream documents them as public; default posture is **top-level package only** (see rule 2).
+2. **Top-level symbols ⊆ `__all__`:** For `from replayt import a, b, …`, every imported **name** MUST appear in
+   **`replayt.__all__`** in the **replayt** version installed when **`pytest`** runs (same environment as **CI** matrix
+   cells). **Bare** `import replayt` (optionally `as` aliased) is always allowed; if code uses attribute access
+   (`replayt.Workflow`, `rt.Workflow` after `import replayt as rt`), those attribute names SHOULD satisfy the same
+   **allowlist** as rule 2 — **Builder** SHOULD implement the strictest practical static check (imports **and** obvious
+   `load_attr` / alias patterns) and MAY document residual risk (dynamic **`getattr`**, string **`importlib`**) as
+   **code-review** / follow-up backlog.
+3. **Underscore-prefixed bind names:** Importing a **replayt** symbol whose **exported public name** starts with
+   **`_`** is forbidden **unless** that name is explicitly listed in **`replayt.__all__`** (today **`__version_tuple__`**
+   is the only such case in the reference pin — see [`docs/compat.md` digest](compat.md#replayt-python-public-api-showcase-digest)).
+
+**Allowlist digest:** [`docs/compat.md` — replayt Python public API](compat.md#replayt-python-public-api-showcase-digest)
+mirrors the **`__all__`** set for the reference **CI** pin (**0.4.25**); when **`__all__`** changes in a supported
+**replayt** release, update the digest and **CHANGELOG** **Unreleased** in the same change set as pin/matrix updates.
+
+**Enforcement (implementation):** phase **3** adds an automated check (**ruff** rule if viable, **`pytest`** + **AST** /
+**`importlib`**, or equivalent) that fails **CI** when rules 1–3 are violated. Until that lands, **`tests/test_demo.py`**
+continues to assert **`demo.py`** does not import **`replayt`** at all (stdlib-only demo).
 
 ---
 
@@ -196,7 +226,7 @@ Tests MUST cause **CI** to fail when integration boundaries or the demo contract
 | ------------------- | ------ | ------------------------------------- |
 | **Design principles metadata** | Pins, matrices, and headings stay aligned with **`pyproject.toml`** and **CI** | Existing `tests/test_design_principles_contract.py` (extend when new normative rows are added here) |
 | **Demo behavioral spec** | Observable behavior matches **`docs/demo.md`** | Subprocess **`python -m replayt_ux_showcase.demo`**, exports, log prefixes, sample data shape (see **`docs/demo.md`** test plan) |
-| **replayt Python API boundary** | Showcase code does not depend on private or undocumented **replayt** symbols | Lint/review plus tests: if **`demo.py`** (or other showcase modules under test) import **replayt**, imports MUST be restricted to **published** **`__all__`** / documented public surface; removing or renaming those symbols in a supported **replayt** release is an upstream semver concern—this repo adjusts pins and tests per [Migration paths](#migration-paths) |
+| **replayt Python API boundary** | Showcase code does not depend on private or undocumented **replayt** symbols | Automated guard (phase **3**) on **`src/replayt_ux_showcase/**/*.py`** per [Normative import rules](#normative-import-rules-showcase-python): no **`replayt._*`** submodule imports; **`from replayt import …`** names ⊆ **`replayt.__all__`** at the installed version; see **`tests/test_replayt_public_api_boundary.py`** when shipped. Until then, **`tests/test_demo.py`** keeps **`demo.py`** off **`replayt`** entirely. Upstream **semver** still governs renames/removals in **`__all__`** — adjust pins and tests per [Migration paths](#migration-paths) |
 | Declared **replayt** range | Supported consumer range in **`pyproject.toml`** matches [Replayt and Python matrix](#replayt-and-python-matrix) | Contract tests on the **replayt** dependency line; optional smoke that **`import replayt`** succeeds after install (already part of contract tests today) |
 | **docs/examples** replayt pins | Integrator snippets do not advertise **replayt** versions outside the declared PEP 508 range | **`tests/test_docs_examples_replayt_pins.py`** (or equivalent) scans **`docs/examples/**/*.{html,md,vue,svelte}`** per [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) |
 
@@ -220,6 +250,7 @@ not mocked **replayt** internals.
 | Demo subprocess and data-shape checks | **`tests/`** per **`docs/demo.md`** (including in-process calls so **pytest-cov** traces **`demo.py`**) |
 | **replayt** pin, **dev** pins, and design-principles structure | **`tests/test_design_principles_contract.py`** (extend if new spec rows require it) |
 | **replayt** import surface in **`demo.py`** | **`tests/test_demo.py`** asserts the module source does not import the **`replayt`** package (stdlib-only demo) |
+| **replayt** public API on all showcase modules | **Target:** **`tests/test_replayt_public_api_boundary.py`** (or equivalent) per [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard); **not** in tree until phase **3** |
 | **docs/examples** **replayt** pins vs **`pyproject.toml`** | **`tests/test_docs_examples_replayt_pins.py`** |
 
 ### Backlog traceability: Add unit/integration tests for demo
@@ -236,8 +267,10 @@ integration boundaries, and runs in **CI** with coverage and explicit **dev** to
 **Maintainer checklist (follow-up):**
 
 1. When raising or adding coverage gates, update **`[tool.pytest.ini_options]`**, **CHANGELOG**, and this section together.
-2. When **`demo.py`** begins importing **replayt**, replace or extend the stdlib-only import test with an assertion that
-   imported names are a subset of the published **`replayt`** public surface (per [Fails on boundary breaks](#fails-on-boundary-breaks-acceptance)).
+2. When **`demo.py`** (or any **`src/replayt_ux_showcase/*.py`**) begins importing **replayt**, the stdlib-only guard in
+   **`tests/test_demo.py`** MUST be superseded or complemented by the package-wide check in
+   [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard)
+   ([Normative import rules](#normative-import-rules-showcase-python)).
 
 ### Backlog traceability: Contract test — examples reference replayt in supported semver range
 
@@ -257,6 +290,26 @@ integrator-facing snippets stay aligned with [DESIGN_PRINCIPLES](#design-princip
 
 1. When extending detection rules or **`docs/examples/`** pins, update **`tests/test_docs_examples_replayt_pins.py`** (patterns, probe grid, or **`_EXTRA_PROBE_VERSIONS`**) and this section if the normative table changes, in one change set with **CHANGELOG** **Unreleased**.
 2. Renaming the test module requires updating [Traceability to automated checks](#traceability-to-automated-checks) and **`docs/compat.md`** in the same change set.
+
+### Backlog traceability: Harden replayt public-API boundary lint or import guard
+
+**Normalized user story:** As a maintainer, I want **CI** to fail when **`demo.py`** or any packaged showcase module
+under **`src/replayt_ux_showcase/`** imports **replayt** through underscore-private subpaths or pulls top-level names
+outside **`replayt.__all__`**, so the repo cannot accidentally couple demos to unpublished internals.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ----------------------- |
+| **Scope of scanned files** | [Normative import rules](#normative-import-rules-showcase-python) | Every **`*.py`** under **`src/replayt_ux_showcase/`**; **`tests/`** excluded |
+| **Forbidden: private submodule paths** | Same — rule 1 | Static analysis flags `import` / `from` whose **replayt** module path includes a **`_*`** segment after the root package |
+| **Forbidden: non-public top-level names** | Same — rules 2–3 | For `from replayt import …`, each name ∈ **`replayt.__all__`** at test runtime; **`import replayt`** allowed |
+| **Human-readable allowlist** | [`docs/compat.md` — digest table](compat.md#replayt-python-public-api-showcase-digest) | Stays aligned with **`__all__`** for the reference **CI** **replayt** pin; updated when matrix pins or upstream exports change |
+| **Runs in default CI** | [Traceability to automated checks](#traceability-to-automated-checks); [GitHub Actions CI workflow](#github-actions-ci-workflow) | **`python -m pytest tests`** after **`pip install -e ".[dev]"`** in each **Python** × **replayt-version** cell — same as other contract tests |
+| **Implementation shape** | (Builder choice) | **Acceptable:** **`pytest`** module + **AST** walk and/or **`importlib`** introspection; **ruff** plugin or **`ruff check`** integration if maintainers prefer lint-time failure. Clear failure messages (**file**, **line**, offending import). |
+
+**Builder checklist (phase 3):** Add **`tests/test_replayt_public_api_boundary.py`** (or agreed name); wire into
+**`pytest`** discovery; extend **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) with
+a bundled row (e.g. **EX-REPLAYT-PY-API**) **if** Mission Control wants an explicit inventory ID — optional when the
+check is plain **`pytest`** alongside existing contract tests; update [Traceability to automated checks](#traceability-to-automated-checks) row to name the shipped module; **CHANGELOG** **Unreleased**.
 
 ---
 
