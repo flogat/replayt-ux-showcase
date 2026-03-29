@@ -80,17 +80,15 @@ reintroduce a second “canonical” shape that disagrees with **`SAMPLE_SESSION
 
 ---
 
-## 3. Legacy placeholders (drift to remove)
+## 3. Shipped examples (P-01 and P-02)
 
-[`basic-player.html`](basic-player.html) (**P-01**) keeps §1 in the **`rux-showcase-session-fixture`** JSON block and uses a
+[`basic-player.html`](basic-player.html) (**P-01**) keeps §1 in the **`rux-showcase-session-fixture`** JSON block and runs a
 small **adapter** before **`replayt.player.init`** when the pinned player expects §2 (see §2 and the inline comments).
 
-**[`player-session-metadata-bar.html`](player-session-metadata-bar.html)** (**P-02**) uses **`durationMs`** and init-style
-metadata for the chrome bar; **viewport** reads **`w` / `h`** first, then **`width` / `height`**. Cross-link §1 when
-documenting **console parity** or **Python** alignment.
+**[`player-session-metadata-bar.html`](player-session-metadata-bar.html)** (**P-02**) uses **`durationMs`**, **`startTs`**, and
+related fields in the mocked async payload for the chrome bar; **viewport** reads **`w` / `h`** first, then **`width` / `height`**. Point integrators at §1 when describing **console** or **Python** parity.
 
-**Target end state:** P-01’s fixture is §1; ms/camelCase is **init wire** or produced only via adapter. P-02 documents the
-viewport fallback next to the sample.
+**P-01** fixture bytes are checked against **`SAMPLE_SESSION_DATA`** in CI (§5). **P-02** documents the viewport fallback next to the sample.
 
 ---
 
@@ -99,28 +97,22 @@ viewport fallback next to the sample.
 | # | Criterion | Verification (target) |
 |---|-----------|------------------------|
 | 1 | **`docs/examples/SESSION_SCHEMA.md`** (this file) is the integrator-facing canonical doc for §1 | Spec gate / review |
-| 2 | **`docs/examples/basic-player.html`** — placeholder **`sessionData`** and surrounding comments use **`start_ts`**, **`viewport.w` / `h`**, **`duration`**, and **`events[].ts`** consistent with §1 | Code review + contract test (§5) |
+| 2 | **`docs/examples/basic-player.html`** — **`rux-showcase-session-fixture`** JSON and surrounding comments use **`start_ts`**, **`viewport.w` / `h`**, **`duration`**, and **`events[].ts`** consistent with §1 | Code review + contract test (§5) |
 | 3 | If **`init`** still needs §2, snippet documents adapter or upstream requirement with link to §2 | Code review |
 | 4 | **`docs/demo.md`** and **`docs/examples/PATTERNS.md`** reference this file where they describe **`SAMPLE_SESSION_DATA`** / cross-surface parity | Spec gate |
-| 5 | **Automated drift guard** — CI fails when **`basic-player.html`** (and any other file listed in the test) diverges from **`SAMPLE_SESSION_DATA`** for the agreed key set | **`pytest`** (new or extended module — §5) |
+| 5 | **Automated drift guard** — CI fails when **`basic-player.html`** (and any other file listed in the test) diverges from **`SAMPLE_SESSION_DATA`** for the agreed key set | **`tests/test_session_schema_examples.py`** in default **`pytest`** |
 | 6 | **CHANGELOG** **Unreleased** when **Shipped** behavior or copy-paste contract changes | **`CONTRIBUTING.md`** |
 
 ---
 
-## 5. Contract test (normative intent for implementation)
+## 5. Contract test
 
-**Phase 3 (Builder)** should add or extend **`pytest`** so drift between §1 and integrator snippets cannot merge silently.
+**`tests/test_session_schema_examples.py`** (default **`pytest`**, including CI) parses
+**`<script type="application/json" id="rux-showcase-session-fixture">…</script>`** in each path listed in **`_FIXTURE_HTML_FILES`**
+and asserts **`json.loads`** equality with **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`**.
 
-**Recommended approach (pick one in implementation; document choice in the test module docstring):**
+The module docstring records this **structured extraction** choice (§4 in an earlier spec also mentioned substring guards as an alternative).
 
-1. **Golden substring / key guard:** For each registered file (minimum **`docs/examples/basic-player.html`**), assert
-   presence of canonical key **substrings** (e.g. **`start_ts`**, **`"w":`**, **`"h":`**, **`"ts":`**) and **absence** of
-   legacy placeholder patterns in the **`sessionData` literal** (e.g. **`startTs:`** inside the sample object), **or**
-2. **Structured extraction:** Parse the inline object (heuristic or `ast` for Python) and compare required keys to
-   **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`** loaded from the installed package.
-
-**Scope:** Start with **P-01** (**`basic-player.html`**) + **`SAMPLE_SESSION_DATA`**. Extending to additional HTML files
-(**P-02**, **P-09**, etc.) is **optional** in the same backlog if the Builder can do so without fragile parsing; otherwise
-record follow-up in **CHANGELOG** / **handoff**.
+**Scope:** **P-01** (**`basic-player.html`**) is registered today. Add paths to **`_FIXTURE_HTML_FILES`** when more HTML files adopt the same embed pattern (**P-02**, **P-09**, etc.); keep parsing rules maintainable.
 
 **Traceability:** [Design principles — backlog traceability](../DESIGN_PRINCIPLES.md#backlog-traceability-normalize-session-schema-examples-python-demo-and-basic-playerhtml).

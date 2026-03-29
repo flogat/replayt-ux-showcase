@@ -852,7 +852,7 @@ replayt JS— with the same vocabulary documented in **[`docs/demo.md`](demo.md#
 
 #### Backlog traceability: Normalize session schema examples (Python demo and basic-player.html)
 
-**Scope:** [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [`docs/examples/basic-player.html`](examples/basic-player.html) (**P-01**), related rows in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** (**P-02**, **P-03**, **P-06** cross-links), **[`docs/demo.md`](demo.md)**, optional follow-up on **P-02** viewport normalization.
+**Scope:** [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [`docs/examples/basic-player.html`](examples/basic-player.html) (**P-01**), **[`docs/examples/player-session-metadata-bar.html`](examples/player-session-metadata-bar.html)** (**P-02** viewport **`w`/`h`** fallback), related rows in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** (**P-03**, **P-06** cross-links), **[`docs/demo.md`](demo.md)**; optional follow-up: **`rux-showcase-session-fixture`** + drift test for other offline examples (**P-09**, etc.).
 
 **Normalized user story:** As an integrator, I want **one documented JSON shape** that matches the **Python** console
 demo (`SAMPLE_SESSION_DATA`) and the **minimal** vanilla player example, so I do not copy conflicting field names
@@ -867,8 +867,8 @@ maintainer, I want **CI** to catch drift between **`basic-player.html`** and **`
 | **PATTERNS** / **demo.md** / **compat** cross-links | [PATTERNS — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), **demo.md**, **compat.md** | Spec gate |
 | **CHANGELOG** **Unreleased** when copy-paste contract changes | [Changelog, semver, and release notes](#changelog-semver-and-release-notes) | **`CONTRIBUTING.md`** |
 
-**Spec note (phase 2):** **`SESSION_SCHEMA.md`** and catalog updates **land in spec**; **`basic-player.html`** edits,
-adapter wiring, and **pytest** are **phase 3 (Builder)** unless a later workflow phase assigns them.
+**Shipped:** Spec (**phase 2**) added **`SESSION_SCHEMA.md`** and catalog cross-links. Builder (**phase 3**) shipped **`basic-player.html`**
+fixture + adapter, **`player-session-metadata-bar.html`** viewport fallback, and **`tests/test_session_schema_examples.py`**.
 
 #### Backlog traceability: Event overlay pattern (vanilla **P-09** + optional `demo.py` hook)
 

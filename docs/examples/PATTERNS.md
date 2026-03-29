@@ -17,7 +17,7 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 
 | ID | Artifact | Status | Summary |
 | -- | -------- | ------ | ------- |
-| **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note; session **fixture** keys must align with [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1 after backlog *Normalize session schema…* (**Builder**). |
+| **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, §1 JSON fixture (**`rux-showcase-session-fixture`**), adapter before **`replayt.player.init`**, theme note — see [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md). |
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
 | **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
 | **P-04** | [`embed-container-states.html`](embed-container-states.html) | **Shipped** | **Embed container** lifecycle: skeleton while **loading**, user-visible **failure** + **retry**, **`aria-live`** / **`role="status"`** status for operators and **automation agents**; **published** replayt JS only. |
@@ -40,8 +40,8 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
   **`events[].ts`** in **seconds**).
 - **§2 `replayt.player.init` wire shape** covers **camelCase** / **ms** fields where the browser API differs; use a **pure
   adapter** (see **`docs/examples/react/README.md`**) instead of inventing a third naming scheme.
-- **§3–§5** describe **legacy** placeholders (**`basic-player.html`** today), **Builder** acceptance, and the **pytest**
-  drift guard (**phase 3**).
+- **§3** maps **P-01** / **P-02** to §1 vs §2; **§4–§5** are backlog acceptance and the **`pytest`** guard
+  (**`tests/test_session_schema_examples.py`**).
 
 When **P-01**/**P-02**/**P-03** prose says “same `sessionData` as **P-01**,” distinguish **fixture canonical** (§1) from
 **init wire** (§2) if both appear in one file.
@@ -62,10 +62,10 @@ already pass to the player as in **P-01**.
   - **`events`** — array (may be empty in the snippet; real apps pass replayt event arrays).
   - **`metadata`** — object.
 - **Showcase fixture baseline** (cross-surface with **`SAMPLE_SESSION_DATA`**): see [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §1
-  — **`metadata.start_ts`**, **`metadata.viewport.w` / `h`**, **`metadata.duration`**, **`events[].ts`** (seconds). Until
-  **P-01** migrates, shipped **P-02** may still use **`startTs`** / **`viewport.width` / `height`** for **init** and
-  chrome; **Builder** should converge on §1 for the **fixture** story and document §2 adapters where **`init`** requires
-  ms/camelCase.
+  — **`metadata.start_ts`**, **`metadata.viewport.w` / `h`**, **`metadata.duration`**, **`events[].ts`** (seconds).
+  **P-01** ships that shape in **`basic-player.html`**. **P-02** keeps **`startTs`**, **`durationMs`**, and similar fields in the
+  mocked async payload for the chrome bar (**init**-style); **viewport** accepts **`w` / `h`** first with **`width` / `height`**
+  fallback (see **`player-session-metadata-bar.html`** and **SESSION_SCHEMA** §3).
 - **Extensions for P-02** (additive; must not break P-01 copies):
   - **`metadata.sessionId`** — string, human-readable stable id for the session row in the chrome.
   - **`metadata.durationMs`** — non-negative number, **session duration in milliseconds**, shown in the bar (preferred;

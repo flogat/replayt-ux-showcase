@@ -65,7 +65,7 @@ __all__ = ["render_console_timeline", "SAMPLE_SESSION_DATA"]
 
 Canonical mock session (~30s, 12 events). Must match replayt session schema. **Do not drift** from
 [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md) §1 without updating that doc, **`demo.py`**, and the
-**session schema contract test** (see **SESSION_SCHEMA** §5 — **Builder** phase).
+**session schema contract test** (**`tests/test_session_schema_examples.py`**; **SESSION_SCHEMA** §5).
 
 ```python
 {
