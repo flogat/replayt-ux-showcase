@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*Event overlay pattern: second docs example + demo.py hook*): **`docs/examples/PATTERNS.md`** — register **P-09** (**Spec only**, planned **`event-overlay.html`**) with normative overlay UX (scrub-linked highlight, hover **and** keyboard-equivalent callouts, **Escape** / focus return), **P-05**-style inline **`sessionData`** / **LLM** boundary, **replayt** JS surface + pin rules, optional **`demo.py`** hook; **`docs/DESIGN_PRINCIPLES.md`** — traceability row + **Vanilla UI pattern catalog** blurb + **backlog traceability** subsection; **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/demo.md`** (cross-surface table + **Builder alignment**), **`docs/playbook/component-anatomy.md`**, **`docs/a11y/keyboard-model.md`**, **`README.md`** layout row (planned path).
+
 ### Added
 
 - Phase **3** (*Figma design kit stub: tokens export + link from docs*): **`docs/design-kit/design-tokens.json`** — interim export (**`schemaVersion`**, **`exportDate`**, **`tokens[]`**) aligned with **[`docs/playbook/tokens.md`](docs/playbook/tokens.md)**; **`tests/test_design_kit_docs.py`** — **CI** contract for **F1–F8** headings, **F3** semantics coverage, JSON shape, cross-links, **CHANGELOG** **Unreleased** mention; **`docs/DESIGN_PRINCIPLES.md`** — **`docs/design-kit/`** row now references **`test_design_kit_docs.py`**; **`docs/design-kit/README.md`** operator sections **F1–F8** and **F3** mapping table; **`docs/playbook/README.md`** **CI** note; **`README.md`** **Quick start** wording for the design kit.
