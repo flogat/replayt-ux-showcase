@@ -135,10 +135,11 @@ Behavioral cases below are implemented under **`tests/`** (see module docstring)
 |------|-------------|----------|
 | `test_demo_runs` | Subprocess: `subprocess.run([sys.executable, "-m", "replayt_ux_showcase.demo"], capture_output=True)` | `returncode == 0` |
 | `test_exports` | Import check: `from replayt_ux_showcase import render_console_timeline, SAMPLE_SESSION_DATA` | Both symbols present; `len(SAMPLE_SESSION_DATA["events"]) in range(10, 16)` |
-| `test_output_format` | Output contains expected log lines | Combined stdout/stderr contains both `[replayt-demo]` and `"Rendering demo timeline"` |
+| `test_output_format` | Subprocess output shape | Combined stdout/stderr contains `[replayt-demo]`, `"Rendering demo timeline"`, **`Overlay teaching`**, and **`event-overlay.html`** |
 | `test_event_count` | Validate event count in sample data | `10 <= len(SAMPLE_SESSION_DATA["events"]) <= 15` |
 | `test_event_types` | Validate event types | All events have `type` in `('click', 'scroll', 'keypress', 'resize', 'mousemove')` |
-| `test_output_format` / `test_render_console_timeline_in_process` | Overlay teaching line | Output / caplog contains **`Overlay teaching`** and references **`event-overlay.html`** |
+| `test_render_console_timeline_in_process` | In-process timeline + overlay logs (coverage) | caplog includes core timeline lines and **`Overlay teaching`** |
+| `test_overlay_teaching_when_no_event_before_scrub` | Overlay branch when scrub precedes first event | caplog includes **no event at or before playhead** |
 
 ### Coverage gate (see design principles)
 
