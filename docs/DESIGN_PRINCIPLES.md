@@ -19,6 +19,7 @@ is tracked separately in code and CHANGELOG):
 | **Front-end** CDN vs bundled **replayt**, optional **SRI**, **npm**/**Vite** notes | [Frontend supply chain (JavaScript / CDN)](#frontend-supply-chain-javascript--cdn), [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | Optional **npm** workspace / **Vite** or **esbuild** local preview (**not** a published package) | [`docs/examples/build.md`](examples/build.md), [Module and directory boundaries](#module-and-directory-boundaries), [Showcase stack matrix](#showcase-stack-matrix) |
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
+| **pip-audit** failures, local reproduction, overrides vs pins | [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit), [`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
 | Distinct vanilla UI patterns (mission: **5+**), per-pattern acceptance | [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog), [examples/PATTERNS.md](examples/PATTERNS.md), [MISSION.md](MISSION.md#pattern-coverage-tracking) |
@@ -59,6 +60,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | Showcase code: **replayt** imports use only published top-level symbols (**`replayt.__all__`**) and no underscore-private **`replayt` submodules** | **`tests/test_replayt_public_api_boundary.py`** — default **`pytest`** in every **CI** **test** matrix cell; see [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard) |
+| **`docs/DEPENDENCY_AUDIT.md`** — **D1–D10** playbook (local **`pip-audit`**, fix vs override policy, **README** troubleshooting link) | **Not** enforced in **CI** today; optional future **`tests/test_dependency_audit_doc.py`** (see [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit)) |
 
 The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
 **`.github/workflows/ci.yml`** per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
@@ -545,6 +547,49 @@ observable logs and **README** badges.
 3. Add **README** workflow badge(s) with the actual **GitHub** coordinates; extend **`tests/test_design_principles_contract.py`**
    if maintainers want CI to assert **ruff** (and/or badge presence) mechanically.
 4. Record user-visible CI changes under **CHANGELOG** **Unreleased**.
+
+---
+
+## Dependency vulnerability audit (pip-audit)
+
+Normative spec for the backlog item **Document pip-audit failures and dependency override playbook**: what contributors
+should run locally when the **`supply-chain`** job fails, how **`pip-audit`** output maps to **fix vs pin vs upstream**
+work, and when **`--ignore-vuln`** is allowed without weakening the supply-chain gate.
+
+**Canonical contributor doc:** **[`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md)** — operational commands, override
+governance, and numbered acceptance **D1–D10**.
+
+### Policy (summary)
+
+- **Single gate:** Default **CI** MUST keep a non-blocking-false **`pip-audit`** step on the **`pip install -e ".[dev]"`**
+  graph ([GitHub Actions CI workflow](#github-actions-ci-workflow) — **Supply chain** row).
+- **Doc ↔ workflow parity:** Any **`--ignore-vuln`** in **`.github/workflows/ci.yml`** MUST appear in
+  **`docs/DEPENDENCY_AUDIT.md`** with **CVE ID**, **rationale**, and **removal / revisit** criteria; same change set as
+  **CHANGELOG** **Unreleased** when the ignore list changes.
+- **Not a substitute for semver hygiene:** Prefer **PEP 508** bumps and documented transitive pins over growing the
+  ignore list ([Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain)).
+- **JavaScript / npm** tooling is **out of scope** for **`pip-audit`** — cross-link
+  **[`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md)** (**A3**).
+
+### Backlog traceability: Document pip-audit failures and dependency override playbook
+
+**Normalized user story:** As a contributor, when **`supply-chain`** / **`pip-audit`** fails in **CI**, I want a short
+playbook (local reproduction, triage, upstream vs pin, documented overrides) linked from **README** so I can fix or
+escalate without bypassing the gate.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ------------------------ |
+| **Playbook doc** | **[`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md)** — **D1–D10** | **Spec gate** — sections present; optional future **`tests/test_dependency_audit_doc.py`** |
+| **CI alignment** | **D2**, **D7**; [GitHub Actions CI workflow](#github-actions-ci-workflow) **Supply chain** row | **Manual** diff **`ci.yml`** ↔ doc; **Builder** may add contract assertions later |
+| **README discoverability** | **D9** | **README.md** troubleshooting link |
+| **CHANGELOG** on material changes | **D10**; [Changelog, semver, and release notes](#changelog-semver-and-release-notes) | **CHANGELOG** **Unreleased**; **`tests/test_changelog_release_policy_docs.py`** when playbook is listed as a watched path (if extended) |
+
+**Builder / Tester checklist (follow-up):**
+
+1. Optionally add **`tests/test_dependency_audit_doc.py`** to enforce **D1–D9** prose anchors, cross-links, and **README**
+   wiring (mirror **`tests/test_frontend_supply_chain_doc.py`**).
+2. When adding **`--ignore-vuln`**, update **`docs/DEPENDENCY_AUDIT.md`**, **`.github/workflows/ci.yml`**, and
+   **CHANGELOG** **Unreleased** in one PR.
 
 ---
 
