@@ -14,7 +14,7 @@
 
 ## Normative companions (do not duplicate)
 
-- **Figma design kit / variable → `rux-*` mapping / interim JSON export:** [`docs/design-kit/README.md`](../design-kit/README.md) — **F1–F8** operator sections and **`design-tokens.json`** schema (Builder); aligns with [`tokens.md`](tokens.md).
+- **Figma design kit / variable → `rux-*` mapping / interim JSON export:** [`docs/design-kit/README.md`](../design-kit/README.md) — **F1–F8** operator sections, backlog **BC1–BC4** (examples ↔ tokens, component inventory), and **`design-tokens.json`** schema; aligns with [`tokens.md`](tokens.md).
 - **Keyboard / focus:** [`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md) — tab order, scrubber keys, roving composites, **Escape**.
 - **Copy-paste examples:** [`docs/examples/PATTERNS.md`](../examples/PATTERNS.md) — **P-01**–**P-05** and **P-09** vanilla, **P-06**–**P-08** framework inventory, and per-pattern acceptance criteria.
 - **Loading / failure UX:** **P-04** [`embed-container-states.html`](../examples/embed-container-states.html) and [`PATTERNS.md` — P-04](../examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery).
@@ -34,7 +34,7 @@
 | Check | Command / path | What it proves today |
 | ----- | -------------- | -------------------- |
 | Playbook structure + cross-links | After **`pip install -e ".[dev]"`**: `python -m pytest tests/test_playbook_docs.py -q` | Sections and markers **T1–T5**, **A1–A5**, **H1–H5**, README index links, root **README** quick start, **DESIGN_PRINCIPLES** self-reference stay aligned. |
-| Broader docs / examples contracts | `python -m pytest tests -q` (same install) | Demo coverage, **replayt** pins in **`docs/examples/`**, **P-01**–**P-09** example markers, design-kit **F1–F8**, etc., per [DESIGN_PRINCIPLES — traceability](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). |
+| Broader docs / examples contracts | `python -m pytest tests -q` (same install) | Demo coverage, **replayt** pins in **`docs/examples/`**, **P-01**–**P-09** example markers, design-kit **F1–F8** / **BC1–BC4**, etc., per [DESIGN_PRINCIPLES — traceability](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). |
 | Visual / render smoke | _Not in default CI yet_ | Mission target: future browser automation (e.g. headless load of **`basic-player.html`**, **P-03**, **P-09**) to catch layout regressions on scrubber and overlays. Until that ships, rely on manual open-from-repo review + pytest contracts above. |
 
-**CI:** `tests/test_playbook_docs.py` keeps the four playbook files, acceptance row markers (**T1–T5**, **A1–A5**, **H1–H5**), and integrator entry-point links aligned with [DESIGN_PRINCIPLES — traceability to automated checks](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). `tests/test_design_kit_docs.py` covers **[`docs/design-kit/`](../design-kit/README.md)** (**F1–F8**, interim **`design-tokens.json`**).
+**CI:** `tests/test_playbook_docs.py` keeps the four playbook files, acceptance row markers (**T1–T5**, **A1–A5**, **H1–H5**), and integrator entry-point links aligned with [DESIGN_PRINCIPLES — traceability to automated checks](../DESIGN_PRINCIPLES.md#traceability-to-automated-checks). `tests/test_design_kit_docs.py` covers **[`docs/design-kit/`](../design-kit/README.md)** (**F1–F8**, **BC1–BC4**, interim **`design-tokens.json`**).

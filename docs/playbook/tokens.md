@@ -2,7 +2,7 @@
 
 **Goal:** One table designers and developers can share so spacing, type, and color stay aligned when moving from Figma (or similar) into **Tailwind**-based apps **without** hard-coding one-off pixel values in JSX.
 
-**Figma variables and interim machine-readable export:** [`docs/design-kit/README.md`](../design-kit/README.md) (**F1–F8**, **`design-tokens.json`**) — map **Figma** names onto the semantics below without forking this table.
+**Figma variables and interim machine-readable export:** [`docs/design-kit/README.md`](../design-kit/README.md) (**F1–F8**, **BC1–BC4**, **`design-tokens.json`**) — map **Figma** names onto the semantics below without forking this table.
 
 **Convention:**
 
