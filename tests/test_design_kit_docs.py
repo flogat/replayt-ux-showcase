@@ -175,7 +175,10 @@ def test_design_principles_design_kit_fragment_links_match_readme_headings() -> 
     principles = (REPO_ROOT / "docs" / "DESIGN_PRINCIPLES.md").read_text(
         encoding="utf-8"
     )
-    assert "design-kit/README.md#shipped-html-examples-and-semantic-css-variables" in principles
+    assert (
+        "design-kit/README.md#shipped-html-examples-and-semantic-css-variables"
+        in principles
+    )
     assert (
         "design-kit/README.md#component-inventory-player-chrome-timeline-event-list"
         in principles
