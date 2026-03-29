@@ -40,6 +40,13 @@ Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`**
 
 **Contributing** (changelog, semver expectations, when to update **DESIGN_PRINCIPLES** with **pins**): **[`CONTRIBUTING.md`](CONTRIBUTING.md)**.
 
+## Troubleshooting
+
+- **`supply-chain` / `pip-audit` fails in CI:** Reproduce locally with **`pip install -e ".[dev]"`** then the same
+  **`pip-audit`** flags as **`.github/workflows/ci.yml`**. See **[`docs/DEPENDENCY_AUDIT.md`](docs/DEPENDENCY_AUDIT.md)**
+  for triage (bump vs pin vs upstream issue vs documented **`--ignore-vuln`**). **JavaScript** / **npm** advisories are
+  a separate concern â€” **[`docs/FRONTEND_SUPPLY_CHAIN.md`](docs/FRONTEND_SUPPLY_CHAIN.md)**.
+
 ## Optional agent workflows
 
 This repo may include a [`.cursor/skills/`](.cursor/skills/) directory for Cursor-style agent skills. **`.gitignore`**
@@ -60,6 +67,7 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 | `docs/MISSION.md` | Mission and scope |
 | `docs/DESIGN_PRINCIPLES.md` | Design and integration principles |
 | `docs/FRONTEND_SUPPLY_CHAIN.md` | CDN vs bundled **replayt** (browser), optional **SRI**, **npm**/**Vite** notes; aligns with **`pyproject.toml`** pins |
+| `docs/DEPENDENCY_AUDIT.md` | **`pip-audit`** (**Python** / **PyPI**): **CI** alignment, local reproduction, fix vs pin vs upstream, documented **`--ignore-vuln`** overrides |
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
 | `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
