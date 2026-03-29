@@ -38,6 +38,8 @@ Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`**
 **Tests and coverage policy** (demo module, **replayt** boundaries, **dev** pins) live in
 **[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **[docs/demo.md](docs/demo.md)** defines the console demo contract.
 
+**Contributing** (changelog, semver expectations, when to update **DESIGN_PRINCIPLES** with **pins**): **[`CONTRIBUTING.md`](CONTRIBUTING.md)**.
+
 ## Optional agent workflows
 
 This repo may include a [`.cursor/skills/`](.cursor/skills/) directory for Cursor-style agent skills. **`.gitignore`**
@@ -79,4 +81,5 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 | `pyproject.toml` | Package metadata, dependencies, **pytest**/**ruff** config |
 | `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**) |
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
+| `CONTRIBUTING.md` | Contributor guide: **CHANGELOG** / semver, **DESIGN_PRINCIPLES** + pins same change set |
 | `.gitignore` | Ignores `path/` (doc placeholders), `.orchestrator/`, `.cursor/skills/`, and `AGENTS.md` (local tooling) |

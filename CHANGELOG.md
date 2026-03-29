@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*CHANGELOG and release process for integrator-facing semver*): **`CONTRIBUTING.md`** — local setup pointers, **`CHANGELOG.md`** **Unreleased** expectations, semver summary link, and **when to edit `docs/DESIGN_PRINCIPLES.md`** alongside **`pyproject.toml`** / **CI** / **compat** pins; **`docs/DESIGN_PRINCIPLES.md`** — [Changelog, semver, and release notes](docs/DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (Python **API** vs **docs/examples** **MINOR**/**PATCH** guidance, **Unreleased** pattern / mission tracking, backlog traceability table); **`docs/examples/PATTERNS.md`** — **Release notes** blurb + cross-links; **`README.md`** — Contributing link and layout row.
+
 ### Added
 
 - Phase **3** (*Harden replayt public-API boundary lint or import guard*): **`tests/test_replayt_public_api_boundary.py`** — **AST** scan of **`src/replayt_ux_showcase/**/*.py`** against **`replayt.__all__`** and private **`replayt._*`** first-segment submodule paths; **`docs/DESIGN_PRINCIPLES.md`** and **`docs/compat.md`** traceability (**EX-REPLAYT-PY-API**); **`tests/test_demo.py`** no longer asserts **`demo.py`** is **`replayt`**-free (package-wide test covers **`demo.py`**).
