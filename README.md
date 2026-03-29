@@ -18,8 +18,10 @@ Workflow definition: [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Nor
 
 ## Reference documentation
 
-No snapshot was copied into this checkout. Add markdown under `docs/reference-documentation/` if you want bundled
-upstream context, or copy files from a local replayt documentation tree.
+Optional **markdown** snapshots of **replayt** upstream docs live under **`docs/reference-documentation/`** (may be
+empty except the spec). Normative workflow — **license**, **paths**, **refresh cadence**, **checklist**, optional
+**`scripts/`** helper — is in **[`docs/reference-documentation/README.md`](docs/reference-documentation/README.md)**.
+Upstream **PyPI** / project docs remain canonical; bundled files are contributor convenience only.
 
 ## Quick start
 
