@@ -97,14 +97,12 @@ the pattern testable and aligned with the backlog title.
 
 ### Builder acceptance checklist (implementation)
 
-When **P-02** ships, the PR **must**:
+**P-02** is **Shipped**; the original PR met the items below. Use the same bar when you change this pattern:
 
-1. Add `docs/examples/player-session-metadata-bar.html` implementing the rules above.
-2. Register **P-02** as **Shipped** in the [Pattern inventory](#pattern-inventory) table (this file).
-3. Add **CHANGELOG** **Unreleased** bullets under **Added** (new example) and note pattern count / mission tracking if
-   appropriate.
-4. Mention the new file in **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** so the shipped count stays
-   accurate.
+1. `docs/examples/player-session-metadata-bar.html` implements the normative sections above.
+2. [Pattern inventory](#pattern-inventory) lists **P-02** as **Shipped** with the correct filename.
+3. **CHANGELOG** **Unreleased** records notable example or contract changes; note pattern count / mission tracking when the inventory changes.
+4. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** reflects the shipped count.
 
 **Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`** (CDN pin vs **`pyproject.toml`**) and
 **`tests/test_examples.py`** (example files on disk plus light **P-02** contract strings). Full browser automation remains

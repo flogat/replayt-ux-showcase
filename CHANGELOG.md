@@ -11,17 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `docs/examples/PATTERNS.md`: canonical **vanilla UI pattern** catalog (**P-01** / **P-02**), normative **P-02** spec (session metadata bar above player, `sessionData` compatibility with `basic-player.html`, loading / error / focus rules), and Builder checklist (backlog phase **2** spec lead, *Ship session metadata chrome pattern (viewport, duration, session id)*).
 - `docs/MISSION.md`, `docs/compat.md`, `docs/DESIGN_PRINCIPLES.md`: pattern coverage tracking toward **5+** examples, digest link, design-principles traceability and backlog mapping for **P-02** (same backlog, phase **2**).
+- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec and traceability for **contract tests** that scan **`docs/examples/**/*.{html,md}`** so **replayt** CDN and requirement pins stay inside the PEP 508 range from **`pyproject.toml`**, including **`<!-- replayt-examples:pin-exempt -->`** for deliberate exceptions (backlog phase 2, Contract test: examples reference replayt in supported semver range).
+- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: traceability updated now that **`tests/test_docs_examples_replayt_pins.py`** runs in default **CI** **pytest** (same backlog, phase 3).
+- Phase **5** architect review: single **Unreleased** **Documentation** block in **CHANGELOG**; **P-02** checklist wording in **`docs/DESIGN_PRINCIPLES.md`** and **`docs/examples/PATTERNS.md`** updated for shipped state (*Ship session metadata chrome pattern (viewport, duration, session id)*).
 
 ### Added
 
 - `docs/examples/player-session-metadata-bar.html`: **P-02** vanilla example — metadata bar above the player, same **`sessionData`** shape as **`basic-player.html`**, loading placeholder, user-visible errors when **`sessionId`** / **`durationMs`** / **`viewport`** are missing or invalid after load, and bar focusable controls before the player in DOM order (backlog phase **3**, *Ship session metadata chrome pattern (viewport, duration, session id)*).
 - `tests/test_examples.py`: asserts **`player-session-metadata-bar.html`** exists and keeps minimal **P-02** contract markers (loading copy, validation strings, tab-order comment, **replayt** script pin) aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
 - `tests/test_docs_examples_replayt_pins.py`: **pytest** contract for **`docs/examples/**/*.{html,md}`** — **replayt** CDN (`replayt@…`) and PEP 508-style pins checked against the **`replayt`** line in **`pyproject.toml`**, with **`<!-- replayt-examples:pin-exempt -->`** skipping the next script line, URL line, or fenced block (backlog phase 3, Contract test: examples reference replayt in supported semver range).
-
-### Documentation
-
-- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec and traceability for **contract tests** that scan **`docs/examples/**/*.{html,md}`** so **replayt** CDN and requirement pins stay inside the PEP 508 range from **`pyproject.toml`**, including **`<!-- replayt-examples:pin-exempt -->`** for deliberate exceptions (backlog phase 2, Contract test: examples reference replayt in supported semver range).
-- `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: traceability updated now that **`tests/test_docs_examples_replayt_pins.py`** runs in default **CI** **pytest** (same backlog, phase 3).
 
 ## [0.2.0] - 2026-03-28
 

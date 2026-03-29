@@ -497,11 +497,7 @@ with explicit **loading**, **error**, and **keyboard focus** behavior.
 | Keyboard focus order (bar before player) | **P-02** [Keyboard focus and accessibility](examples/PATTERNS.md#keyboard-focus-and-accessibility-normative) | **`tests/test_examples.py`** asserts tab-order comment block; manual tab order in browser optional |
 | **CHANGELOG** + mission pattern count | **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, [P-02 Builder checklist](examples/PATTERNS.md#builder-acceptance-checklist-implementation) | **CHANGELOG** **Unreleased**; **MISSION** table |
 
-**Builder checklist (phase 3):**
-
-1. Implement **`docs/examples/player-session-metadata-bar.html`** per **P-02** in **`docs/examples/PATTERNS.md`**.
-2. Set **P-02** to **Shipped** in the pattern inventory; refresh **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts.
-3. Add **CHANGELOG** **Unreleased** (**Added**) for the new example; keep **replayt** CDN pin inside the **`pyproject.toml`** range (**`tests/test_docs_examples_replayt_pins.py`**).
+**Shipped for this backlog (phase 3):** **`docs/examples/player-session-metadata-bar.html`**, **P-02** marked **Shipped** in **`docs/examples/PATTERNS.md`**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **CHANGELOG** **Unreleased** **Added** entries, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**. Further edits to **P-02** should keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin contract tests in the same change set when contracts or filenames change.
 
 ---
 
