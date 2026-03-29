@@ -69,18 +69,21 @@ The backlog **Optional npm workspace or build recipe without publishing a packag
 | **C3** | **Module boundaries** clarify that a root **`package.json`** is **optional**, **`private`**, and **not** a supported public **npm** surface unless explicitly published. |
 | **C4** | **Builder** (phase **3**) adds **`package.json`** (and minimal config) meeting **B1**–**B8**, or a follow-up ticket documents deliberate deferral with **CHANGELOG** / **handoff** traceability. |
 
-**Automated checks (today):** **`tests/test_docs_examples_replayt_pins.py`** applies to this **Markdown** file. **No**
-contract test yet asserts **`package.json`** presence or **`npm run build`** — optional future backlog.
+**Automated checks (today):** **`tests/test_docs_examples_replayt_pins.py`** applies to this **Markdown** file.
+**`tests/test_optional_npm_bundler_recipe.py`** asserts repository-root **`package.json`** (**`private`**, **`replayt`**
+semver string, **build** / **dev** / **preview** scripts) and that **`.github/workflows/ci.yml`** stays **npm**-free.
+Running **`npm run build`** is **not** executed in **CI** (optional future backlog).
 
 ---
 
 ## Contributor quick path (informative — after Builder ships files)
 
-After phase **3** implements **B1**–**B8**, contributors who opt in typically:
+1. Install **Node** **18+** (see **`package.json`** **`engines`**).
+2. From the repository root: **`npm install`**
+3. **`npm run build`** — writes **`dist/bundler-preview/`** (**`bundle.iife.js`**, **`index.html`**).
+4. **`npm run preview`** — serves **`dist/bundler-preview/`** on **127.0.0.1** (default port **8765**, override with **`PORT`**).
+5. **`npm run dev`** — **esbuild** watch mode for the same output directory.
 
-1. Install a supported **Node** toolchain (version band documented by the Builder next to **`package.json`**).
-2. Run **`npm install`** (or **pnpm** / **yarn** if the recipe standardizes one).
-3. Run the documented **`dev` / `preview`** script to verify bundled **replayt** against local fixtures.
-
-Exact commands are **intentionally** left to the shipped **`package.json`** and **README** so they stay executable and
-reviewable in one place.
+This recipe expects the **`replayt`** package on the **npm** registry with a **`dist/player.min.js`** browser bundle
+(aligned with **jsDelivr** paths in **`docs/examples/*.html`**). If resolution fails, adjust **`entry.mjs`** when the
+upstream layout changes.
