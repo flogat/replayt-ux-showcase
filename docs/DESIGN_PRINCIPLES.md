@@ -23,6 +23,7 @@ is tracked separately in code and CHANGELOG):
 | Audience needs extended | [Audience](#audience) |
 | Distinct vanilla UI patterns (mission: **5+**), per-pattern acceptance | [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog), [examples/PATTERNS.md](examples/PATTERNS.md), [MISSION.md](MISSION.md#pattern-coverage-tracking) |
 | Timeline / player **keyboard** and **focus** (handoff checklist) | [`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md), [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog) (shared contract), [examples/PATTERNS.md](examples/PATTERNS.md) (per-pattern rules) |
+| **Design-to-code handoff** (tokens, anatomy, printable checklist) | [`docs/playbook/README.md`](playbook/README.md), [`tokens.md`](playbook/tokens.md), [`component-anatomy.md`](playbook/component-anatomy.md), [`handoff-checklist.md`](playbook/handoff-checklist.md), [README.md](../README.md#quick-start) (integrator quick start link) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 
 ### Traceability to automated checks
@@ -81,7 +82,7 @@ unless the test is being retired on purpose.
 | Area | Owns | Must not |
 | ---- | ---- | -------- |
 | **`src/replayt_ux_showcase/`** | Python package surface (`import replayt_ux_showcase`), console demos, test helpers that exercise replayt through supported APIs | Become a second “core” for capture/replay; depend on unreleased or git-pinned replayt without an explicit maintainer decision recorded in CHANGELOG |
-| **`docs/`** | Mission, principles, demo specs, copy-paste examples, playbook-oriented markdown | Hold secrets, credentials, or environment-specific endpoints checked into git |
+| **`docs/`** | Mission, principles, demo specs, copy-paste examples, **[`docs/playbook/`](playbook/README.md)** (design-to-code handoff: tokens, anatomy, printable checklist), playbook-oriented markdown | Hold secrets, credentials, or environment-specific endpoints checked into git |
 | **`docs/examples/`** | Static HTML/JS (and future framework snippets) that integrators copy | Imply they are supported npm packages unless explicitly published as such |
 | **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
@@ -551,7 +552,7 @@ New patterns **must** be registered in **`docs/examples/PATTERNS.md`** before or
 focus-managed event lists **should** follow **[`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md)** — tab order,
 roving `tabindex` when composites apply, scrubber keys, and **Escape** for dismissible layers. Per-pattern normative
 text remains in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**; the a11y doc is the single cross-pattern
-checklist for design–engineering handoff.
+checklist for keyboard and focus. **Broader handoff** (tokens, component anatomy, printable a11y / loading / error checklist) lives under **[`docs/playbook/`](playbook/README.md)**.
 
 #### Backlog traceability: Keyboard and focus model for timeline/player controls
 
@@ -566,6 +567,21 @@ one checklist instead of re-negotiating accessibility per file.
 | Linked from pattern catalog / shipped examples | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**, **P-02** / **P-03** / **P-04** comment blocks | Cross-links or “see keyboard model” references; **Tab order (handoff)** comments retained |
 | Traceability from design principles | [Acceptance criteria (traceability)](#acceptance-criteria-traceability) row *Timeline / player keyboard and focus* | **Spec gate** / **Design gate** |
 | Mission playbook alignment | **[`docs/MISSION.md`](MISSION.md)** (handoff under one dev-day) | Reviewer checklist includes this doc when touching player UX |
+
+#### Backlog traceability: Design-to-code handoff playbook (checklist + tokens)
+
+**Normalized user story:** As a designer or integrator, I want a **single** **`docs/playbook/`** home for **spacing / type / color** tokens mapped to **Tailwind-friendly** names, **component anatomy** for **timeline** and **overlay** surfaces, and a **printable** **accessibility / loading / error** checklist — linked from the **README** **Quick start** — so handovers reuse one contract and stay under **one dev-day**.
+
+| Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
+| ---------------------------- | --------------- | --------------------------------------- |
+| Playbook index | **[`docs/playbook/README.md`](playbook/README.md)** | Lists **`tokens.md`**, **`component-anatomy.md`**, **`handoff-checklist.md`**; links **keyboard-model**, **PATTERNS**, **P-04**, supply chain |
+| Token table (spacing, typography, color) | **[`docs/playbook/tokens.md`](playbook/tokens.md)** | Each category has semantic name, **CSS variable** (`--rux-*`), and **Tailwind `theme.extend`** mapping; acceptance **T1**–**T3** in-file |
+| Timeline + overlay anatomy | **[`docs/playbook/component-anatomy.md`](playbook/component-anatomy.md)** | Named regions; **P-03** / **P-06** and overlay modal vs popover; acceptance **A1**–**A3** in-file |
+| Printable checklist | **[`docs/playbook/handoff-checklist.md`](playbook/handoff-checklist.md)** | Sections **Accessibility**, **Loading**, **Error**; print instructions; acceptance **H1**–**H3** in-file |
+| README integrator link | **[`README.md`](../README.md#quick-start)** **Quick start** | Explicit link to **`docs/playbook/README.md`** |
+| Traceability | [Acceptance criteria (traceability)](#acceptance-criteria-traceability) row *Design-to-code handoff* | **Spec gate** / **Design gate**; optional **pytest** doc-presence tests in a **future** phase if maintainers adopt them |
+
+**Maintainer note:** Vanilla **`docs/examples/*.html`** files are **not** required to adopt **`--rux-*`** variables immediately; token adoption can land with pattern updates (**CHANGELOG** + pattern ID).
 
 #### Offline deterministic fixture page for LLM and reviewer workflows
 

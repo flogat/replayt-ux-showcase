@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*Author design-to-code handoff playbook (checklist + tokens)*): **`docs/playbook/`** — **[`README.md`](docs/playbook/README.md)** (index), **[`tokens.md`](docs/playbook/tokens.md)** (spacing / typography / color → **`--rux-*`** CSS variables + **Tailwind `theme.extend`** names), **[`component-anatomy.md`](docs/playbook/component-anatomy.md)** (timeline/scrubber + overlay regions, **P-03** / **P-06** / **P-04** ties), **[`handoff-checklist.md`](docs/playbook/handoff-checklist.md)** (printable accessibility, loading, error sections); **`README.md`** **Quick start** integrator link; **`docs/DESIGN_PRINCIPLES.md`** traceability row, module-boundary note, **Vanilla UI pattern catalog** cross-link, and **backlog traceability** table; **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/PATTERNS.md`** cross-links.
+
 ### Added
 
 - **`docs/examples/react/`** — **P-06** **Shipped**: **React 18** + **Vite** timeline scrubber + **`replayt.player.init`** (pinned **replayt** CDN in **`index.html`**), fixed **`sessionData`** literals, **P-03**-style **requestAnimationFrame** throttling and seek hooks, **Limitations** copy, **`README.md`** (copy-paste, pins, runbook, non-goal); **`tests/test_examples.py`** file-presence + contract markers; **`docs/examples/PATTERNS.md`**, **`docs/MISSION.md`**, **`README.md`**, **`docs/compat.md`**, **`docs/demo.md`**, **`docs/DESIGN_PRINCIPLES.md`** updated for **Shipped** (phase **3**, *Ship React timeline player snippet under docs/examples/react/*).
