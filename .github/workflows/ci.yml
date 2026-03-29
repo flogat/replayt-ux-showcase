@@ -22,6 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12"]
+        # PEP 508 range is replayt>=0.1.0,<0.5.0 — pin one release per exercised minor line (see docs/compat.md).
+        replayt-version: ["0.1.0", "0.2.0", "0.4.25"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,7 +36,10 @@ jobs:
       - name: Install package and dev deps
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          printf 'replayt==%s\n' '${{ matrix.replayt-version }}' > '${{ runner.temp }}/replayt-constraint.txt'
+          pip install -e ".[dev]" -c '${{ runner.temp }}/replayt-constraint.txt'
+      - name: Confirm replayt pin resolved
+        run: python -c "import replayt; assert replayt.__version__ == '${{ matrix.replayt-version }}', replayt.__version__"
       - name: Run Ruff linter
         run: ruff check .
       - name: Check Ruff formatting

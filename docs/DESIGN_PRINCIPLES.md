@@ -34,7 +34,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | ----- | ----------- |
 | `requires-python` matches the Python row in [Replayt and Python matrix](#replayt-and-python-matrix) | `tests/test_design_principles_contract.py` |
 | **`replayt`** dependency specifier matches that matrix (`>=0.1.0` and compatible `<0.5` cap, per `tests/test_design_principles_contract.py`) | Same |
-| CI **Python** version(s) in the **test** job matrix in `.github/workflows/ci.yml` match that matrix | Same |
+| CI **Python** version(s) and **`replayt-version`** pins in the **test** job matrix in `.github/workflows/ci.yml` match [Replayt and Python matrix](#replayt-and-python-matrix) and **`docs/compat.md`** inventory IDs | Same (`test_ci_test_job_matrix_matches_design_principles_matrix`, `test_compat_ci_exercise_inventory_ids_match_ci_matrix`) |
 | Section headings for the two matrices, extension points, and audience | Same |
 | Subsection **replayt Python API boundary** under [Module and directory boundaries](#module-and-directory-boundaries) | Same |
 | Extension points row for packaged **`replayt_ux_showcase`** surface | Same |
@@ -52,6 +52,11 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | **`docs/playbook/`** — **tokens** / **component anatomy** / **printable checklist** sections, index links, **README** quick start, **CHANGELOG** **Unreleased** mention (**T1–T3**, **A1–A3**, **H1–H3**) | `tests/test_playbook_docs.py` |
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
+
+The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
+**`.github/workflows/ci.yml`** per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
+**`test_compat_ci_exercise_inventory_ids_match_ci_matrix`** (same change set as workflow or inventory edits — see
+[Backlog traceability: Expand compatibility matrix with explicit CI matrix job per row](#backlog-traceability-expand-compatibility-matrix-with-explicit-ci-matrix-job-per-row)).
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -427,7 +432,7 @@ work unless a change here explicitly requires synchronized updates to **`.github
 | **Install** | **`pip install -e ".[dev]"`** (quoted extras) on each **test** job **Python** version from [Replayt and Python matrix](#replayt-and-python-matrix) | `test_ci_installs_editable_with_dev_extras`; green CI logs |
 | **Tests** | Run **`python -m pytest`** from the repo root so **`[tool.pytest.ini_options]`** applies ( **`--cov=replayt_ux_showcase.demo`**, **`--cov-fail-under=80`**, etc.). Extra CLI flags (e.g. **`-q`**, **`--tb=short`**) are fine if they do **not** remove coverage options. **CI** MUST install **dev** extras so **pytest-cov** is available — a plain editable install **without** **`[dev]`** is **not** sufficient for the coverage gate. | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries); green **`test`** job |
 | **Lint** | Run **`ruff check`** at the repository root (use **`pyproject.toml`** **`[tool.ruff]`** when present). If the repo adopts enforced formatting in CI, add **`ruff format --check`** in the same or a dedicated step. | Non-zero on violations; **Spec gate** treats missing **ruff** in CI as incomplete for this backlog |
-| **replayt** compatibility | **replayt** is resolved by the runtime install per **`[project].dependencies`**; contract tests and the **pytest** suite exercise pins, import smoke, and integration boundaries ([Demo module testing](#demo-module-testing-and-replayt-integration-boundaries), [Dependency pins](#dependency-pins-and-dev-toolchain)) | **`test_replayt_importable`**, **`test_replayt_dependency_matches_design_principles_matrix`**, and full **`pytest`** run in CI |
+| **replayt** compatibility | **replayt** is pinned per **test** matrix cell (**`-c`** constraint) while staying inside **`[project].dependencies`**; contract tests and the **pytest** suite exercise pins, import smoke, and integration boundaries ([Demo module testing](#demo-module-testing-and-replayt-integration-boundaries), [Dependency pins](#dependency-pins-and-dev-toolchain)) | **`test_replayt_importable`**, **`test_replayt_dependency_matches_design_principles_matrix`**, **`test_ci_test_job_matrix_matches_design_principles_matrix`**, **`test_compat_ci_exercise_inventory_ids_match_ci_matrix`**, and full **`pytest`** run in CI |
 | **Supply chain** | Keep **`pip-audit`** aligned with **`docs/DEPENDENCY_AUDIT.md`** (including documented **`--ignore-vuln`** entries that match the workflow). | Existing **`supply-chain`** (or equivalent) job |
 
 ### README badges (acceptance)
@@ -451,7 +456,7 @@ observable logs and **README** badges.
 | Fails on dirty tests | [Jobs and commands](#jobs-and-commands-normative-target) (**Tests** row) | **pytest** non-zero on failures / coverage below threshold |
 | Badges in **README** | [README badges](#readme-badges-acceptance) | **README.md** workflow badge URL; `tests/test_design_principles_contract.py` (`test_readme_ci_badge_uses_repository_slug`) |
 | **ruff** | [Jobs and commands](#jobs-and-commands-normative-target) (**Lint** row) | **`ruff check`** and **`ruff format --check`** in CI; `test_ci_runs_ruff_lint_and_format_check` |
-| **replayt** compat | [Jobs and commands](#jobs-and-commands-normative-target) (**replayt** row) | Editable **dev** install + **pytest** + contract tests |
+| **replayt** compat | [Jobs and commands](#jobs-and-commands-normative-target) (**replayt** row) | Editable **dev** install with per-cell **replayt** pin (**`-c`**) + **pytest** + contract tests |
 
 **Builder checklist (phase 3):**
 
@@ -473,8 +478,8 @@ when additional cells become required.
 
 | Dimension | Supported (policy) | Verified in CI today | Migration / notes |
 | --------- | ------------------- | -------------------- | ------------------ |
-| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` in `[project].dependencies` (PEP 508); MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | Latest **replayt** allowed by that range on `pip install -e ".[dev]"` (see lock-free installs in CI logs) | The `<0.5` cap excludes 0.5+ until maintainers widen the range after compatibility checks; any change to bounds updates this cell, contract tests, and **CHANGELOG** together; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
-| **Python** | `>=3.11` per `requires-python` | **3.11** and **3.12** on `ubuntu-latest` via **`strategy.matrix`** in the **test** job (`.github/workflows/ci.yml`) | Add or drop matrix rows with `requires-python`, **compat.md**, and contract tests in one change set |
+| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` in `[project].dependencies` (PEP 508); MUST match [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) | **0.1.0**, **0.2.0**, and **0.4.25** pinned per **`strategy.matrix.replayt-version`** on `pip install -e ".[dev]" -c …` in the **test** job (`.github/workflows/ci.yml`); see [CI exercise row inventory](compat.md#ci-exercise-row-inventory) | The `<0.5` cap excludes 0.5+ until maintainers widen the range after compatibility checks; any change to bounds updates this cell, contract tests, pins, matrix, inventory, and **CHANGELOG** together; other in-range releases remain **policy-only** until added to the matrix; on breaking **replayt** majors, add migration notes and adjust examples or shims **in this repo**; propose upstream fixes through normal channels |
+| **Python** | `>=3.11` per `requires-python` | **3.11** and **3.12** on `ubuntu-latest` via **`strategy.matrix.python-version`** in the **test** job, combined with **`replayt-version`** as in **compat.md** | Add or drop matrix rows with `requires-python`, **compat.md**, and contract tests in one change set |
 
 ---
 
@@ -490,12 +495,41 @@ the two differ.
 - **Supported (policy)** — Declared in **`pyproject.toml`** and summarized in [Replayt and Python matrix](#replayt-and-python-matrix)
   and [Showcase stack matrix](#showcase-stack-matrix). Integrators may rely on this range unless **CHANGELOG** narrows it.
 - **Verified in CI today** — Whatever the default **GitHub Actions** workflow actually installs and runs tests against.
-  Today the **test** job uses **two** **Python** rows (**3.11** and **3.12**); each row resolves **one** **replayt**
-  version (**latest** satisfying the PEP 508 range at install time). That is **not** the same as “every **replayt**
-  minor in the range is regression-tested” until optional jobs pin additional **replayt** cells.
+  The **test** job uses a **`python-version`** × **`replayt-version`** matrix (**3.11** / **3.12** × **0.1.0** / **0.2.0** /
+  **0.4.25**), each cell pinning **replayt** via **pip** **`-c`**. That is **not** the same as “every **replayt** release
+  in the PEP 508 range is regression-tested” until more pins are added to the matrix and inventory.
 - **No false claims** — Documentation (including **README**, this file, and **compat.md**) MUST NOT imply CI exercises
   matrix cells that are not implemented in **`.github/workflows/ci.yml`** (or documented follow-up jobs). When new rows
   ship, update the **Verified in CI today** columns here and in **compat.md** in the same change set as the workflow.
+
+### CI exercise rows (matrix jobs and best-effort)
+
+Normative spec for **honest CI coverage**: every dimension the project describes as **verified in CI** must either map to
+a **concrete** workflow job (or **`strategy.matrix`** combination) or be explicitly labeled **best-effort** /
+**policy-only** / **bundled** so integrators are not misled.
+
+- **CI exercise row** — A single, enumerable unit of automation listed in **`docs/compat.md`**
+  [CI exercise row inventory](compat.md#ci-exercise-row-inventory). Rows are **not** the same as “every cell in every
+  prose table”; they are the **minimal** set of workflow coordinates that explain what actually runs on **GitHub Actions**.
+
+- **Explicit job rule** — A row that claims **CI** runs a gate MUST trace to at least one of:
+  1. **`test` job matrix** — Each **`strategy.matrix`** combination (today: **`python-version`** × **`replayt-version`**)
+     is its own exercise row for the **full** contributor gate (**editable dev install** with **replayt** pinned per cell,
+     **ruff**, **pytest** with **`[tool.pytest.ini_options]`** including coverage, and any tests bundled in that **pytest**
+     invocation).
+  2. **Separate named job** — A top-level **`jobs.<name>`** block that runs a distinct gate (today: **`supply-chain`**
+     for **`pip-audit`** on a pinned **Python** image). That job is its own exercise row even when it does not re-run
+     **pytest**.
+  3. **Bundled inside another row** — Verification that does **not** get its own job or matrix dimension but runs as
+     part of a row above (today: **`docs/examples`** **replayt** pin scanning via **`tests/test_docs_examples_replayt_pins.py`**
+     runs inside every **`test`** matrix cell).
+  4. **Best-effort / policy-only** — Supported ranges or stacks **without** a dedicated automation row MUST use wording
+     like *supported by policy*, *not regression-tested per minor*, or *not required in default CI* (see [Showcase stack matrix](#showcase-stack-matrix)
+     for stacks marked **Not required**).
+
+- **Adding or removing rows** — Update **`.github/workflows/ci.yml`**, the [Replayt and Python matrix](#replayt-and-python-matrix),
+  **`docs/compat.md`** (quick reference + inventory), **`CHANGELOG`**, and **`tests/test_design_principles_contract.py`**
+  (when the contract encodes matrix coordinates or inventory rules) **in one change set**.
 
 ### Compatibility shims (consumer-side)
 

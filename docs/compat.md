@@ -8,11 +8,32 @@ in `docs/DESIGN_PRINCIPLES.md`. If anything here disagrees with that document, *
 
 | Dimension | Supported (policy) | Verified in CI today | Notes |
 | --------- | ------------------ | -------------------- | ----- |
-| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` (PEP 508 in `pyproject.toml`) | **One** resolved version per default CI job: the **latest** package on PyPI that satisfies that range at install time | Not every patch release is pinned in CI; the range is the support promise. To claim specific minors are regression-tested, add explicit matrix jobs (see [CI matrix coverage](#ci-matrix-coverage)). |
-| **Python** | `requires-python` (currently **≥ 3.11**) | **3.11** and **3.12** in the **test** job **`strategy.matrix`** (`.github/workflows/ci.yml`; see design principles matrix) | Extra interpreters need new matrix rows and doc updates in the same change set. |
-| **Vanilla examples** (`docs/examples/`) | Intended copy-paste surface per [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix); **replayt** pins must sit inside the same PEP 508 range as `pyproject.toml` | Contract test **`tests/test_docs_examples_replayt_pins.py`** (per [Vanilla examples: integrator-facing replayt pins](DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins)); optional extra file/smoke tests later | Keeps CDN and requirement snippets from drifting ahead of the supported consumer story; intentional out-of-range demos use `<!-- replayt-examples:pin-exempt -->` per design principles. **CDN** delivery, optional **SRI**, and **bundler** alternatives: [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md). Optional maintainer **npm** + **Vite** / **esbuild** preview recipe: [`docs/examples/build.md`](examples/build.md). |
+| **replayt** (PyPI) | `replayt>=0.1.0,<0.5.0` (PEP 508 in `pyproject.toml`) | **One explicit `replayt-version` matrix coordinate per listed pin**, on **each** **Python** row — see [CI exercise row inventory](#ci-exercise-row-inventory) (**EX-311-RT-0-1-0**, …) | **Policy** still allows any version in the PEP 508 range; **CI** proves **0.1.0**, **0.2.0**, and **0.4.25** on **3.11** and **3.12** via **`pip install -e ".[dev]" -c`** (constraint file). Other releases in-range are **policy-only** until added to the matrix and inventory in the same change set. |
+| **Python** | `requires-python` (currently **≥ 3.11**) | **One explicit matrix row per** **Python** × **replayt** combination — inventory IDs **EX-311-*** and **EX-312-*** in [CI exercise row inventory](#ci-exercise-row-inventory) | Extra interpreters need new **`strategy.matrix`** entries, inventory rows, design principles / contract tests, and **CHANGELOG** in the same change set. |
+| **Vanilla examples** (`docs/examples/`) | Intended copy-paste surface per [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix); **replayt** pins must sit inside the same PEP 508 range as `pyproject.toml` | **Bundled** — **`tests/test_docs_examples_replayt_pins.py`** runs inside every **test** matrix cell ([CI exercise rows](DESIGN_PRINCIPLES.md#ci-exercise-rows-matrix-jobs-and-best-effort)); see **EX-EXAMPLES-PINS** in [CI exercise row inventory](#ci-exercise-row-inventory) | Not a standalone workflow job; optional per-pattern browser jobs remain future work. Intentional out-of-range demos use `<!-- replayt-examples:pin-exempt -->` per design principles. **CDN** / **SRI** / bundlers: [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md). Optional **npm** preview: [`docs/examples/build.md`](examples/build.md). |
 
 Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix), [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix).
+
+## CI exercise row inventory
+
+Enumerates **default** **`.github/workflows/ci.yml`** automation for this repo. Each **ID** is stable copy for **CHANGELOG**
+and contract tests; add rows **only** when the workflow gains a new **job** or **matrix** combination (or when demoting
+a claim to best-effort — then **remove** or relabel the row).
+
+| ID | Workflow | Matrix / coordinates | What runs |
+| -- | -------- | -------------------- | --------- |
+| **EX-311-RT-0-1-0** | `jobs.test` | `python-version: "3.11"`, `replayt-version: "0.1.0"` | Editable **`pip install -e ".[dev]"`** with **`-c`** pinning **`replayt==0.1.0`**; **`ruff check`**, **`ruff format --check`**, **`python -m pytest tests`** (honors **`[tool.pytest.ini_options]`** — demo coverage gate + **`tests/test_docs_examples_replayt_pins.py`** + other contract tests); asserts **`replayt.__version__`** matches the matrix pin |
+| **EX-311-RT-0-2-0** | `jobs.test` | `python-version: "3.11"`, `replayt-version: "0.2.0"` | Same as **EX-311-RT-0-1-0** with **`replayt==0.2.0`** |
+| **EX-311-RT-0-4-25** | `jobs.test` | `python-version: "3.11"`, `replayt-version: "0.4.25"` | Same as **EX-311-RT-0-1-0** with **`replayt==0.4.25`** |
+| **EX-312-RT-0-1-0** | `jobs.test` | `python-version: "3.12"`, `replayt-version: "0.1.0"` | Same as **EX-311-RT-0-1-0** on **3.12** |
+| **EX-312-RT-0-2-0** | `jobs.test` | `python-version: "3.12"`, `replayt-version: "0.2.0"` | Same as **EX-311-RT-0-2-0** on **3.12** |
+| **EX-312-RT-0-4-25** | `jobs.test` | `python-version: "3.12"`, `replayt-version: "0.4.25"` | Same as **EX-311-RT-0-4-25** on **3.12** |
+| **EX-EXAMPLES-PINS** | (bundled) | Runs inside every **`jobs.test`** matrix cell via **pytest** | **`tests/test_docs_examples_replayt_pins.py`** |
+| **EX-SUPPLY-CHAIN** | `jobs.supply-chain` | `ubuntu-latest`, **Python 3.12** (setup-python) | Editable dev install (**replayt** resolves to latest in-range, not matrix-pinned) + **`pip-audit`** per **`docs/DEPENDENCY_AUDIT.md`** |
+
+**Not listed as exercise rows:** **Vue** / **Svelte** stacks in the [Showcase stack matrix](DESIGN_PRINCIPLES.md#showcase-stack-matrix)
+until examples and optional CI exist; optional **npm** bundler preview per **`docs/examples/build.md`** remains **local**
+unless a future backlog adds workflow jobs.
 
 ## Vanilla UI pattern catalog
 
@@ -22,15 +43,17 @@ Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCI
 
 ## CI matrix coverage
 
-**Rule:** CI must not claim coverage it does not run ([Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix)).
+**Rule:** CI must not claim coverage it does not run ([Replayt and Python matrix](DESIGN_PRINCIPLES.md#replayt-and-python-matrix),
+[CI exercise rows](DESIGN_PRINCIPLES.md#ci-exercise-rows-matrix-jobs-and-best-effort)).
 
 | Concern | What default CI is expected to exercise | What integrators should assume |
 | ------- | ---------------------------------------- | ------------------------------ |
-| **Install + tests** | Editable install with **`pip install -e ".[dev]"`**, then **`python -m pytest`** so `[tool.pytest.ini_options]` (including **pytest-cov** options) applies | Same commands reproduce the gate locally on a **supported** **Python** (see **`requires-python`** and the **test** job matrix). |
-| **replayt resolution** | Whatever **pip** resolves for `replayt` under the declared PEP 508 range | Behavior is validated for **that** resolved version on that run; older minors inside the range are supported **by policy** until the range or matrices change. |
-| **Lint / supply chain** | **ruff** and **pip-audit** (or equivalent) per [GitHub Actions CI workflow](DESIGN_PRINCIPLES.md#github-actions-ci-workflow) | Failures block merge when those steps are required. |
+| **Install + tests** | One full gate per **Python** × **replayt** matrix cell (**EX-311-RT-*** … **EX-312-RT-***): editable **`".[dev]"`** install with **`-c`** **replayt** pin, **ruff**, **`python -m pytest tests`** with **`[tool.pytest.ini_options]`** | Reproduce locally with the same **`replayt==…`** constraint file or **`pip install "replayt==…"`** before **`pip install -e ".[dev]"`**, on a **supported** **Python**. |
+| **replayt resolution** | Explicit **`replayt-version`** per cell (**0.1.0**, **0.2.0**, **0.4.25**) | Other releases in-range are **policy** until new inventory rows + matrix pins prove them. |
+| **Example pins** | **EX-EXAMPLES-PINS** — bundled in **pytest** on every **test** cell | Snippet pins are checked on each **Python** row; not separate jobs per pattern file. |
+| **Lint / supply chain** | **ruff** inside each **test** row; **`pip-audit`** in **EX-SUPPLY-CHAIN** | Failures block merge when those steps are required. |
 
-**Future matrix rows:** When maintainers need to **prove** compatibility with specific **replayt** minors (e.g. `0.4.x` and `0.3.x`), add parallel **CI** jobs or extra **`strategy.matrix`** dimensions that pin or constrain the resolver per row, and update the **Verified in CI today** cells in `docs/DESIGN_PRINCIPLES.md` and this file in the **same** change set.
+**Future matrix rows:** When maintainers add or change **replayt** pins in **`ci.yml`**, update this inventory, **Verified in CI today** in **`docs/DESIGN_PRINCIPLES.md`**, and **`tests/test_design_principles_contract.py`** in the **same** change set.
 
 ## Deprecation policy (summary)
 

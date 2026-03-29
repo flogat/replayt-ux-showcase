@@ -10,6 +10,21 @@ from packaging.requirements import Requirement
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
+# Must match `strategy.matrix` in `.github/workflows/ci.yml` and inventory IDs in `docs/compat.md`.
+CI_TEST_JOB_PYTHON_VERSIONS = ("3.11", "3.12")
+CI_TEST_JOB_REPLAYT_VERSIONS = ("0.1.0", "0.2.0", "0.4.25")
+
+
+def _compat_exercise_row_inventory_ids() -> tuple[str, ...]:
+    """Stable **EX-*** IDs for each `jobs.test` matrix cell (Python × replayt pin)."""
+    ids: list[str] = []
+    for py in CI_TEST_JOB_PYTHON_VERSIONS:
+        py_compact = py.replace(".", "")
+        for rt in CI_TEST_JOB_REPLAYT_VERSIONS:
+            rt_part = rt.replace(".", "-")
+            ids.append(f"EX-{py_compact}-RT-{rt_part}")
+    return tuple(ids)
+
 
 def _pyproject_root() -> dict:
     raw = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
@@ -78,15 +93,30 @@ def test_build_system_requires_have_version_constraints() -> None:
     _assert_each_line_has_pep508_version_constraint(requires)
 
 
-def test_ci_test_job_python_matrix_matches_design_principles_matrix() -> None:
-    """Replayt and Python matrix: CI test job exercises 3.11 and 3.12 (requires-python floor)."""
+def test_ci_test_job_matrix_matches_design_principles_matrix() -> None:
+    """Replayt and Python matrix: CI test job exercises declared Python and replayt pins."""
     ci = (REPO_ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     assert "strategy:" in ci
     assert "matrix:" in ci
     assert "python-version:" in ci
     assert "${{ matrix.python-version }}" in ci
-    assert '"3.11"' in ci
-    assert '"3.12"' in ci
+    assert "replayt-version:" in ci
+    assert "${{ matrix.replayt-version }}" in ci
+    assert "replayt-constraint.txt" in ci
+    assert 'pip install -e ".[dev]"' in ci and "-c" in ci
+    for py in CI_TEST_JOB_PYTHON_VERSIONS:
+        assert f'"{py}"' in ci, f"missing python matrix entry {py}"
+    for rt in CI_TEST_JOB_REPLAYT_VERSIONS:
+        assert f'"{rt}"' in ci, f"missing replayt matrix entry {rt}"
+
+
+def test_compat_ci_exercise_inventory_ids_match_ci_matrix() -> None:
+    """docs/compat.md CI exercise inventory stays aligned with the test job matrix."""
+    compat = (REPO_ROOT / "docs" / "compat.md").read_text(encoding="utf-8")
+    for inv_id in _compat_exercise_row_inventory_ids():
+        assert f"**{inv_id}**" in compat, f"compat.md CI inventory missing {inv_id}"
+    assert "**EX-EXAMPLES-PINS**" in compat
+    assert "**EX-SUPPLY-CHAIN**" in compat
 
 
 def test_ci_installs_editable_with_dev_extras() -> None:
