@@ -92,6 +92,7 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `scripts/replayt-bundler-preview/` | **esbuild** maintainer preview (**`entry.mjs`**, **`build.mjs`**, **`serve.mjs`**, **`index.html`**) |
 | `docs/examples/fixture-replay.html` | **P-05** deterministic offline fixture for reviewers / **LLM** harnesses (**Shipped** — **`docs/examples/PATTERNS.md`**) |
 | `docs/examples/event-overlay.html` | **P-09** event overlay lane (scrub-linked callouts, hover + keyboard) — **Shipped** (**[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)**) |
+| `docs/examples/click-heatmap-canvas.html` | **P-10** click density heatmap on a viewport-sized canvas — **Shipped** (**[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-10--click-heatmap-on-static-canvas-session-click-coordinates)**) |
 | `docs/examples/PATTERNS.md` | Canonical UI pattern inventory (mission **5+** tracking, per-pattern acceptance criteria) |
 | `docs/playbook/README.md` | **Design-to-code handoff**: tokens (**[`tokens.md`](docs/playbook/tokens.md)**), anatomy (**[`component-anatomy.md`](docs/playbook/component-anatomy.md)**), printable checklist (**[`handoff-checklist.md`](docs/playbook/handoff-checklist.md)**) |
 | `docs/design-kit/README.md` | **Figma** design kit spec: library access, **Figma** → **`rux-*`** mapping (**F3**), change requests, interim **`design-tokens.json`** (**F5**) — see **[`docs/DESIGN_PRINCIPLES.md`](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export)** |

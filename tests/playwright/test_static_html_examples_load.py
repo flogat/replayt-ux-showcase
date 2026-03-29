@@ -11,7 +11,7 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXAMPLES_ROOT = REPO_ROOT / "docs" / "examples"
 
-# Shipped root ``*.html`` per ``docs/examples/PATTERNS.md`` (P-01–P-05, P-09).
+# Shipped root ``*.html`` per ``docs/examples/PATTERNS.md`` (P-01–P-05, P-09, P-10).
 SHIPPED_ROOT_HTML = frozenset(
     {
         "basic-player.html",
@@ -20,6 +20,7 @@ SHIPPED_ROOT_HTML = frozenset(
         "embed-container-states.html",
         "fixture-replay.html",
         "event-overlay.html",
+        "click-heatmap-canvas.html",
     }
 )
 

@@ -4,7 +4,7 @@ This document is the **normative reference** for the **offline / teaching** sess
 console demo (**`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`**) and **[`docs/demo.md`](../demo.md)**. Use it when
 copy-pasting a **stable** JSON fixture that should stay aligned across **HTML**, **Python**, and framework examples.
 
-**Related:** [Pattern catalog](PATTERNS.md) (**P-01**–**P-10**; **P-10** **Spec only**), [Vanilla examples: replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [P-06 console parity](PATTERNS.md#p-06--console-sample-parity-sample_session_data), [Compatibility digest](../compat.md#vanilla-ui-pattern-catalog).
+**Related:** [Pattern catalog](PATTERNS.md) (**P-01**–**P-10**; **P-10** **Shipped** as **`click-heatmap-canvas.html`**), [Vanilla examples: replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [P-06 console parity](PATTERNS.md#p-06--console-sample-parity-sample_session_data), [Compatibility digest](../compat.md#vanilla-ui-pattern-catalog).
 
 ---
 

@@ -122,6 +122,31 @@ def test_event_overlay_contract_markers():
     assert "cdn.jsdelivr.net/npm/replayt@" in text
 
 
+def test_click_heatmap_canvas_html_exists():
+    """P-10 example ships under docs/examples/ (see docs/examples/PATTERNS.md)."""
+    path = REPO_ROOT / "docs/examples/click-heatmap-canvas.html"
+    assert path.is_file(), f"P-10 demo missing: {path}"
+
+
+def test_click_heatmap_canvas_contract_markers():
+    """Light contract: binned heatmap handoff, viewport mapping, a11y, tab order, no session fetch (P-10)."""
+    text = (REPO_ROOT / "docs/examples/click-heatmap-canvas.html").read_text(
+        encoding="utf-8"
+    )
+    assert "Heatmap algorithm (design–engineering handoff):" in text
+    assert "metadata.viewport" in text
+    assert "2D histogram" in text
+    assert "box blur" in text
+    assert "Tab order (handoff):" in text
+    assert "role=\"img\"" in text
+    assert "aria-labelledby=\"heatmap-title\"" in text
+    assert "keyboard-model.md" in text
+    assert "focus-visible" in text
+    assert "fetch(" not in text
+    assert "Date.now(" not in text
+    assert "Math.random(" not in text
+
+
 def test_keyboard_model_doc_exists():
     """Shared a11y checklist ships (docs/DESIGN_PRINCIPLES.md traceability)."""
     assert _KEYBOARD_MODEL_DOC.is_file(), f"Missing {_KEYBOARD_MODEL_DOC}"
@@ -139,7 +164,7 @@ def test_keyboard_model_doc_core_sections():
 
 
 def test_examples_link_keyboard_model_checklist():
-    """P-01–P-05 and P-09 vanilla examples reference the shared keyboard/focus doc."""
+    """P-01–P-05, P-09, and P-10 vanilla examples reference the shared keyboard/focus doc."""
     html_names = [
         "basic-player.html",
         "player-session-metadata-bar.html",
@@ -147,6 +172,7 @@ def test_examples_link_keyboard_model_checklist():
         "embed-container-states.html",
         "fixture-replay.html",
         "event-overlay.html",
+        "click-heatmap-canvas.html",
     ]
     needle = "keyboard-model.md"
     for name in html_names:

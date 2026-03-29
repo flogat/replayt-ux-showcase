@@ -3,12 +3,12 @@
 This file is the **canonical inventory** for distinct, copy-paste integrator examples under `docs/examples/`: **vanilla
 HTML/JS** files (default path) and **registered framework subtrees** (**React** — **P-06**; **Vue** — **P-07**; **Svelte**
 — **P-08**). **P-09** is the **vanilla** teaching example for **event overlays** (**Shipped** as **`event-overlay.html`**).
-**P-10** registers a **separate** pattern — **click heatmap / density on a static viewport-sized stage** — currently **Spec only**
-(see [P-10 — Click heatmap on static canvas](#p-10--click-heatmap-on-static-canvas-session-click-coordinates)). It supports the mission
+**P-10** is the **vanilla** pattern for **click heatmap / density on a static viewport-sized stage** (**Shipped** as
+**[`click-heatmap-canvas.html`](click-heatmap-canvas.html)** — see [P-10 — Click heatmap on static canvas](#p-10--click-heatmap-on-static-canvas-session-click-coordinates)). It supports the mission
 success criterion “**5+**” **vanilla** patterns and gives **Spec gate** / **Builder** a single place to check
 **what counts as a pattern**, **what ships where**, and **acceptance criteria** before code lands.
 
-**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [**Session fixture schema (canonical)**](SESSION_SCHEMA.md) (`SAMPLE_SESSION_DATA` / **P-01** alignment), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Design-to-code playbook](../playbook/README.md) (tokens, component anatomy, printable handoff checklist), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID), [Changelog, semver, and release notes](../DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (**`CHANGELOG.md`** **Unreleased** bullets when **Shipped** patterns or mission counts move). **P-10** (when **Shipped**) extends integrator **analytics-style** overlays without replacing **P-09**’s scrub-linked callout lane.
+**Related:** [Mission — Success](../MISSION.md#pattern-coverage-tracking), [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix), [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins), [**Session fixture schema (canonical)**](SESSION_SCHEMA.md) (`SAMPLE_SESSION_DATA` / **P-01** alignment), [Keyboard and focus model](../a11y/keyboard-model.md) (shared a11y checklist for player / timeline embeds), [Design-to-code playbook](../playbook/README.md) (tokens, component anatomy, printable handoff checklist), [Optional local bundler recipe](build.md) (maintainer **npm** + **Vite** / **esbuild** — not a UI pattern ID), [Changelog, semver, and release notes](../DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) (**`CHANGELOG.md`** **Unreleased** bullets when **Shipped** patterns or mission counts move). **P-10** extends integrator **analytics-style** overlays without replacing **P-09**’s scrub-linked callout lane.
 
 **Release notes:** When a row here moves to **Shipped** (or you add a new **P-xx** consumers will track), update **`CHANGELOG.md`** **`[Unreleased]`** in the **same change set** as this file, **`docs/MISSION.md`** (pattern table), and **`docs/compat.md`** (vanilla catalog) when that digest lists the pattern—see [Unreleased: pattern coverage and mission tracking](../DESIGN_PRINCIPLES.md#unreleased-pattern-coverage-and-mission-tracking).
 
@@ -28,9 +28,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | **P-07** | [`vue/`](vue/) ([`README.md`](vue/README.md), [`src/App.vue`](vue/src/App.vue)) | **Shipped** | **Vue 3** minimal timeline player: same **replayt-facing** data and init contract as **P-01**, scrubber parity with **P-03** / **P-06**; **static-build**-friendly (**`npm run build`**); **not** an npm-published package from this repo. |
 | **P-08** | [`svelte/`](svelte/) ([`README.md`](svelte/README.md), [`src/App.svelte`](svelte/src/App.svelte)) | **Shipped** | **Svelte 4** minimal timeline player: same contracts as **P-07** (mirror **P-06** intent for the **Svelte** stack). |
 | **P-09** | [`event-overlay.html`](event-overlay.html) | **Shipped** | **Event overlay lane**: scrub-linked playhead, **hover** (pointer) **tooltips** / callouts on events, **keyboard**-reachable focus and **Escape** for dismissible layers; **offline** / **LLM**-safe **`sessionData`** story per normative section below. |
-| **P-10** | *planned:* `click-heatmap-canvas.html` | **Spec only** | **Click heatmap on static canvas (or SVG)**: map **`click`** events’ **`x`/`y`** onto a **viewport-sized** stage; **density** / aggregation visualization; **`SAMPLE_SESSION_DATA`** (or trimmed **§1**-compatible literal); **accessible** name + focus order per normative section below — **distinct** from **P-09** (no requirement to duplicate scrub-linked callout lane as the primary teaching goal). |
+| **P-10** | [`click-heatmap-canvas.html`](click-heatmap-canvas.html) | **Shipped** | **Click heatmap on static canvas (or SVG)**: map **`click`** events’ **`x`/`y`** onto a **viewport-sized** stage; **density** / aggregation visualization; **`SAMPLE_SESSION_DATA`**-aligned **§1** literal (with extra **click** samples for visible hotspots); **accessible** name + focus order per normative section below — **distinct** from **P-09** (no requirement to duplicate scrub-linked callout lane as the primary teaching goal). |
 
-**Mission trajectory:** **P-01** through **P-05** and **P-09** are shipped (**6** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. **P-10** is **registered** as **Spec only**; when **Shipped**, the vanilla count becomes **7** (update **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)**, **`README.md`** layout row, **`CHANGELOG`**, and **Playwright** **Shipped** HTML inventory in the **same** change set as **`click-heatmap-canvas.html`**). Additional patterns stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01** through **P-05**, **P-09**, and **P-10** are shipped (**7** distinct **vanilla** patterns), satisfying the mission **5+** target for HTML examples. **P-06** through **P-08** are **shipped** **framework** subtrees (**React**, **Vue**, **Svelte**). Framework examples do not change the vanilla count. **P-09** extends teaching coverage for **overlay** UX described in the playbook—**[component anatomy §2](../playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts)**. **P-10** is **Shipped** as **`click-heatmap-canvas.html`** (**Playwright** inventory + **`tests/test_examples.py`** markers ship with the file). Additional patterns stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -922,13 +922,13 @@ Shared checklist: **[`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md)**
 
 ### P-10 Builder acceptance checklist (implementation)
 
-**P-10** is **Spec only** until **`docs/examples/click-heatmap-canvas.html`** (or approved rename) **Shipped** with:
+**P-10** is **Shipped** as **`docs/examples/click-heatmap-canvas.html`**; keep the items below aligned when this pattern changes:
 
 1. Normative sections above implemented in the **HTML/JS** (or **SVG**) snippet.
-2. [Pattern inventory](#pattern-inventory) row **P-10** → **Shipped** with final filename.
-3. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** vanilla count → **7**; **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest updated.
-4. **`CHANGELOG`** **Unreleased** records the new example; **`README.md`** project layout lists the file.
-5. **`tests/test_examples.py`** markers + **`tests/test_docs_examples_replayt_pins.py`** when applicable; **Playwright** list when **Shipped** as root **`*.html`**.
+2. [Pattern inventory](#pattern-inventory) row **P-10** stays **Shipped** with the correct filename.
+3. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** vanilla count remains **7**; **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest lists **P-10** as **Shipped**.
+4. **`CHANGELOG`** **Unreleased** records notable example or contract changes.
+5. **`tests/test_examples.py`** markers; **`tests/test_docs_examples_replayt_pins.py`** when a **replayt** **`<script>`** is added; **Playwright** **Shipped** root **`*.html`** inventory updated together with any new root **`*.html`**.
 
 ---
 
