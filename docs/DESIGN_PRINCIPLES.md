@@ -877,7 +877,7 @@ entrypoints described as supported in **README** or package docs.
 ### Docs and examples (integrator copy-paste surface)
 
 Treat **`docs/examples/`** (and registered **P-xx** patterns in **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**)
-as **user-facing deliverables**, not “internal docs,” when deciding release emphasis—even when the PyPI wheel is unchanged.
+as **user-facing deliverables**, not “internal docs,” when choosing a semver bump—even when the PyPI wheel is unchanged.
 
 | Bump (for a **tagged** showcase release) | Typical triggers |
 | ---------------------------------------- | ---------------- |

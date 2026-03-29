@@ -18,7 +18,7 @@ from the repo root (so **`[tool.pytest.ini_options]`** applies).
   **`docs/examples/PATTERNS.md`**, **`docs/MISSION.md`** (pattern table), and **`docs/compat.md`** (vanilla catalog)
   when applicable — see [Unreleased: pattern coverage and mission tracking](docs/DESIGN_PRINCIPLES.md#unreleased-pattern-coverage-and-mission-tracking).
 
-**Semver and release emphasis** (what to emphasize when tagging): [Changelog, semver, and release notes](docs/DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes).
+**Semver when tagging** (MINOR vs PATCH for the package vs copy-paste examples): [Changelog, semver, and release notes](docs/DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes).
 
 ## When to edit `docs/DESIGN_PRINCIPLES.md` in the same change set as pins
 
