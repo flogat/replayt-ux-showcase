@@ -15,6 +15,7 @@ is tracked separately in code and CHANGELOG):
 | Compatibility matrix, CI coverage truth, shims, upgrade paths | [Compatibility matrix and upgrade paths](#compatibility-matrix-and-upgrade-paths), [Compatibility digest (integrators)](compat.md) |
 | **replayt** / dev-tool pins and “no loose deps” | [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) |
 | Demo **pytest** coverage and **replayt** boundary tests | [Demo module testing and replayt integration boundaries](#demo-module-testing-and-replayt-integration-boundaries) |
+| **docs/examples** replayt pins vs **`pyproject.toml`** | [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) |
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
@@ -40,6 +41,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | CI installs with **`pip install -e ".[dev]"`** (quoted extras) per contributor entrypoint | Same |
 | **pytest** in CI honors **`[tool.pytest.ini_options]`** (coverage on **`demo.py`**, fail-under) | [GitHub Actions CI workflow](#github-actions-ci-workflow) — job command MUST NOT drop the **cov** gate (requires **dev** install with **pytest-cov**) |
 | **`ruff check`** (and **`ruff format --check`** when enforced) run in CI after **dev** install | [GitHub Actions CI workflow](#github-actions-ci-workflow); `tests/test_design_principles_contract.py` (`test_ci_runs_ruff_lint_and_format_check`) |
+| explicit **replayt** version pins in **`docs/examples/`** match the **`replayt`** PEP 508 range in **`pyproject.toml`** | `tests/test_docs_examples_replayt_pins.py` (see [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins)) |
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -98,6 +100,60 @@ boundary rows appear here.
 - **Out of scope for the 80% gate:** static files under **`docs/examples/`** (see [Showcase stack matrix](#showcase-stack-matrix));
   future browser automation or framework tests are tracked separately when those examples ship CI.
 
+### Vanilla examples: integrator-facing replayt pins
+
+Normative spec for copy-paste **HTML** and **Markdown** under **`docs/examples/`**: any **explicit** **replayt** version
+pin shown to integrators MUST stay inside the supported consumer range declared on the **`replayt`** line in
+**`[project].dependencies`** (same PEP 508 story as [Replayt and Python matrix](#replayt-and-python-matrix) and
+[Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain)). **Enforcement:** **`tests/test_docs_examples_replayt_pins.py`**
+via default **`pytest`** discovery (**CI** included). When detection rules or pins change, update **CHANGELOG** **Unreleased** in the same change set.
+
+#### Scope (files)
+
+- **Include:** every **`*.html`** and **`*.md`** file under **`docs/examples/`**, recursively (future
+  **`docs/examples/react/`**-style trees included automatically).
+- **Ignore:** other paths (e.g. **`docs/demo.md`**, **`README.md`**) unless a later backlog expands the contract.
+
+#### What counts as a “pin” (detection)
+
+A **pin** is a machine-extractable **replayt** version or requirement that an integrator might copy verbatim.
+
+| Kind | Intent (Builder) | Notes |
+| ---- | ------------------ | ----- |
+| **npm / CDN URL** | `replayt@<version>` in a URL path (e.g. **jsDelivr**, **unpkg**, similar CDNs that encode the package version in the path) | Extract **`<version>`** as a PEP 440 version if possible; pre-release segments allowed when present in the snippet. |
+| **Markdown / prose requirement lines** | A line (including inside fenced code blocks) that names the **`replayt`** distribution with a PEP 508-style constraint (`replayt==…`, `replayt>=…`, `replayt~=…`, comma-separated specifiers, or **`"replayt"`** / **`'replayt'`** entries in **`requirements*.txt`**-style or **`pyproject.toml`**-style examples) | The **declared constraint** MUST be **compatible with** the showcase’s **`[project].dependencies`** **replayt** specifier (i.e. every version allowed by the snippet’s constraint lies inside the range allowed by **`pyproject.toml`**, unless [Opt-out](#opt-out-documented-exceptions) applies). |
+| **`latest` / unpinned** | URLs or prose that load **`replayt`** without a path or label version | **Out of scope** for this contract unless/until maintainers adopt a stricter policy; the goal is to catch **drift ahead** of the supported range (e.g. **`@0.6.0`** while the repo still caps **`<0.5`**). |
+
+False positives (mentions of the word “replayt” without a version contract) SHOULD NOT fail CI; prefer narrow patterns
+and clear test failure messages listing **file**, **line**, and **extracted token**.
+
+#### Acceptance (assertion)
+
+- Read the **`replayt`** requirement from **`pyproject.toml`** at test time (same pattern as
+  **`tests/test_design_principles_contract.py`**: **`packaging.requirements.Requirement`** or equivalent).
+- For each **pin** found in scope:
+  - If it is a **single concrete version** (typical CDN case), assert that version **satisfies** the **`pyproject.toml`**
+    specifier set.
+  - If it is a **requirement string / specifier set** (typical Markdown example), assert that the **intersection** of
+    “versions integrators could resolve from the snippet” is **non-empty** and **fully contained** in the versions
+    allowed by **`pyproject.toml`** (equivalently: the snippet must not permit a version outside the declared showcase
+    range). When this is awkward to compute, it is acceptable to require the snippet’s specifier to be **stricter or
+    equal** to the showcase line (document the chosen rule in the test module docstring).
+- When **`[project].dependencies`** **`replayt`** line or matrix policy changes, update **examples**, this section if
+  the detection rules change, **`tests/`**, and **CHANGELOG** in one change set.
+
+#### Opt-out (documented exceptions)
+
+When an example **intentionally** shows an unsupported or transitional pin (e.g. migration narrative), the line **immediately
+before** the exempt URL or fenced block MUST contain an HTML comment:
+
+`<!-- replayt-examples:pin-exempt -->`
+
+Optional text: `<!-- replayt-examples:pin-exempt reason="migration demo" -->`. The comment applies only to the **next**
+non-empty line that would otherwise be scanned (single `<script src=…>`, single URL line, or single fenced code block).
+Maintainers MUST keep **`reason=`** meaningful for reviewers. Human-readable explanation in prose above the snippet is
+encouraged but **does not** replace the comment for CI.
+
 ### Line coverage (acceptance: 80%+ on demo)
 
 - **Metric:** CPython **line** coverage for **`src/replayt_ux_showcase/demo.py`** only (not the whole package tree),
@@ -116,6 +172,7 @@ Tests MUST cause **CI** to fail when integration boundaries or the demo contract
 | **Demo behavioral spec** | Observable behavior matches **`docs/demo.md`** | Subprocess **`python -m replayt_ux_showcase.demo`**, exports, log prefixes, sample data shape (see **`docs/demo.md`** test plan) |
 | **replayt Python API boundary** | Showcase code does not depend on private or undocumented **replayt** symbols | Lint/review plus tests: if **`demo.py`** (or other showcase modules under test) import **replayt**, imports MUST be restricted to **published** **`__all__`** / documented public surface; removing or renaming those symbols in a supported **replayt** release is an upstream semver concern—this repo adjusts pins and tests per [Migration paths](#migration-paths) |
 | Declared **replayt** range | Supported consumer range in **`pyproject.toml`** matches [Replayt and Python matrix](#replayt-and-python-matrix) | Contract tests on the **replayt** dependency line; optional smoke that **`import replayt`** succeeds after install (already part of contract tests today) |
+| **docs/examples** replayt pins | Integrator snippets do not advertise **replayt** versions outside the declared PEP 508 range | **`tests/test_docs_examples_replayt_pins.py`** (or equivalent) scans **`docs/examples/**/*.{html,md}`** per [Vanilla examples: integrator-facing replayt pins](#vanilla-examples-integrator-facing-replayt-pins) |
 
 “Integration” here means **tests run against the installed environment** (editable install + resolved **replayt**),
 not mocked **replayt** internals.
@@ -137,6 +194,7 @@ not mocked **replayt** internals.
 | Demo subprocess and data-shape checks | **`tests/`** per **`docs/demo.md`** (including in-process calls so **pytest-cov** traces **`demo.py`**) |
 | **replayt** pin, **dev** pins, and design-principles structure | **`tests/test_design_principles_contract.py`** (extend if new spec rows require it) |
 | **replayt** import surface in **`demo.py`** | **`tests/test_demo.py`** asserts the module source does not import the **`replayt`** package (stdlib-only demo) |
+| **docs/examples** **replayt** pins vs **`pyproject.toml`** | **`tests/test_docs_examples_replayt_pins.py`** |
 
 ### Backlog traceability: Add unit/integration tests for demo
 
@@ -154,6 +212,25 @@ integration boundaries, and runs in **CI** with coverage and explicit **dev** to
 1. When raising or adding coverage gates, update **`[tool.pytest.ini_options]`**, **CHANGELOG**, and this section together.
 2. When **`demo.py`** begins importing **replayt**, replace or extend the stdlib-only import test with an assertion that
    imported names are a subset of the published **`replayt`** public surface (per [Fails on boundary breaks](#fails-on-boundary-breaks-acceptance)).
+
+### Backlog traceability: Contract test — examples reference replayt in supported semver range
+
+**Normalized user story:** As maintainer, I want **pytest** to scan **`docs/examples/**/*.{html,md}`** for **replayt**
+CDN or package pins and fail when any pin falls outside the PEP 508 range declared in **`pyproject.toml`**, so
+integrator-facing snippets stay aligned with [DESIGN_PRINCIPLES](#design-principles) and **`docs/compat.md`**.
+
+| Backlog acceptance criterion | Where specified | How verified |
+| ---------------------------- | --------------- | ------------------------ |
+| **Scan scope** | [Scope (files)](#scope-files) | **`tests/test_docs_examples_replayt_pins.py`** enumerates **`docs/examples/**/*.html`** and **`docs/examples/**/*.md`**. |
+| **Detection rules** | [What counts as a “pin” (detection)](#what-counts-as-a-pin-detection) | Implementation matches the table; probe-grid simplifications are documented in the test module docstring. |
+| **Assertion vs `pyproject.toml`** | [Acceptance (assertion)](#acceptance-assertion) | Each detected pin satisfies or is subsumed by the **`replayt`** specifier from **`[project].dependencies`**. |
+| **Documented exceptions** | [Opt-out (documented exceptions)](#opt-out-documented-exceptions) | Snippets with **`<!-- replayt-examples:pin-exempt -->`** (and optional **`reason=`**) are skipped per rules above. |
+| **Range changes** | [Acceptance (assertion)](#acceptance-assertion) | Same change set: **`pyproject.toml`**, matrices, affected examples, tests, **CHANGELOG** **Unreleased**. |
+
+**Maintainer checklist:**
+
+1. When extending detection rules or **`docs/examples/`** pins, update **`tests/test_docs_examples_replayt_pins.py`** (patterns, probe grid, or **`_EXTRA_PROBE_VERSIONS`**) and this section if the normative table changes, in one change set with **CHANGELOG** **Unreleased**.
+2. Renaming the test module requires updating [Traceability to automated checks](#traceability-to-automated-checks) and **`docs/compat.md`** in the same change set.
 
 ---
 
@@ -389,7 +466,7 @@ copy the pattern; “CI” means automated verification exists.
 
 | Stack | Supported (intent) | CI | Notes |
 | ----- | ------------------- | --- | ----- |
-| Vanilla HTML/JS | Yes (`docs/examples/`) | File/smoke tests as implemented under `tests/` | Default integration path for smallest surface |
+| Vanilla HTML/JS | Yes (`docs/examples/`) | **`docs/examples`** **replayt** pin contract (**`tests/test_docs_examples_replayt_pins.py`**) plus any future file/smoke tests | Default integration path for smallest surface; pin contract keeps CDN/requirement snippets inside the PEP 508 range in **`pyproject.toml`** |
 | React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
 | Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
 | Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |

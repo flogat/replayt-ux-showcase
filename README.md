@@ -54,7 +54,7 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 | `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
-| `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates |
+| `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract |
 | `pyproject.toml` | Package metadata, dependencies, **pytest**/**ruff** config |
 | `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**) |
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
