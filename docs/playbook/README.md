@@ -14,6 +14,7 @@
 
 ## Normative companions (do not duplicate)
 
+- **Figma design kit / variable → `rux-*` mapping / interim JSON export:** [`docs/design-kit/README.md`](../design-kit/README.md) — **F1–F8** operator sections and **`design-tokens.json`** schema (Builder); aligns with [`tokens.md`](tokens.md).
 - **Keyboard / focus:** [`docs/a11y/keyboard-model.md`](../a11y/keyboard-model.md) — tab order, scrubber keys, roving composites, **Escape**.
 - **Copy-paste examples:** [`docs/examples/PATTERNS.md`](../examples/PATTERNS.md) — **P-01**–**P-06** inventory and per-pattern acceptance criteria.
 - **Loading / failure UX:** **P-04** [`embed-container-states.html`](../examples/embed-container-states.html) and [`PATTERNS.md` — P-04](../examples/PATTERNS.md#p-04-embed-container-states-empty-loading-failure-recovery).

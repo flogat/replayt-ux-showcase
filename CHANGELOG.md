@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*Figma design kit stub: tokens export + link from docs*): **`docs/design-kit/README.md`** — acceptance **F1–F8** (library access, duplication, **Figma** → **`rux-*`** mapping vs **[`docs/playbook/tokens.md`](docs/playbook/tokens.md)**, change requests, interim **`design-tokens.json`** schema and versioning); **`docs/DESIGN_PRINCIPLES.md`** — traceability row, **`docs/`** module boundary, [Design kit (Figma) and token export](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export) + backlog traceability table (optional future **`tests/test_design_kit_docs.py`**); cross-links from **`docs/playbook/README.md`**, **`docs/playbook/tokens.md`**, **`README.md`** (**Quick start** + layout), **`docs/MISSION.md`**, **`docs/compat.md`**.
+
 ### Changed
 
 - Phase **3** (*Expand compatibility matrix with explicit CI matrix job per row*): **`.github/workflows/ci.yml`** — **`test`** job **`python-version`** × **`replayt-version`** matrix (**0.1.0**, **0.2.0**, **0.4.25**) with **`pip install -e ".[dev]" -c`** constraint file and **`replayt.__version__`** check; **`docs/compat.md`** — inventory IDs **EX-311-RT-*** / **EX-312-RT-*** plus bundled **EX-EXAMPLES-PINS**; **`docs/DESIGN_PRINCIPLES.md`** — matrix / CI exercise row / traceability updates; **`tests/test_design_principles_contract.py`** — `test_ci_test_job_matrix_matches_design_principles_matrix`, `test_compat_ci_exercise_inventory_ids_match_ci_matrix`.
