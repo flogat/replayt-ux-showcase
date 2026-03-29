@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tests/test_examples.py`: asserts **`player-session-metadata-bar.html`** exists and keeps minimal **P-02** contract markers (loading copy, validation strings, tab-order comment, **replayt** script pin) aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
 - `tests/test_docs_examples_replayt_pins.py`: **pytest** contract for **`docs/examples/**/*.{html,md}`** — **replayt** CDN (`replayt@…`) and PEP 508-style pins checked against the **`replayt`** line in **`pyproject.toml`**, with **`<!-- replayt-examples:pin-exempt -->`** skipping the next script line, URL line, or fenced block (backlog phase 3, Contract test: examples reference replayt in supported semver range).
 
+### Fixed
+
+- `docs/examples/player-session-metadata-bar.html`: render placeholder status with **`textContent`** / **`createElement`** instead of templated **`innerHTML`**, so integrators who swap in dynamic copy do not risk accidental HTML injection (backlog phase **6** security review, *Ship session metadata chrome pattern (viewport, duration, session id)*).
+
 ## [0.2.0] - 2026-03-28
 
 ### Changed

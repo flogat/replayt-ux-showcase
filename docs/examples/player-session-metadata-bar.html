@@ -136,9 +136,13 @@
         }
 
         function clearPlayerUi(message) {
-            playerEl.innerHTML = message
-                ? `<p class="player-placeholder" role="status">${message}</p>`
-                : '';
+            playerEl.replaceChildren();
+            if (!message) return;
+            const p = document.createElement('p');
+            p.className = 'player-placeholder';
+            p.setAttribute('role', 'status');
+            p.textContent = message;
+            playerEl.appendChild(p);
         }
 
         function applyChrome(sessionData) {
@@ -166,7 +170,7 @@
             badBtn.disabled = false;
 
             if (window.replayt?.player?.init) {
-                playerEl.innerHTML = '';
+                playerEl.replaceChildren();
                 window.replayt.player.init({
                     container: playerEl,
                     data: sessionData,
