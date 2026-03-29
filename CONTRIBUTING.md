@@ -39,3 +39,11 @@ so the **canonical spec** stays aligned with **`pyproject.toml`**, **CI**, and c
 **CHANGELOG:** Add **`[Unreleased]`** notes in that same change set per [One way to do it — single compatibility story](docs/DESIGN_PRINCIPLES.md#one-way-to-do-it-canonical-patterns).
 
 **Tests:** **`tests/test_changelog_release_policy_docs.py`** guards **`CONTRIBUTING.md`**, the [Changelog, semver, and release notes](docs/DESIGN_PRINCIPLES.md#changelog-semver-and-release-notes) section, and **CHANGELOG** **Unreleased** mentions of that module. When pins or normative headings change, update **`tests/test_design_principles_contract.py`** and related contract tests in the **same** PR — see [Traceability to automated checks](docs/DESIGN_PRINCIPLES.md#traceability-to-automated-checks).
+
+## Optional bundled upstream reference docs (`docs/reference-documentation/`)
+
+This tree is **optional** and may ship with **only** **[`docs/reference-documentation/README.md`](docs/reference-documentation/README.md)** so default clones stay small.
+
+- **When to populate:** You need offline or **LLM** / **Mission Control** context aligned with a pinned **replayt** release; you have confirmed **license** / **provenance** requirements in that **README**.
+- **When to refresh:** Follow the **refresh cadence** and **maintenance checklist** there — especially when **`pyproject.toml`** or **CI** **replayt** pins change.
+- **Spec / acceptance:** **[`docs/reference-documentation/README.md`](docs/reference-documentation/README.md)** and [Backlog traceability: Bundled upstream reference docs workflow](docs/DESIGN_PRINCIPLES.md#backlog-traceability-bundled-upstream-reference-docs-workflow) in **`docs/DESIGN_PRINCIPLES.md`**.
