@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `docs/examples/fixture-replay.html`: **P-05** vanilla example — **deterministic** header comment, **inlined** synthetic **`sessionData`** (fixed timestamps and ids), **no** `fetch(` / **`Date.now`** / **`Math.random`** in source, **`replayt.player.init`** only; pinned **replayt** on **jsDelivr** (phase **3**, *Offline deterministic fixture page for LLM and reviewer workflows*).
+- `tests/test_examples.py`: asserts **`fixture-replay.html`** exists and keeps minimal **P-05** contract markers aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
 - `tests/test_frontend_supply_chain_doc.py`: contract tests for **`docs/FRONTEND_SUPPLY_CHAIN.md`** (section anchors, **pip-audit** vs **JS** keywords, **README** / **DESIGN_PRINCIPLES** / **compat** links, **CHANGELOG** **Unreleased** mention per doc **A1–A5**; phase **3**, *Document CDN vs bundled replayt with SRI and supply-chain notes*).
 - `docs/examples/embed-container-states.html`: **P-04** vanilla example — async `sessionData` (simulated delay), skeleton UI with **Loading replay…**, user-visible **network** vs **invalid payload** errors, focusable **Retry**, **`role="status"`** / **`aria-live="polite"`** announcement contract, optional **`data-demo-state`** on **`#embed-shell`**; **`replayt.player.init`** only (backlog phase **3**, *Empty, loading, and failure states for the embed container*).
 - `tests/test_examples.py`: asserts **`embed-container-states.html`** exists and keeps minimal **P-04** contract markers aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
@@ -20,14 +22,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Phase **2**–**3** (*Offline deterministic fixture page for LLM and reviewer workflows*): **`docs/examples/PATTERNS.md`** — **P-05** normative contract and **Shipped** **`fixture-replay.html`** (inlined synthetic **`sessionData`**, no session payload I/O, no secrets, no live/stochastic model calls, pinned **replayt** script + local static-server instructions in **`README.md`** and **`docs/REPLAYT_ECOSYSTEM_IDEA.md`**); **`docs/DESIGN_PRINCIPLES.md`** traceability, **[LLM boundaries](docs/DESIGN_PRINCIPLES.md#llm-boundaries)**, **Audience**; **`docs/MISSION.md`** / **`docs/compat.md`** pattern counts. Phase **2** registered the spec; phase **3** shipped the **HTML** and **`tests/test_examples.py`** markers.
 - Phase **2** spec (*Document CDN vs bundled replayt with SRI and supply-chain notes*): **`docs/FRONTEND_SUPPLY_CHAIN.md`** — **CDN** (**jsDelivr**-style) pinning, optional **Subresource Integrity**, **npm**/**bundler** alternative, **`pip-audit`** vs **JS** surface; linked from **`README.md`**, **`docs/DESIGN_PRINCIPLES.md`** (**Frontend supply chain** + traceability), and **`docs/compat.md`**.
-- **`docs/DESIGN_PRINCIPLES.md`**: **Traceability to automated checks** — row for **`tests/test_frontend_supply_chain_doc.py`** lists **A1–A5** (includes **CHANGELOG** **Unreleased**), matching the contract test (phase **5** architecture review, same backlog).
+- **`docs/DESIGN_PRINCIPLES.md`**: **Traceability to automated checks** — **`tests/test_frontend_supply_chain_doc.py`** row lists **A1–A5** (including **CHANGELOG** **Unreleased** checks described in **`docs/FRONTEND_SUPPLY_CHAIN.md`**).
 - **P-04** (*Empty, loading, and failure states for the embed container*): **`docs/examples/PATTERNS.md`** (spec then **Shipped**), **`docs/MISSION.md`** pattern count (**4** shipped), **`docs/compat.md`** digest, **`docs/DESIGN_PRINCIPLES.md`** catalog / **Audience** / backlog traceability, **`docs/demo.md`** cross-surface operator story and **Builder alignment** with **`embed-container-states.html`** (phases **2**–**3**).
 - `docs/examples/PATTERNS.md`: **P-03** marked **Shipped**; **`docs/MISSION.md`** pattern table (**3** shipped with **P-03**); **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** catalog and **P-03** traceability (phase **3**).
 - `docs/examples/PATTERNS.md`: **P-02** catalog and normative spec; **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/DESIGN_PRINCIPLES.md`** pattern coverage and traceability (phase **2**).
 - `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec for **`tests/test_docs_examples_replayt_pins.py`** (pin scan scope, **`pin-exempt`** comments); traceability for default **CI** **pytest** (phases **2**–**3**).
 - **CHANGELOG** **Unreleased** (phase **5** architect): one **`Added`** group and consolidated **P-04** / **P-03** documentation bullets (no duplicate **`### Added`** headings).
 - Phase **6** security review (*Empty, loading, and failure states for the embed container*): **`docs/examples/embed-container-states.html`** updates the live region and visible errors with **`textContent`** only (no **`innerHTML`** for dynamic strings); **replayt** script pin remains **`replayt@0.1.0`** on **jsDelivr**, within **`pyproject.toml`**. Init failures log via **`console.error`** for developer tooling only—not copied into **`#embed-status`**.
+
+### Fixed
+
+- `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Offline deterministic fixture page for LLM and reviewer workflows*).
 
 ## [0.2.0] - 2026-03-28
 

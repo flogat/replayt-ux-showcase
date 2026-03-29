@@ -27,10 +27,10 @@ Delegates upstream: core capture/replay logic.
 
 ### Pattern coverage tracking
 
-**Source of truth:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) — pattern IDs (**P-01**–**P-04**, …), filenames, status (**Shipped** / **Spec only** / **Planned**), and per-pattern acceptance criteria.
+**Source of truth:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) — pattern IDs (**P-01**–**P-05**, …), filenames, status (**Shipped** / **Spec only** / **Planned**), and per-pattern acceptance criteria.
 
 | Metric | Target | Current (update when patterns ship) |
 | ------ | ------ | ------------------------------------- |
-| Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **4** shipped (**P-01**–**P-04** — [`PATTERNS.md`](examples/PATTERNS.md)); **1+** additional pattern needed to reach **5+** |
+| Distinct vanilla patterns in `docs/examples/` | ≥ 5 | **5** shipped (**P-01**–**P-05** — [`PATTERNS.md`](examples/PATTERNS.md)), including **`fixture-replay.html`** (**P-05**: deterministic offline fixture for reviewers / **LLM** harnesses). |
 
 When a pattern moves to **Shipped**, update this table and the inventory in **`docs/examples/PATTERNS.md`** in the same change set as the new or updated **`*.html`** file and **CHANGELOG** **Unreleased**.

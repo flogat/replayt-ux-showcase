@@ -42,6 +42,12 @@ This repo may include a [`.cursor/skills/`](.cursor/skills/) directory for Curso
 lists **`path/`** (so documentation-style placeholder paths are never committed), **`.cursor/skills/`**, and related
 local tooling entries. Adapt or remove optional directories to match your team’s workflow.
 
+## Reviewer and LLM harness fixture (vanilla)
+
+**[P-05](docs/examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** — **`docs/examples/fixture-replay.html`** is a **deterministic**, **inlined** synthetic **`sessionData`** page with **no** runtime session fetch, **no** secrets, and **no** live model calls (see **[LLM boundaries](docs/DESIGN_PRINCIPLES.md#llm-boundaries)**).
+
+**How to open locally:** From the repo, run a static server rooted at **`docs/examples/`** (for example `cd docs/examples && python -m http.server`) and open **`http://127.0.0.1:8000/fixture-replay.html`** (port as shown in the server log). Using **`file://`** may block the pinned **replayt** **CDN** script in some browsers; the local server avoids that. Normative detail: **[P-05 replayt pin and open instructions](docs/examples/PATTERNS.md#p-05-replayt-pin-and-open-instructions-normative)**.
+
 ## Project layout
 
 | Path | Purpose |
@@ -53,6 +59,7 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
 | `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
+| `docs/examples/fixture-replay.html` | **P-05** deterministic offline fixture for reviewers / **LLM** harnesses (**Shipped** — **`docs/examples/PATTERNS.md`**) |
 | `docs/examples/PATTERNS.md` | Canonical UI pattern inventory (mission **5+** tracking, per-pattern acceptance criteria) |
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
