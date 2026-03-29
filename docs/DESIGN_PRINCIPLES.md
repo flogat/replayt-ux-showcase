@@ -19,6 +19,7 @@ is tracked separately in code and CHANGELOG):
 | **Front-end** CDN vs bundled **replayt**, optional **SRI**, **npm**/**Vite** notes | [Frontend supply chain (JavaScript / CDN)](#frontend-supply-chain-javascript--cdn), [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | Optional **npm** workspace / **Vite** or **esbuild** local preview (**not** a published package) | [`docs/examples/build.md`](examples/build.md), [Module and directory boundaries](#module-and-directory-boundaries), [Showcase stack matrix](#showcase-stack-matrix) |
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
+| Root **README** above-the-fold intro explains audience, shipped outcomes, non-goals, and next-step links | [README intro and repo orientation](#readme-intro-and-repo-orientation), [Audience](#audience), [`docs/MISSION.md`](MISSION.md) |
 | **Static HTML** load smoke (**Playwright**): no console errors on open, fast **CI** matrix, local run docs | [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright), [GitHub Actions CI workflow](#github-actions-ci-workflow), [README.md](../README.md#optional-playwright-smoke-static-html-examples) |
 | **pip-audit** failures, local reproduction, overrides vs pins | [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit), [`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md) |
 | Extension points documented | [Extension points](#extension-points) |
@@ -714,6 +715,82 @@ observable logs and **README** badges.
 3. Add **README** workflow badge(s) with the actual **GitHub** coordinates; extend **`tests/test_design_principles_contract.py`**
    if maintainers want CI to assert **ruff** (and/or badge presence) mechanically.
 4. Record user-visible CI changes under **CHANGELOG** **Unreleased**.
+
+---
+
+## README intro and repo orientation
+
+Normative spec for the backlog item **Rewrite the README intro around audience, outcome, and scope**: what a new
+reader must learn from the **top** of **`README.md`** before they reach badges, CI details, or deep implementation
+notes. This phase defines the contract only; the actual **README** copy/layout edit belongs to the **Builder** phase.
+
+### Goal
+
+Within the first screenful of the root **README**, a new reader SHOULD be able to answer:
+
+1. Who this repository is for.
+2. What concrete deliverables it ships.
+3. What it explicitly does **not** own.
+4. Which document to open next for setup, compatibility, and deeper pattern/design guidance.
+
+### Placement and shape (acceptance)
+
+- Add a short **above-the-fold** orientation block immediately under the **H1** title and **before** any badge strip,
+  long toolchain paragraph, or CI-oriented section.
+- The orientation block MAY be one brief paragraph followed by a short bullet list or compact table; keep it concise
+  enough that audience, outcome, and scope are visible without scrolling through workflow details.
+- Existing sections such as **Overview**, **Design principles**, or **Continuous integration** MAY remain, but they
+  MUST come **after** the new orientation block or be rewritten so the same content is satisfied above the fold.
+
+### Required content (acceptance)
+
+- **Audience:** identify **Replayt integrators** as the primary audience, with secondary value for contributors and
+  design/dev handoff reviewers. The wording should stay aligned with [Audience](#audience) and
+  **[`docs/MISSION.md`](MISSION.md#users--problem)**.
+- **Outcome / what ships here:** explain that this repo delivers a **reference showcase**: copy-pasteable replay UI
+  demos under **`docs/examples/`**, the design-to-code **playbook** under **`docs/playbook/`**, the **design kit**
+  guidance under **`docs/design-kit/`**, and the small Python showcase/demo package under **`src/replayt_ux_showcase/`**.
+- **Scope / non-goals:** make clear that this repo does **not** replace **replayt** core capture/replay logic, does
+  **not** define a hosted product or standalone “main app”, does **not** imply a published **npm** package, and does
+  **not** replace upstream **replayt** documentation. Keep this aligned with **[`docs/MISSION.md`](MISSION.md#non-goals)**,
+  [Module and directory boundaries](#module-and-directory-boundaries), and
+  **[`docs/reference-documentation/README.md`](reference-documentation/README.md)**.
+- **Reader path / next steps:** include direct links for at least:
+  **Quick start** in **`README.md`**, **[`docs/MISSION.md`](MISSION.md)**, **[`docs/compat.md`](compat.md)**,
+  **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**, and **[`docs/playbook/README.md`](playbook/README.md)**.
+  Link **`docs/design-kit/README.md`** when the intro mentions **Figma** / token handoff explicitly.
+
+### Link-target and naming rules (acceptance)
+
+- Every intro link MUST resolve to a file or anchor that exists in this repository at ship time; do **not** add
+  placeholder references to non-existent docs such as **`docs/README.md`**, **`docs/overview/application-overview.md`**,
+  or **`docs/features/publish-app.md`** unless a separate backlog creates those files.
+- Keep terminology repo-specific: describe **showcase**, **examples**, **playbook**, **design kit**, and the
+  **`replayt_ux_showcase`** package surface instead of introducing product names or app splits not present in this tree.
+- Badges remain allowed, but they are **secondary** to reader orientation; do not let badge markup become the first
+  substantive content a reader has to parse.
+
+### Backlog traceability: Rewrite the README intro around audience, outcome, and scope
+
+**Normalized user story:** As a new integrator landing on the repository, I want the top of **`README.md`** to tell me
+who this repo is for, what it ships, what it intentionally does not own, and where to go next, so I can decide within
+seconds whether I need the examples, the compatibility docs, or the handoff playbook.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ---------------------- |
+| Above-the-fold orientation appears before badges / CI detail | [Placement and shape](#placement-and-shape-acceptance) | **Spec gate** / README review |
+| Audience and shipped outcomes are explicit | [Required content](#required-content-acceptance); [Audience](#audience); **[`docs/MISSION.md`](MISSION.md#users--problem)** | **Spec gate** / README review |
+| Non-goals and repo boundaries are explicit | [Required content](#required-content-acceptance); **[`docs/MISSION.md`](MISSION.md#non-goals)**; [Module and directory boundaries](#module-and-directory-boundaries) | **Spec gate** / README review |
+| Deeper-doc links point at real repo docs | [Link-target and naming rules](#link-target-and-naming-rules-acceptance) | Manual link check; optional future doc contract test |
+| **CHANGELOG** note ships with the README rewrite | [Changelog, semver, and release notes](#changelog-semver-and-release-notes); [`CONTRIBUTING.md`](../CONTRIBUTING.md#changelog) | **Unreleased** note in same PR |
+
+**Builder checklist (phase 3):**
+
+1. Rewrite the top of **`README.md`** so the first substantive block satisfies the audience / outcome / non-goal /
+   next-step contract above without adding new placeholder docs.
+2. Keep repo terminology aligned with **`docs/MISSION.md`** and existing surfaces (**examples**, **playbook**,
+   **design kit**, **compat**, **`replayt_ux_showcase`**).
+3. Add a matching **CHANGELOG** **Unreleased** bullet in the same change set as the **README** edit.
 
 ---
 

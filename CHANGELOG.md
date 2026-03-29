@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+- Phase **2** spec (*Rewrite the README intro around audience, outcome, and scope*): **`docs/DESIGN_PRINCIPLES.md`** — new [README intro and repo orientation](docs/DESIGN_PRINCIPLES.md#readme-intro-and-repo-orientation) contract covering above-the-fold placement, required audience/outcome/non-goal copy, real-doc link targets, and Builder checklist; **`docs/MISSION.md`** — explicit **Non-goals** section so the README rewrite can point at stable repo boundaries instead of stale “main app / publish app” wording from the backlog text.
+
 <<<<<<< HEAD
 - Phase **8** CI fix (*Figma design kit stub: tokens + component list*): **`ruff format`** on **`tests/test_design_kit_docs.py`** so **`ruff format --check`** passes in **GitHub Actions** (matrix **test** job was failing on Ruff formatting for that file).
 - Phase **6** security review (*Figma design kit stub: tokens + component list*): reviewed **`git diff master`** (**`CHANGELOG.md`**, **`README.md`**, **`docs/DESIGN_PRINCIPLES.md`**, **`docs/MISSION.md`**, **`docs/design-kit/README.md`**, **`docs/playbook/README.md`**, **`docs/playbook/tokens.md`**, **`tests/test_design_kit_docs.py`**); docs + contract tests only — no **`pyproject.toml`** or **`.github/workflows/ci.yml`** changes; **`test_design_kit_docs.py`** reads markdown/JSON via **`pathlib`** (no network); no secrets, **`.env`**, or credential material in the diff; design-kit **Privacy** guidance on **Figma** URLs and secret tokens unchanged and still applicable; **CI** gates (**ruff**, **pytest** + **cov**, **`pip-audit`**, optional **Playwright**) unchanged by this diff.
