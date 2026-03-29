@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `tests/test_changelog_release_policy_docs.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
+- `tests/test_changelog_release_policy_docs.py`: **ruff format** (line wrap) and **LF** line endings so **`ruff format --check`** / Linux CI stay consistent (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
 - `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Offline deterministic fixture page for LLM and reviewer workflows*).
 
 ## [0.2.0] - 2026-03-28
