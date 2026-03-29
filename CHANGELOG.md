@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Documentation
+
+- Phase **2** spec (*Author design-to-code handoff playbook (checklist + token mapping)*): **`docs/playbook/tokens.md`** — viewport / session-frame semantics vs host layout, **P-01** **`basic-player.html`** canonical **`--rux-*`** table, acceptance **T4**–**T5**; **`docs/playbook/component-anatomy.md`** — scrubber interaction states, **P-09** hover/focus parity for callouts, acceptance **A4**–**A5**; **`docs/playbook/handoff-checklist.md`** — **Viewport**, **Timeline scrubber**, and **P-09** overlay rows, acceptance **H4**–**H5**; **`docs/playbook/README.md`** — **Under one dev-day** scope tip and **How to verify** (**pytest** / **`test_playbook_docs.py`**, full suite, future visual smoke); **`docs/DESIGN_PRINCIPLES.md`** — expanded backlog traceability table for the same item.
+
 ### Changed
 
 - Phase **3** (*Add React timeline player example aligned with SAMPLE_SESSION_DATA*): **`docs/examples/react/src/App.jsx`** — offline **`SAMPLE_SESSION_DATA`** matches **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`**; **`adaptConsoleSessionToReplaytMs`** maps console seconds to **P-01**-style ms for **`replayt.player.init`** and the scrubber; **`docs/examples/react/README.md`** — adapter table; **`tests/test_examples.py`** — **P-06** parity checks + demo module alignment test.

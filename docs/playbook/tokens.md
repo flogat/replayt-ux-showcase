@@ -64,6 +64,35 @@
 
 ---
 
+## Viewport and session frame (metadata and layout)
+
+**Goal:** Designers and integrators agree on **what “viewport” means** in handoffs: the **captured session frame** in data (`sessionData`) versus the **host page** layout (CSS).
+
+| Concept | Where it lives | Handoff rule |
+| ------- | -------------- | ------------ |
+| **Captured session viewport** | `sessionData.metadata.viewport` — typically `{ width, height }` in pixels (see **P-01** [`basic-player.html`](../examples/basic-player.html) placeholder and **P-02** [`player-session-metadata-bar.html`](../examples/player-session-metadata-bar.html) contract) | Specs MUST show width × height the player should assume for aspect / letterboxing discussions; link to pattern acceptance in [`PATTERNS.md`](../examples/PATTERNS.md). |
+| **Host page / embed container** | CSS on the wrapper around `#player` (or framework equivalent) | Use spacing tokens (`--rux-space-*`) for gutters; player height often uses `vh` or fixed px — document the chosen rule so design comps match implementation. |
+| **Mobile meta viewport** | `<meta name="viewport" …>` on standalone demo pages | Teach embedders: host apps supply their own viewport tag; copy-paste snippets may include one for **local file** preview only. |
+
+**CSS variables:** There is **no** separate `--rux-viewport-*` family in **P-01** today. If a product needs semantic tokens for “frame border” or “letterbox gutter”, add **`--rux-*`** names in the design file first, extend this table, then implement — do not invent ad hoc names that diverge from [`tokens.md`](tokens.md) without a **CHANGELOG** + pattern ID.
+
+---
+
+## Canonical `--rux-*` usage (**P-01** `basic-player.html`)
+
+**Normative reference for naming:** **[`docs/examples/basic-player.html`](../examples/basic-player.html)** is the **minimal** vanilla example that wires showcase tokens to **replayt** theming.
+
+| CSS custom property | Role |
+| ------------------- | ---- |
+| `--rux-space-2`, `--rux-space-4`, `--rux-space-8` | Radii, inline gaps, page gutter |
+| `--rux-font-sans` | Body / UI font stack |
+| `--rux-color-surface`, `--rux-color-surface-muted`, `--rux-color-border`, `--rux-color-text` | Surfaces and chrome |
+| `--rux-color-primary` | Brand accent; pair with **`--replayt-primary: var(--rux-color-primary)`** so the **replayt** player picks up the same tint |
+
+Integrators cloning **P-01** should keep this set **stable**; expanding the palette should follow new rows in the tables above (spacing / typography / color), not one-off renames in consumer apps.
+
+---
+
 ## Acceptance (Builder / spec gate)
 
 | # | Criterion |
@@ -71,3 +100,5 @@
 | T1 | This file lists **spacing**, **typography**, and **color** tables, each with **semantic name**, **CSS variable**, and **Tailwind extend** mapping. |
 | T2 | Naming is **stable** (`rux-*`); breaking renames require **CHANGELOG** and a short migration note in [`README.md`](../../README.md) or this playbook. |
 | T3 | Examples in **`docs/examples/`** are **not** required to adopt these variables in the same change set as this spec; when a pattern is updated for tokens, mention the pattern ID in **CHANGELOG**. |
+| T4 | **Viewport** semantics (session **`metadata.viewport`** vs host layout vs HTML **viewport** meta) are documented and tied to **P-01** / **P-02** patterns. |
+| T5 | **P-01** **`basic-player.html`** is cited as the **canonical** minimal **`--rux-*`** + **`--replayt-primary`** wiring example. |

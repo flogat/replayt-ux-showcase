@@ -16,6 +16,21 @@
 - [ ] **Long interactive event lists** use roving `tabindex` (or documented exception) — [keyboard-model §2](../a11y/keyboard-model.md#2-roving-tabindex-for-event-lists).
 - [ ] **Images / icons** that convey meaning have text alternatives; decorative assets are hidden from AT.
 - [ ] **Color contrast** meets team policy for text and interactive states (don’t rely on color alone for errors).
+- [ ] **Event overlay lane (P-09):** hover **and** keyboard focus expose equivalent callout content; scrub-linked active marker stays consistent with the scrubber — [`PATTERNS.md` §P-09](../examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard).
+
+---
+
+## Viewport and session frame
+
+- [ ] **Captured viewport** (`sessionData.metadata.viewport` width × height) is specified in the design and matches **P-01** / **P-02** expectations (see [`tokens.md`](tokens.md) — section **Viewport and session frame**).
+- [ ] **Host layout** (embed width, player height, outer padding) uses agreed spacing tokens or documented deltas vs **P-01** [`basic-player.html`](../examples/basic-player.html).
+
+---
+
+## Timeline scrubber
+
+- [ ] **States** in the spec match [`component-anatomy.md` §1](component-anatomy.md#1-timeline--scrubber-strip) (resting, hover/focus, active scrub, committed seek, disabled; loading if applicable).
+- [ ] **Keyboard** behavior matches [keyboard-model §3](../a11y/keyboard-model.md#3-scrubber--seek-control-sliders); throttling / commit-on-release documented if not vanilla **P-03**.
 
 ---
 
@@ -60,3 +75,5 @@
 | H1 | Checklist sections exist for **Accessibility**, **Loading**, and **Error / recovery** with actionable bullets. |
 | H2 | **Print** path documented (browser print). |
 | H3 | **keyboard-model** and **P-04** linked as normative references for a11y and load/error UX. |
+| H4 | **Viewport / session frame** and **timeline scrubber** checks link **`tokens.md`**, **`component-anatomy.md`**, and **P-01** / **P-02** / **P-03**. |
+| H5 | **Event overlay** row ties **hover + focus** parity to **P-09**. |
