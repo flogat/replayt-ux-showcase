@@ -18,7 +18,7 @@ Authoritative tables and policy notes: [Replayt and Python matrix](DESIGN_PRINCI
 
 **Mission:** ≥ **5** distinct vanilla patterns under **`docs/examples/`** (see [MISSION.md — Pattern coverage tracking](MISSION.md#pattern-coverage-tracking)).
 
-**Canonical inventory:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) lists pattern IDs, filenames, shipped vs spec-only status, and **Builder** acceptance checklists. **P-03** (*timeline scrubber strip*, planned `timeline-scrubber.html`) is **Spec only** until the HTML ships—see [P-03 — Timeline scrubber strip](examples/PATTERNS.md#p-03--timeline-scrubber-strip-events-driven-seek). When compatibility or pinning rules for examples change, follow [Vanilla examples: integrator-facing replayt pins](DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) and update **CHANGELOG** **Unreleased** together with **`docs/examples/PATTERNS.md`** if the pattern list or contracts change.
+**Canonical inventory:** [`docs/examples/PATTERNS.md`](examples/PATTERNS.md) lists pattern IDs, filenames, shipped vs spec-only status, and **Builder** acceptance checklists. **P-03** (*timeline scrubber strip*, [`timeline-scrubber.html`](examples/timeline-scrubber.html)) is **Shipped**—see [P-03 — Timeline scrubber strip](examples/PATTERNS.md#p-03--timeline-scrubber-strip-events-driven-seek). When compatibility or pinning rules for examples change, follow [Vanilla examples: integrator-facing replayt pins](DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) and update **CHANGELOG** **Unreleased** together with **`docs/examples/PATTERNS.md`** if the pattern list or contracts change.
 
 ## CI matrix coverage
 

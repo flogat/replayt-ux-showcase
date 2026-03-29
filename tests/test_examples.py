@@ -28,3 +28,24 @@ def test_player_session_metadata_bar_contract_markers():
     assert "Tab order (handoff)" in text
     assert "focus-visible" in text
     assert "cdn.jsdelivr.net/npm/replayt@" in text
+
+
+def test_timeline_scrubber_html_exists():
+    """P-03 example ships under docs/examples/ (see docs/examples/PATTERNS.md)."""
+    path = REPO_ROOT / "docs/examples/timeline-scrubber.html"
+    assert path.is_file(), f"P-03 demo missing: {path}"
+
+
+def test_timeline_scrubber_contract_markers():
+    """Light contract: ordering handoff comment, rAF throttling, limitations, scrub id, tab-order comment, pin (P-03)."""
+    text = (REPO_ROOT / "docs/examples/timeline-scrubber.html").read_text(
+        encoding="utf-8"
+    )
+    assert "Event ordering (handoff):" in text
+    assert "requestAnimationFrame" in text
+    assert "Limitations" in text
+    assert 'id="timeline-scrubber"' in text
+    assert "Tab order (handoff):" in text
+    assert "applySeekMs" in text
+    assert "metadata.durationMs" in text
+    assert "cdn.jsdelivr.net/npm/replayt@" in text

@@ -16,9 +16,9 @@ another file). Filename changes follow [Deprecation and removal](../DESIGN_PRINC
 | -- | -------- | ------ | ------- |
 | **P-01** | [`basic-player.html`](basic-player.html) | **Shipped** | Minimal embedded player: container, `sessionData`, `replayt.player.init`, theme note. |
 | **P-02** | [`player-session-metadata-bar.html`](player-session-metadata-bar.html) | **Shipped** | Session **metadata chrome**: compact bar **above** the player, same `sessionData` contract as P-01, plus loading / error / focus rules below. |
-| **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) (planned) | **Spec only** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
+| **P-03** | [`timeline-scrubber.html`](timeline-scrubber.html) | **Shipped** | **Timeline scrubber strip**: seek/scrub UX driven by **replayt public JS** + `sessionData.events`, with documented ordering/throttling assumptions and CDN **limitations** note. |
 
-**Mission trajectory:** **P-01** / **P-02** are shipped. **P-03** is specified here (**Spec only**) for the *Timeline scrubber strip example using replayt public events API* backlog; Builder implements `docs/examples/timeline-scrubber.html` (or an equivalent clearly separated section in an existing file—see [Delivery shape](#delivery-shape-normative)). Additional patterns toward **5+** stay **future** backlogs until registered in this table first.
+**Mission trajectory:** **P-01**, **P-02**, and **P-03** are shipped. Additional patterns toward **5+** stay **future** backlogs until registered in this table first.
 
 ---
 
@@ -195,18 +195,17 @@ documents a deliberate, additive extension in-snippet.
 
 ### Builder acceptance checklist (implementation)
 
-**P-03** is **Spec only** until the items below are met; then mark **Shipped** in [Pattern inventory](#pattern-inventory)
-and update **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** counts in the **same** change set as the HTML.
+**P-03** is **Shipped**; the original delivery met the items below. Use the same markers when you change this pattern:
 
 1. **`docs/examples/timeline-scrubber.html`** (or approved alternate per [Delivery shape](#delivery-shape-normative))
    implements the normative sections above.
 2. [Pattern inventory](#pattern-inventory) lists **P-03** as **Shipped** with the correct filename.
-3. **Extend** **`tests/test_examples.py`** with file presence and **light contract markers** aligned with this spec
+3. **`tests/test_examples.py`** includes file presence and **light contract markers** aligned with this spec
    (ordering comment block, throttling note, limitations note, scrub control, **replayt** script pin)—mirror the **P-02**
    approach; full browser automation remains optional per [Showcase stack matrix](../DESIGN_PRINCIPLES.md#showcase-stack-matrix).
-4. **CHANGELOG** **Unreleased** records the new example; note pattern count / mission tracking when status flips to **Shipped**.
+4. **CHANGELOG** **Unreleased** records notable example or contract changes; note pattern count / mission tracking when the inventory changes.
 
-**Automated checks today (when shipped):** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers as extended by Builder.
+**Automated checks today:** **`tests/test_docs_examples_replayt_pins.py`**; **`tests/test_examples.py`** markers for **P-03**.
 
 ---
 

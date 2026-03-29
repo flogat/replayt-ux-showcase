@@ -515,9 +515,10 @@ and **replayt’s published JS API** for seek/scrub, with **documented** event-o
 | **replayt** CDN pin in PEP 508 range | **P-03** [replayt pin and file placement](examples/PATTERNS.md#replayt-pin-and-file-placement) | **`tests/test_docs_examples_replayt_pins.py`** once HTML exists |
 | Pattern inventory + mission table | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)**, **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** | **P-03** → **Shipped** with HTML; counts updated |
 
-**Spec complete (phase 2):** **P-03** acceptance criteria and traceability live in **`docs/examples/PATTERNS.md`**; **MISSION**
-reflects **Spec only** status. **Builder (phase 3)** implements HTML, flips **P-03** to **Shipped**, extends **`tests/test_examples.py`**
-as needed, and adds **CHANGELOG** **Unreleased** entries.
+**Shipped (phase 3):** **`docs/examples/timeline-scrubber.html`**, **P-03** marked **Shipped** in **`docs/examples/PATTERNS.md`**,
+**[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)** counts updated, **`tests/test_examples.py`** contract markers,
+**CHANGELOG** **Unreleased** **Added** entry, **replayt** CDN pin checked by **`tests/test_docs_examples_replayt_pins.py`**.
+Further edits to **P-03** should keep **PATTERNS.md**, **MISSION**, **CHANGELOG**, and pin contract tests aligned when contracts change.
 
 ---
 

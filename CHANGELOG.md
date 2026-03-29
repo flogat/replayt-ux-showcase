@@ -7,10 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `docs/examples/timeline-scrubber.html`: **P-03** vanilla example — `sessionData.events` + `metadata` time range, defensive sort-by-timestamp comment, `requestAnimationFrame`-throttled scrub seeks with final commit on `change` / `pointerup`, optional `seekToMs` / `goto` seek hooks, visible **Limitations** note for CDN builds (backlog phase **3**, *Timeline scrubber strip example using replayt public events API*).
+- `tests/test_examples.py`: asserts **`timeline-scrubber.html`** exists and keeps minimal **P-03** contract markers aligned with **`docs/examples/PATTERNS.md`** (same backlog, phase **3**).
+
 ### Documentation
 
-- `docs/examples/PATTERNS.md`: **P-03** *Timeline scrubber strip* — **Spec only** inventory row and normative spec (delivery shape, `sessionData.events` + ordering, seek/scrub, throttling, published replayt JS surface, CDN limitations note, Builder checklist); backlog traceability table (backlog phase **2**, *Timeline scrubber strip example using replayt public events API*).
-- `docs/MISSION.md`, `docs/compat.md`, `docs/DESIGN_PRINCIPLES.md`: pattern coverage and **Vanilla UI pattern catalog** traceability updated for **P-03** spec-only state (same backlog, phase **2**).
+- `docs/examples/PATTERNS.md`: **P-03** marked **Shipped** in the pattern inventory; Builder checklist reflects shipped state (same backlog, phase **3**).
+- `docs/MISSION.md`: pattern coverage table — **3** shipped vanilla patterns including **P-03** (same backlog, phase **3**).
+- `docs/compat.md`, `docs/DESIGN_PRINCIPLES.md`: **Vanilla UI pattern catalog** / **P-03** backlog traceability updated for **Shipped** state (same backlog, phase **3**).
 - `docs/examples/PATTERNS.md`: canonical **vanilla UI pattern** catalog (**P-01** / **P-02**), normative **P-02** spec (session metadata bar above player, `sessionData` compatibility with `basic-player.html`, loading / error / focus rules), and Builder checklist (backlog phase **2** spec lead, *Ship session metadata chrome pattern (viewport, duration, session id)*).
 - `docs/MISSION.md`, `docs/compat.md`, `docs/DESIGN_PRINCIPLES.md`: pattern coverage tracking toward **5+** examples, digest link, design-principles traceability and backlog mapping for **P-02** (same backlog, phase **2**).
 - `docs/DESIGN_PRINCIPLES.md`, `docs/compat.md`: normative spec and traceability for **contract tests** that scan **`docs/examples/**/*.{html,md}`** so **replayt** CDN and requirement pins stay inside the PEP 508 range from **`pyproject.toml`**, including **`<!-- replayt-examples:pin-exempt -->`** for deliberate exceptions (backlog phase 2, Contract test: examples reference replayt in supported semver range).
