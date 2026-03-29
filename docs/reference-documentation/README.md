@@ -40,12 +40,36 @@ Before committing any snapshot:
 
 **CHANGELOG:** When committed snapshots materially change (add/remove/update bulk upstream docs), add a **`[Unreleased]`** note per **[`CONTRIBUTING.md`](../../CONTRIBUTING.md)**.
 
-## Optional automation (Builder phase)
+## Optional automation
 
-Implementation is **optional**. If maintainers add a helper, it SHOULD:
+Maintainer helper (stdlib **Python** only, no network):
 
-- Live under **`scripts/`** (for example **`scripts/refresh-reference-docs/`**), **not** under **`src/replayt_ux_showcase/`**.
-- Be **documented** in this **`README`** (inputs, outputs, idempotency, required tools).
+**`scripts/refresh-reference-docs/copy_markdown_snapshots.py`**
+
+| Input | Meaning |
+| ----- | ------- |
+| **`--source DIR`** | Root to scan for **`*.md`** recursively (skip dot-directories under that root). |
+| **`--repo-root DIR`** | Showcase git root (must contain **`pyproject.toml`** with **`[project].name = "replayt-ux-showcase"`**). Default: walk upward from the script. |
+| **`--version STRING`** | Destination segment: **`docs/reference-documentation/<subdir>/<version>/…`**. Default: **`replayt.__version__`** from the active environment (install the pinned **replayt** first). |
+| **`--subdir NAME`** | Directory under **`docs/reference-documentation/`** (default: **`replayt`**). |
+| **`--dry-run`** | Print planned **`copy:`** lines; do not write files. |
+
+**Outputs:** For each **`*.md`** under **`--source`**, writes **`docs/reference-documentation/<subdir>/<version>/<relative-path>`**, creating parent directories as needed. Re-running overwrites files (**`shutil.copy2`**).
+
+**Idempotency:** Same inputs yield the same tree; safe to re-run after upstream edits.
+
+**Required tools:** **Python 3.11+** and (for default **`--version`**) an environment where **`replayt`** imports and exposes **`__version__`**.
+
+**Example:**
+
+```bash
+# After license review; SOURCE = local replayt checkout or doc export tree
+python scripts/refresh-reference-docs/copy_markdown_snapshots.py --source /path/to/replayt/checkout
+```
+
+Rules for any helper under **`scripts/`**:
+
+- Do **not** put this logic under **`src/replayt_ux_showcase/`**.
 - **Not** run in default **CI** jobs unless a future backlog explicitly adds a contract; default **pytest** must remain usable without upstream checkouts.
 
 ## Maintenance checklist (contributors / Mission Control)
