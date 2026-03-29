@@ -449,6 +449,14 @@ allowed) — **without** implying this repository publishes a **React** or **sho
 - **Root shape:** Same as **P-01**: an object with **`events`** (array) and **`metadata`** (object). Use the same field names illustrated in [`basic-player.html`](basic-player.html) (`metadata.startTs`, `metadata.viewport.width` / `height`) unless the Builder documents an **additive** extension; do **not** invent a parallel schema.
 - **Event payloads:** Event objects should be **compatible** with the **schema-level** story in **[`docs/demo.md`](../demo.md#replayt-primitives-usage)** and **replayt** docs for the pinned version (types such as `click`, `scroll`, `keypress`, etc.). The shipped snippet should include **enough non-empty `events`** to exercise the scrubber (not an empty array as the only shipped state).
 - **Synthetic vs live:** A **static** literal in source (recommended for copy-paste stability) or a clearly marked placeholder for `fetch` is acceptable; if the snippet uses **`fetch`**, it **must** remain a **documented** public HTTP pattern (no private replayt endpoints), consistent with **P-04** spirit for errors (user-visible failure path documented in README or in-app).
+- **P-06 console parity (optional checked-in shape):** The **React** tree may keep a literal matching **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`** (**`events[].ts`** in seconds, **`metadata.duration`**, **`metadata.viewport.w` / `h`**, **`metadata.start_ts`**). **`replayt.player.init`** still expects **P-01**-style ms fields; document a **pure** adapter and any wall-clock anchor in **`docs/examples/react/README.md`**. Normative detail: [P-06 — Console sample parity (SAMPLE_SESSION_DATA)](#p-06--console-sample-parity-sample_session_data).
+
+### P-06 — Console sample parity (SAMPLE_SESSION_DATA)
+
+- **Purpose:** One offline session string for **`python -m replayt_ux_showcase.demo`** and the **P-06** **React** sample so operators can diff behavior across surfaces without network or LLM on the default **`npm run dev`** path.
+- **Source of truth:** **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`** in **`src/replayt_ux_showcase/demo.py`**.
+- **Checked-in wiring:** **`docs/examples/react/src/App.jsx`** defines the same **event** list and **metadata** numbers; **`adaptConsoleSessionToReplaytMs`** (or equivalent) maps to **P-01** ms (**`timestamp`**, **`metadata.startTs`**, **`metadata.durationMs`**, **`metadata.viewport.width` / `height`**) before **`init`** and scrub math.
+- **Tests:** **`tests/test_examples.py`** should keep **P-06** markers and a check that **React** literals stay aligned with the **Python** module when **`SAMPLE_SESSION_DATA`** changes.
 
 ### replayt JavaScript surface (normative)
 
