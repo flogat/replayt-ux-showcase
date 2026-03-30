@@ -19,6 +19,7 @@ is tracked separately in code and CHANGELOG):
 | **Front-end** CDN vs bundled **replayt**, optional **SRI**, **npm**/**Vite** notes | [Frontend supply chain (JavaScript / CDN)](#frontend-supply-chain-javascript--cdn), [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 | Optional **npm** workspace / **Vite** or **esbuild** local preview (**not** a published package) | [`docs/examples/build.md`](examples/build.md), [Module and directory boundaries](#module-and-directory-boundaries), [Showcase stack matrix](#showcase-stack-matrix) |
 | **GitHub Actions** CI (tests, **ruff**, **replayt** install path, supply chain, badges) | [GitHub Actions CI workflow](#github-actions-ci-workflow) |
+| GHCR publishing credential model (default vs optional overrides) | [GHCR publishing credentials](#ghcr-publishing-credentials) |
 | Root **README** above-the-fold intro explains audience, shipped outcomes, non-goals, and next-step links | [README intro and repo orientation](#readme-intro-and-repo-orientation), [Audience](#audience), [`docs/MISSION.md`](MISSION.md) |
 | **Static HTML** load smoke (**Playwright**): no console errors on open, fast **CI** matrix, local run docs | [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright), [GitHub Actions CI workflow](#github-actions-ci-workflow), [README.md](../README.md#optional-playwright-smoke-static-html-examples) |
 | **pip-audit** failures, local reproduction, overrides vs pins | [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit), [`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md) |
@@ -72,6 +73,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Showcase code: **replayt** imports use only published top-level symbols (**`replayt.__all__`**) and no underscore-private **`replayt` submodules** | **`tests/test_replayt_public_api_boundary.py`** — default **`pytest`** in every **CI** **test** matrix cell; see [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard) |
 | **`docs/DEPENDENCY_AUDIT.md`** — **D1–D10** playbook (local **`pip-audit`**, fix vs override policy, **README** troubleshooting link) | **`tests/test_dependency_audit_doc.py`** (see [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit)) |
 | Optional **replayt** minor-line float job (**latest patch** within one minor, import + demo subprocess only) | **`.github/workflows/replayt-minor-float.yml`** — **`jobs.replayt-minor-float-smoke`**; **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**; `tests/test_design_principles_contract.py` (`test_ci_replayt_minor_float_job_matches_spec`); normative spec: [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), **`docs/compat.md`** [Optional replayt minor-line float job (spec)](compat.md#optional-replayt-minor-line-float-job-spec) |
+|| **`docs/MISSION.md`** and **`docs/README.md`** cross-link coverage and core sections | **`tests/test_mission_doc.py`** |
 
 The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
 **`.github/workflows/ci.yml`** and with any companion workflow file that has an inventory row (for example **`replayt-minor-float.yml`**
@@ -115,7 +117,7 @@ unless the test is being retired on purpose.
 | **`docs/reference-documentation/`** | Optional **markdown** (or lightweight text) snapshots of **replayt** upstream reference material for contributors / **Mission Control** / offline context — see **[`README.md`](reference-documentation/README.md)** | Replace **PyPI** or upstream docs as the integration contract; commit material without **license** / **provenance** review; bloat the default tree with large binaries without an explicit maintainer decision and **CHANGELOG** note |
 | **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
-| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); **`jobs.examples-playwright-smoke`** for **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`** (see [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright)); optional **`replayt-minor-float.yml`** for **schedule**/**manual** **0.2.x** float smoke ([Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job)) | Store long-lived tokens (read-only `contents` is the default contract) |
+| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); **`jobs.examples-playwright-smoke`** for **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`** (see [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright)); optional **`replayt-minor-float.yml`** for **schedule**/**manual** **0.2.x** float smoke ([Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job)); optional **`build-and-publish-images.yml`** for GHCR publishing with fallback credential model (see [GHCR publishing credentials](#ghcr-publishing-credentials)) | Store long-lived tokens (read-only `contents` is the default contract; ephemeral `GITHUB_TOKEN` or explicit `GHCR_TOKEN` per [GHCR publishing credentials](#ghcr-publishing-credentials)) |
 
 **Dependency direction:** showcase code and tests **→** **replayt** (PyPI). Demos may document how integrators pull
 **replayt** in their own apps; this repo does not re-export **replayt** as a different product.
@@ -619,6 +621,7 @@ work unless a change here explicitly requires synchronized updates to **`.github
 | **Supply chain** | Keep **`pip-audit`** aligned with **`docs/DEPENDENCY_AUDIT.md`** (including documented **`--ignore-vuln`** entries that match the workflow). | Existing **`supply-chain`** (or equivalent) job |
 | **Static HTML smoke (optional)** | **`jobs.examples-playwright-smoke`**: **Playwright** loads **Shipped** **`docs/examples/*.html`** over **HTTP** per [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright); **Chromium**-first; scoped **`pytest`** (**`--no-cov`**, **`--override-ini="addopts="`**) does **not** replace **`jobs.test`** **pytest** **cov** gate | **`tests/playwright/test_static_html_examples_load.py`**; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE**; **`test_ci_examples_playwright_smoke_job_matches_spec`** |
 | **replayt** minor-line float (optional) | **`schedule`** + **`workflow_dispatch`** only; **`pip install -e ".[dev]"`** with **PEP 508** constraint bounding **replayt** to **0.2.x** inside **`pyproject.toml`**; post-install version assert; **import smoke** + **`python -m replayt_ux_showcase.demo`** subprocess success only — **no** default **PR** trigger, **no** **ruff**/**cov**/**full pytest**/**Playwright**/**pip-audit** in this job unless a separate backlog expands it | **`.github/workflows/replayt-minor-float.yml`**; **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**; **`test_ci_replayt_minor_float_job_matches_spec`** |
+| **GHCR image publishing** (optional) | **`.github/workflows/build-and-publish-images.yml`** builds and pushes to **GitHub Container Registry** with fallback credential model: `GITHUB_TOKEN`/`GITHUB_ACTOR` defaults vs optional `GHCR_TOKEN`/`GHCR_USERNAME` secrets for cross-org or restricted-permission scenarios. See [GHCR publishing credentials](#ghcr-publishing-credentials) for credential tiers, fallback behavior, and when custom secrets are necessary. | Workflow YAML in tree; **`docs/operations/deployment.md`** |
 
 ### Optional replayt minor-line float CI job
 
@@ -712,6 +715,65 @@ observable logs and **README** badges.
 3. Add **README** workflow badge(s) with the actual **GitHub** coordinates; extend **`tests/test_design_principles_contract.py`**
    if maintainers want CI to assert **ruff** (and/or badge presence) mechanically.
 4. Record user-visible CI changes under **CHANGELOG** **Unreleased**.
+
+---
+
+## GHCR publishing credentials
+
+Normative spec for the backlog item **Update GHCR publishing documentation to match the current workflow behavior**:
+what credentials are required vs. optional when publishing container images to **GitHub Container Registry (GHCR)**,
+how the workflow handles fallback from custom secrets to GitHub-native defaults, and when custom credentials are still
+necessary.
+
+### Credential tiers
+
+| Tier | Variables | Required in secrets? | Fallback | Use case |
+|------|-----------|---------------------|----------|----------|
+| **Default (GitHub-native)** | `GITHUB_TOKEN`, `GITHUB_ACTOR` | No — provided by GitHub Actions | None (always available) | Same-repository publishing with standard `permissions: packages: write` |
+| **Custom (Overrides)** | `GHCR_TOKEN`, `GHCR_USERNAME` | Optional — define only when needed | Defaults above if absent | Cross-org publishing, restricted `GITHUB_TOKEN` permissions, external integrations |
+
+### Workflow fallback behavior
+
+**`.github/workflows/build-and-publish-images.yml`** evaluates credentials in this order:
+
+```yaml
+env:
+  GHCR_USER: ${{ secrets.GHCR_USERNAME || github.actor }}
+  GHCR_PASS: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
+```
+
+**Properties:**
+- **Transparent fallback:** The workflow never fails when custom secrets are absent; it uses GitHub defaults.
+- **Authentication failure:** If **both** custom secrets **and** the default token are unavailable (e.g., forks without `packages:write`), the login step fails with a clear authentication error.
+- **Mixed configuration:** Per-job evaluation allows one custom secret + one default (e.g., custom `GHCR_USERNAME` with default `GITHUB_TOKEN`).
+
+### When custom credentials are necessary
+
+| Scenario | Why defaults fail | Custom secret approach |
+|----------|-------------------|------------------------|
+| **Cross-organization publishing** | `GITHUB_TOKEN` is scoped to the repository's organization only | Set `GHCR_USERNAME` to the target org (e.g., `other-org`) and `GHCR_TOKEN` to a PAT with `write:packages` in that org |
+| **Restricted workflow permissions** | Organization disables `packages:write` for `GITHUB_TOKEN` (**Settings > Actions > General > Workflow permissions**) | Store a classic PAT with `write:packages` scope in `GHCR_TOKEN`; set `GHCR_USERNAME` explicitly if needed |
+| **External integrations** | Build runs outside GitHub Actions (e.g., Jenkins, GitLab CI mirror) | Use a long-lived PAT in `GHCR_TOKEN`; set `GHCR_USERNAME` to the PAT owner |
+
+### Security guidance
+
+- **Prefer defaults:** Use `GITHUB_TOKEN` when possible — it is scoped to the workflow run and expires automatically.
+- **Least-privilege PATs:** If using a classic PAT for `GHCR_TOKEN`, limit scope to `write:packages` only. Prefer fine-grained PATs targeting the destination organization when cross-org publishing is required.
+- **Rotation cadence:** Document owner and rotation schedule for any PAT stored in `GHCR_TOKEN` (e.g., quarterly in team runbook).
+- **Fork safety:** Forks do not inherit repository secrets. Fork-based CI builds use defaults and may skip publishing or fail login — this is expected and safe.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| `denied: installation not allowed to Write organization package` | `GITHUB_TOKEN` lacks `packages:write` in organization settings | Enable **Settings > Actions > General > Workflow permissions > Read and write permissions**, or use `GHCR_TOKEN` + `GHCR_USERNAME` secrets. |
+| `unauthorized: authentication required` | No credentials available | Confirm `permissions: packages: write` in workflow YAML, or add `GHCR_USERNAME` + `GHCR_TOKEN` secrets. |
+| Published to wrong namespace | `GITHUB_ACTOR` resolves to triggering user, not target org | Set `GHCR_USERNAME` explicitly to the desired org name. |
+
+### Related documentation
+
+- **[`docs/operations/deployment.md`](operations/deployment.md)** — Operational details, manual build commands, credential reference
+- **`CONTRIBUTING.md`** — When to update this spec alongside workflow changes
 
 ---
 
