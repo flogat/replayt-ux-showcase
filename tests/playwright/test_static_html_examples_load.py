@@ -11,10 +11,11 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXAMPLES_ROOT = REPO_ROOT / "docs" / "examples"
 
-# Shipped root ``*.html`` per ``docs/examples/PATTERNS.md`` (P-01–P-05, P-09, P-10).
+# Shipped root ``*.html`` per ``docs/examples/PATTERNS.md`` (P-01–P-05, P-09–P-11).
 SHIPPED_ROOT_HTML = frozenset(
     {
         "basic-player.html",
+        "basic-player-tailwind.html",
         "player-session-metadata-bar.html",
         "timeline-scrubber.html",
         "embed-container-states.html",
@@ -59,7 +60,13 @@ def test_shipped_root_html_inventory_matches_allowlist() -> None:
 
 # If the pinned replayt bundle or the browser emits unavoidable console warnings,
 # add ``(filename, substring)`` entries and a one-line rationale in a comment above.
-_CONSOLE_WARNING_ALLOWLIST: tuple[tuple[str, str], ...] = ()
+# P-11 basic-player-tailwind.html: Tailwind Play CDN logs this by design; HTML already warns integrators.
+_CONSOLE_WARNING_ALLOWLIST: tuple[tuple[str, str], ...] = (
+    (
+        "basic-player-tailwind.html",
+        "cdn.tailwindcss.com should not be used in production",
+    ),
+)
 
 
 def _warning_allowed(filename: str, text: str) -> bool:
