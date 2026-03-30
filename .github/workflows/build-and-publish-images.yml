@@ -1,0 +1,81 @@
+name: Build and Publish Images
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Optional image tag override (default: branch or sha)"
+        required: false
+        default: ""
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  # Use custom GHCR credentials if defined; fall back to GitHub-native defaults.
+  # GHCR_USERNAME/GHCR_TOKEN are optional repository secrets for cross-org
+  # publishing or when GITHUB_TOKEN lacks packages:write permission.
+  GHCR_USER: ${{ secrets.GHCR_USERNAME || github.actor }}
+  GHCR_PASS: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine image tag
+        id: meta
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            echo "tag=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.ref }}" == refs/heads/* ]]; then
+            echo "tag=${GITHUB_REF#refs/heads/}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.GHCR_USER }}
+          password: ${{ env.GHCR_PASS }}
+
+      - name: Build image
+        run: |
+          docker build \
+            -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}" \
+            .
+
+      - name: Push image (non-PR only)
+        if: github.event_name != 'pull_request'
+        run: |
+          docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}"
+
+      - name: Push latest tag on master (non-PR only)
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+        run: |
+          docker tag \
+            "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}" \
+            "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+
+      - name: Summarize
+        run: |
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}"
+          echo "Auth user: ${{ env.GHCR_USER }}"
+          echo "Pushed: ${{ github.event_name != 'pull_request' }}"
