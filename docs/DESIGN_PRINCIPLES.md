@@ -25,13 +25,27 @@ is tracked separately in code and CHANGELOG):
 | **pip-audit** failures, local reproduction, overrides vs pins | [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit), [`docs/DEPENDENCY_AUDIT.md`](DEPENDENCY_AUDIT.md) |
 | Extension points documented | [Extension points](#extension-points) |
 | Audience needs extended | [Audience](#audience) |
+<<<<<<< HEAD
 | Distinct vanilla UI patterns (mission: **5+**), per-pattern acceptance | [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog), [examples/PATTERNS.md](examples/PATTERNS.md), [MISSION.md](MISSION.md#pattern-coverage-tracking) |
 | Timeline / player **keyboard** and **focus** (handoff checklist) | [`docs/a11y/keyboard-model.md`](a11y/keyboard-model.md), [Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog) (shared contract), [examples/PATTERNS.md](examples/PATTERNS.md) (per-pattern rules) |
 | **Design-to-code handoff** (tokens, anatomy, printable checklist) | [`docs/playbook/README.md`](playbook/README.md), [`tokens.md`](playbook/tokens.md), [`component-anatomy.md`](playbook/component-anatomy.md), [`handoff-checklist.md`](playbook/handoff-checklist.md), [README.md](../README.md#quick-start) (integrator quick start link) |
 | **Figma design kit** (library access, variable → **`rux-*`** mapping, change process, interim **JSON** export, shipped-example **`--rux-*`** wiring, component inventory **BC1–BC4**) | [Design kit (Figma) and token export](#design-kit-figma-and-token-export), [`docs/design-kit/README.md`](design-kit/README.md) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 <<<<<<< HEAD
+<<<<<<< HEAD
 | **docs/examples** static demos — headless **Playwright** smoke (**P-01** first) | [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests), [Showcase stack matrix](#showcase-stack-matrix), [GitHub Actions CI workflow](#github-actions-ci-workflow) |
+=======
+| **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
+| **Click heatmap / static canvas** (session **`click`** **`x`/`y`** density on viewport-sized stage) | **[P-10](examples/PATTERNS.md#p-10--click-heatmap-on-static-canvas-session-click-coordinates)** (**[`click-heatmap-canvas.html`](examples/click-heatmap-canvas.html)** **Shipped**), [`SESSION_SCHEMA.md` §1](examples/SESSION_SCHEMA.md#1-showcase-session-fixture-canonical), [`keyboard-model.md`](a11y/keyboard-model.md), [Backlog traceability: Click heatmap **P-10**](#backlog-traceability-click-heatmap-on-static-canvas-vanilla-p-10) |
+| **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
+| **Session fixture** (`SAMPLE_SESSION_DATA` ↔ **`docs/examples`**) | [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [examples/PATTERNS.md — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), [`docs/demo.md`](demo.md) |
+| **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
+| Optional **replayt** minor-line float smoke (**schedule** / **manual**, not default **PR** gate) | [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), [Compatibility digest — optional float spec](compat.md#optional-replayt-minor-line-float-job-spec) |
+| **Bundled upstream reference docs** (optional **replayt** markdown snapshots, **Mission Control** refresh workflow) | [`docs/reference-documentation/README.md`](reference-documentation/README.md), [Backlog traceability: Bundled upstream reference docs workflow](#backlog-traceability-bundled-upstream-reference-docs-workflow), [Extension points](#extension-points) (**Maintainers** row) |
+=======
+| Tailwind static player example (contract + boundaries) | [Basic player example contract](#basic-player-example-contract-static-html), [Showcase stack matrix](#showcase-stack-matrix), [Backlog traceability: Tailwind-based player layout example](#backlog-traceability-tailwind-based-player-layout-example) |
+>>>>>>> origin/mc/backlog-b7eb5287
+>>>>>>> master
 
 ### Traceability to automated checks
 
@@ -1364,6 +1378,50 @@ align offline context with pinned **replayt** versions, while **PyPI** / upstrea
 | Default clone stays lean | **Layout**, module boundary row [Module and directory boundaries](#module-and-directory-boundaries) | Repo may ship **only** spec **README** under **`docs/reference-documentation/`**; no new default **CI** deps |
 
 **Enforcement in CI today:** **`tests/test_reference_documentation_docs.py`** guards spec structure, cross-links, helper documentation, and that **default CI** does not run the helper. **No** test requires committed snapshot files under **`docs/reference-documentation/`** (tree may stay **README**-only).
+=======
+| Vanilla HTML/JS | Yes (`docs/examples/`) | File/smoke tests as implemented under `tests/` | Default integration path for smallest surface |
+| Tailwind (utility CSS) | Yes (`docs/examples/tailwind-player.html`) | `tests/test_examples.py` — file presence plus shared script / **`sessionData`** / **`init`** string contract with **`basic-player.html`** (no browser job yet) | Same **`docs/examples/`** boundaries as vanilla; not an npm-published package unless explicitly released as such |
+| React | ^18 when a React example exists | Not required until a React demo ships | Copy-paste snippets per the mission |
+| Vue | ^3 when a Vue example exists | Not required until a Vue demo ships | Same as React |
+| Svelte | ^4 when a Svelte example exists | Not required until a Svelte demo ships | Same as React |
+>>>>>>> origin/mc/backlog-b7eb5287
+
+---
+
+## Basic player example contract (static HTML)
+
+Normative contract for **minimal** embeddable player demos under **`docs/examples/`**. **`docs/examples/basic-player.html`** is the reference **vanilla CSS** implementation. A **Tailwind**-styled sibling (**`docs/examples/tailwind-player.html`**, see [Backlog traceability](#backlog-traceability-tailwind-based-player-layout-example) below) MUST preserve the same integrator-facing semantics even when markup and classes differ.
+
+| Element | Requirement |
+| ------- | ----------- |
+| **Player script** | Include a **replayt** player bundle (e.g. CDN **`script`** tag). Document that the URL/version is illustrative; integrators MUST align with their supported **replayt** release and bundling policy ([Upstream boundary](#one-way-to-do-it-canonical-patterns)). |
+| **Instructions** | A visible block (e.g. callout/card) explaining copy-paste intent, where **`sessionData`** comes from, and how theming works (CSS custom properties and/or **Tailwind**-compatible tokens). |
+| **Container** | A single dedicated mount element for the player (recommended id **`player`** for parity with **`basic-player.html`**). |
+| **Session payload** | In-page **`sessionData`** placeholder (or equivalent) with the same **shape** as **`basic-player.html`** (`events`, `metadata` with `startTs` and `viewport`) unless upstream docs mandate a newer shape—then update **both** reference examples in one change set. |
+| **Init hook** | Script that calls **`window.replayt?.player?.init({ container, data, theme })`** (or the current documented public init pattern for the pinned major), using optional chaining so the page fails softly when the script is absent. |
+| **Module boundary** | File header comment and/or instructions MUST state that the page is **illustrative** and **copy-paste** only, **not** a published **npm** package—see **`docs/examples/`** row under [Module and directory boundaries](#module-and-directory-boundaries). |
+
+**Out of scope for this contract:** **pytest** line-coverage gates (those apply to **`src/replayt_ux_showcase/demo.py`** only). File-presence and light string-contract checks for static HTML examples live in **`tests/test_examples.py`**; full browser automation remains optional until a dedicated job ships.
+
+### Backlog traceability: Tailwind-based player layout example
+
+**Normalized user story:** As integrator using **Tailwind**, I want a static **`docs/examples/tailwind-player.html`** that matches the [basic player example contract](#basic-player-example-contract-static-html), uses **Tailwind** utility classes for layout and chrome, and documents **CSS variables** for theming—clearly labeled illustrative copy-paste, not a shipped frontend package.
+
+| Backlog acceptance criterion | Where specified | How verified (target) |
+| ---------------------------- | --------------- | ---------------------- |
+| **New static example file** | [Basic player example contract](#basic-player-example-contract-static-html) | **`docs/examples/tailwind-player.html`** exists at repo root path above |
+| **Contract parity** | Same table (**Player script**, **Instructions**, **Container**, **Session payload**, **Init hook**) | **`tests/test_examples.py`** (`test_tailwind_player_matches_basic_player_contract`) plus human review; **Builder** keeps shapes and init pattern aligned when either file changes |
+| **Tailwind styling** | This subsection | Layout, spacing, typography, and chrome use **Tailwind** utility classes in the HTML (e.g. **`class="..."`**). Prefer [**Tailwind Play CDN**](https://tailwindcss.com/docs/installation/play-cdn) or an equivalent **documented** zero-build CDN snippet in the file so the example opens standalone; integrators may replace with their own **Tailwind** pipeline. |
+| **Theming via CSS variables** | Same | Page documents integrator theming with **CSS custom properties** (e.g. on **`:root`** or a wrapper), wired into utilities via **`[style]`**, arbitrary properties, or **`@theme`** / **`theme()`** as appropriate to the chosen **Tailwind** version—must be visible in the shipped file or adjacent HTML comment. |
+| **README cross-link** | [Module and directory boundaries](#module-and-directory-boundaries) | **`README.md`** project layout (or immediate **Examples** note) links **`basic-player.html`**, the **Tailwind** file, and this contract section |
+| **Illustrative / not a package** | **`docs/examples/`** boundary | Instructions or header comment repeat that the file is not a published **npm** product |
+
+**Builder checklist (phase 3):**
+
+1. Add **`docs/examples/tailwind-player.html`**; keep **`sessionData`** and **`init`** call aligned with **`basic-player.html`** unless both are updated for a **replayt** API change.
+2. Update **`README.md`** with links and the illustrative-only disclaimer (cross-reference **DESIGN_PRINCIPLES** boundaries).
+3. Record the new example under **CHANGELOG** **Unreleased** when the file ships.
+4. Do **not** add **npm** packaging or imply **`replayt-ux-showcase`** ships this HTML as a **node** dependency without an explicit maintainer decision and **CHANGELOG** entry.
 
 ---
 
@@ -1473,7 +1531,11 @@ milestones toward the mission **5+** goal, with a contributor checklist for **DE
 | **replayt** minor/major with API changes | Update examples and tests; refresh matrices; **CHANGELOG** with “how to update your copy” bullets |
 | **New Python floor** | Update `requires-python`, CI images, and the [Replayt and Python matrix](#replayt-and-python-matrix) |
 | **New framework example** | Add under **`docs/examples/`** (or scoped subdir), link from README/demo spec, add showcase row above |
+<<<<<<< HEAD
 | **New vanilla UI pattern** | Add **`docs/examples/*.html`**, register in **`docs/examples/PATTERNS.md`**, update **CHANGELOG** **Unreleased** and **`docs/MISSION.md`** pattern table ([Vanilla UI pattern catalog](#vanilla-ui-pattern-catalog)) |
+=======
+| **New Tailwind static player** | Add **`tailwind-player.html`**, satisfy [Basic player example contract](#basic-player-example-contract-static-html), update **README** and **CHANGELOG**; **Showcase stack matrix** already reserves the row |
+>>>>>>> origin/mc/backlog-b7eb5287
 | **Integrator upgrading** | Compare their pinned **replayt** to this repo’s supported range; follow **CHANGELOG** for the showcase version they target |
 | **Dev toolchain or replayt pin change** | Update **`pyproject.toml`**, [Dependency pins and dev toolchain](#dependency-pins-and-dev-toolchain) / matrix cells, contract tests, and **CHANGELOG** in one change set |
 

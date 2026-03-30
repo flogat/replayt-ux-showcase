@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+  Illustrative copy-paste only. Not a published npm package — see docs/DESIGN_PRINCIPLES.md
+  (Module and directory boundaries, docs/examples/).
+  Tailwind via Play CDN for a standalone file; swap for your build pipeline in production.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replayt Tailwind Player Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        replayt: {
+                            primary: 'var(--replayt-primary, #2563eb)',
+                            surface: 'var(--replayt-surface, #f8fafc)',
+                            border: 'var(--replayt-border, #e2e8f0)',
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <!-- Assume replayt player CDN; replace with npm/your bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/replayt@0.1.0/dist/player.min.js"></script>
+    <style>
+        :root {
+            --replayt-primary: #2563eb;
+            --replayt-surface: #f1f5f9;
+            --replayt-border: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <h1 class="mb-6 text-2xl font-semibold tracking-tight text-slate-800">
+            Basic Replayt player (Tailwind layout)
+        </h1>
+        <div
+            class="mb-6 rounded-lg border border-replayt-border bg-replayt-surface p-4 text-sm text-slate-700 shadow-sm"
+            role="note"
+        >
+            <p class="mb-2 font-medium text-slate-800">Copy-paste ready</p>
+            <p class="mb-3">
+                Embed in your app. Fetch <code class="rounded bg-white px-1 py-0.5 font-mono text-xs text-replayt-primary ring-1 ring-replayt-border">sessionData</code> from your replayt backend API.
+            </p>
+            <p class="mb-2 text-xs uppercase tracking-wide text-slate-500">Not an npm package</p>
+            <p class="mb-3 text-slate-600">
+                This file is an illustrative starter only, not a published frontend package.
+            </p>
+            <ul class="list-inside list-disc space-y-1 text-slate-600">
+                <li>Theme via CSS variables (e.g. <code class="font-mono text-xs text-replayt-primary">--replayt-primary</code> in <code class="font-mono text-xs">:root</code>)</li>
+                <li>Extend: add a timeline scrubber via the replayt events API.</li>
+            </ul>
+        </div>
+        <div
+            id="player"
+            class="h-[60vh] w-full overflow-hidden rounded-xl border border-replayt-border bg-white shadow-md ring-1 ring-black/5"
+        ></div>
+    </div>
+    <script>
+        // Placeholder: Fetch real data e.g. fetch('/api/sessions/:id/replay')
+        const sessionData = {
+            events: [],  // Replayt event array
+            metadata: { startTs: Date.now(), viewport: { width: 1920, height: 1080 } }
+            // Full schema: see replayt docs
+        };
+
+        // Init player (assumed API; match your replayt version)
+        window.replayt?.player?.init({
+            container: document.getElementById('player'),
+            data: sessionData,
+            theme: 'light'  // 'dark' supported
+        });
+    </script>
+</body>
+</html>

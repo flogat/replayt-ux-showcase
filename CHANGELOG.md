@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Documentation
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
 - Phase **2** spec (*Update GHCR publishing documentation to match the current workflow behavior*): **`docs/operations/deployment.md`** — deployment guide covering GHCR credential model: required (`GITHUB_TOKEN`/`GITHUB_ACTOR`) vs optional overrides (`GHCR_TOKEN`/`GHCR_USERNAME`), fallback behavior, use cases for custom credentials (cross-org publishing, restricted permissions, external integrations), security guidance, and troubleshooting table; **`.github/workflows/build-and-publish-images.yml`** — canonical workflow YAML with `secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN` fallback pattern; **`docs/DESIGN_PRINCIPLES.md`** — new [GHCR publishing credentials](docs/DESIGN_PRINCIPLES.md#ghcr-publishing-credentials) subsection with credential tiers table, workflow fallback behavior, use cases, security guidance, and troubleshooting; [Module and directory boundaries](docs/DESIGN_PRINCIPLES.md#module-and-directory-boundaries) row for `docs/operations/`; [Traceability to automated checks](docs/DESIGN_PRINCIPLES.md#traceability-to-automated-checks) row for GHCR publishing.
 - Phase **3** Builder (*Update GHCR publishing documentation to match the current workflow behavior*): **`docs/compat.md`** — added **EX-GHCR-PUBLISH** to [CI exercise row inventory](docs/compat.md#ci-exercise-row-inventory), documenting **`jobs.build-and-push`** in **`.github/workflows/build-and-publish-images.yml`** with trigger matrix and credential fallback behavior.
 - Phase **2** spec (*Rewrite the README intro around audience, outcome, and scope*): **`docs/DESIGN_PRINCIPLES.md`** — new [README intro and repo orientation](docs/DESIGN_PRINCIPLES.md#readme-intro-and-repo-orientation) contract covering above-the-fold placement, required audience/outcome/non-goal copy, real-doc link targets, and Builder checklist; **`docs/MISSION.md`** — explicit **Non-goals** section so the README rewrite can point at stable repo boundaries instead of stale "main app / publish app" wording from the backlog text.
@@ -17,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 =======
 - Phase **3** Builder (*Create a dedicated mission-and-scope document for contributors*): **`tests/test_mission_doc.py`** — contract tests for **`docs/MISSION.md`** existence, core sections, and cross-links to **`docs/README.md`**, **`docs/playbook/`**, and **`docs/design-kit/`**; README and docs index mission link coverage.
 - Phase **2** spec (*Create a dedicated mission-and-scope document for contributors*): **`docs/README.md`** — new documentation index with navigation table linking to **MISSION.md** and key docs; **`docs/MISSION.md`** linked from docs index and README project layout table so contributors can discover the mission document.
+>>>>>>> master
 - Phase **2** spec (*Rewrite the README intro around audience, outcome, and scope*): **`docs/DESIGN_PRINCIPLES.md`** — new [README intro and repo orientation](docs/DESIGN_PRINCIPLES.md#readme-intro-and-repo-orientation) contract covering above-the-fold placement, required audience/outcome/non-goal copy, real-doc link targets, and Builder checklist; **`docs/MISSION.md`** — explicit **Non-goals** section so the README rewrite can point at stable repo boundaries instead of stale “main app / publish app” wording from the backlog text.
 - Phase **3** Builder (*Rewrite the README intro around audience, outcome, and scope*): **`README.md`** — new top-of-file orientation block under the **H1** covering the intended audience, shipped repo surfaces (**`docs/examples/`**, **`docs/playbook/`**, **`docs/design-kit/`**, **`src/replayt_ux_showcase/`**), explicit non-goals, and direct next-step links to **Quick start**, **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/PATTERNS.md`**, and **`docs/playbook/README.md`**.
 >>>>>>> master
@@ -144,6 +147,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Phase **6** security hardening (*Bundled upstream reference docs workflow*): **`scripts/refresh-reference-docs/copy_markdown_snapshots.py`** — reject **`--subdir`** / **`--version`** values that are absolute paths, contain **`..`**, or resolve outside **`docs/reference-documentation/`** (maintainer **CLI** defense in depth); **`tests/test_reference_documentation_docs.py`** — regression cases for unsafe segments.
 - `tests/test_changelog_release_policy_docs.py`: **ruff format** (line wrap) and **LF** line endings so **`ruff format --check`** / Linux CI stay consistent (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
 - `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Second UI pattern: event overlay / heatmap on static canvas* — **P-10** contract tests).
+=======
+- `docs/DESIGN_PRINCIPLES.md`: **Showcase stack matrix** and basic player contract notes now match **`tests/test_examples.py`** coverage for **`tailwind-player.html`** (phase 5 architecture review, same backlog).
+- `docs/examples/basic-player.html`: HTML comment states illustrative copy-paste / not an **npm** package, matching the static player contract (phase 5, same backlog).
+- `docs/examples/tailwind-player.html`: **Tailwind** Play CDN layout + CSS variables for theming; same **`sessionData`** / **`replayt.player.init`** contract as **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
+- `README.md`: **Examples** links **`basic-player.html`** and **`tailwind-player.html`**, contract anchors, illustrative-not-npm disclaimer; **Tailwind** entry is present tense (phase 2–3, Add Tailwind-based player layout example under docs/examples/).
+- `docs/DESIGN_PRINCIPLES.md`: basic player static HTML contract, **Showcase stack matrix** row for **Tailwind**, migration path row, and backlog traceability for **`docs/examples/tailwind-player.html`** (phase 2 spec, same backlog).
+
+### Tests
+
+- `tests/test_examples.py`: **`tailwind-player.html`** presence and contract parity with **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
+>>>>>>> origin/mc/backlog-b7eb5287
 
 ## [0.2.0] - 2026-03-28
 
