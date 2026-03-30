@@ -30,16 +30,7 @@ is tracked separately in code and CHANGELOG):
 | **Figma design kit** (library access, variable → **`rux-*`** mapping, change process, interim **JSON** export, shipped-example **`--rux-*`** wiring, component inventory **BC1–BC4**) | [Design kit (Figma) and token export](#design-kit-figma-and-token-export), [`docs/design-kit/README.md`](design-kit/README.md) |
 | Offline deterministic **fixture** page for **LLM** / reviewer harnesses | [Offline deterministic fixture page](#offline-deterministic-fixture-page-for-llm-and-reviewer-workflows), [LLM boundaries](#llm-boundaries), **[P-05](examples/PATTERNS.md#p-05-offline-deterministic-fixture-page-for-llm-and-reviewer-workflows)** |
 <<<<<<< HEAD
-| **Event overlay** vanilla teaching example (scrub-linked callouts, hover + keyboard, offline **`sessionData`**) | **[P-09](examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)** (**[`event-overlay.html`](examples/event-overlay.html)**), [`component-anatomy.md` §2 overlays](playbook/component-anatomy.md#2-overlays-dialogs-popovers-event-callouts), [`keyboard-model.md`](a11y/keyboard-model.md), **[`docs/demo.md`](demo.md#cross-surface-operator-story-console-demo-and-web-embed)** cross-surface row + **`demo.py`** overlay teaching line |
-| **Click heatmap / static canvas** (session **`click`** **`x`/`y`** density on viewport-sized stage) | **[P-10](examples/PATTERNS.md#p-10--click-heatmap-on-static-canvas-session-click-coordinates)** (**[`click-heatmap-canvas.html`](examples/click-heatmap-canvas.html)** **Shipped**), [`SESSION_SCHEMA.md` §1](examples/SESSION_SCHEMA.md#1-showcase-session-fixture-canonical), [`keyboard-model.md`](a11y/keyboard-model.md), [Backlog traceability: Click heatmap **P-10**](#backlog-traceability-click-heatmap-on-static-canvas-vanilla-p-10) |
-| **replayt** public Python API guard on showcase modules | [replayt Python API boundary](#replayt-python-api-boundary), [Compatibility digest — API table](compat.md#replayt-python-public-api-showcase-digest) |
-| **Session fixture** (`SAMPLE_SESSION_DATA` ↔ **`docs/examples`**) | [`docs/examples/SESSION_SCHEMA.md`](examples/SESSION_SCHEMA.md), [examples/PATTERNS.md — Canonical session fixture](examples/PATTERNS.md#canonical-session-fixture-cross-surface), [`docs/demo.md`](demo.md) |
-| **CHANGELOG**, semver bumps, and **Unreleased** pattern milestones | [Changelog, semver, and release notes](#changelog-semver-and-release-notes), [`CONTRIBUTING.md`](../CONTRIBUTING.md) |
-| Optional **replayt** minor-line float smoke (**schedule** / **manual**, not default **PR** gate) | [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), [Compatibility digest — optional float spec](compat.md#optional-replayt-minor-line-float-job-spec) |
-| **Bundled upstream reference docs** (optional **replayt** markdown snapshots, **Mission Control** refresh workflow) | [`docs/reference-documentation/README.md`](reference-documentation/README.md), [Backlog traceability: Bundled upstream reference docs workflow](#backlog-traceability-bundled-upstream-reference-docs-workflow), [Extension points](#extension-points) (**Maintainers** row) |
-=======
 | **docs/examples** static demos — headless **Playwright** smoke (**P-01** first) | [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests), [Showcase stack matrix](#showcase-stack-matrix), [GitHub Actions CI workflow](#github-actions-ci-workflow) |
->>>>>>> origin/mc/backlog-ef4adea7
 
 ### Traceability to automated checks
 
@@ -72,20 +63,7 @@ These alignments are **enforced in CI** today (the principles doc is broader):
 | Root **`package.json`** (optional **npm** bundler recipe) | **`tests/test_optional_npm_bundler_recipe.py`** (**`private`**, scripts, **`replayt`** semver string, no **npm** in **`.github/workflows/ci.yml`**); **`npm run build`** not run in **CI**; MUST follow [`docs/examples/build.md`](examples/build.md); **`tests/test_docs_examples_replayt_pins.py`** covers **`docs/examples/build.md`** prose pins |
 | Optional **`integrity`** (**SRI**) on CDN **`<script>`** tags in examples | **Not** enforced in **CI** today; if present, must match the pinned URL’s bytes — see [`docs/FRONTEND_SUPPLY_CHAIN.md`](FRONTEND_SUPPLY_CHAIN.md) |
 <<<<<<< HEAD
-| Static **HTML** examples: **Playwright** load smoke (no **console** errors on initial load; **Chromium**-first matrix) | **`jobs.examples-playwright-smoke`** in **`.github/workflows/ci.yml`**; **`tests/playwright/test_static_html_examples_load.py`**; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE**; `tests/test_design_principles_contract.py` (`test_ci_examples_playwright_smoke_job_matches_spec`) |
-| Showcase code: **replayt** imports use only published top-level symbols (**`replayt.__all__`**) and no underscore-private **`replayt` submodules** | **`tests/test_replayt_public_api_boundary.py`** — default **`pytest`** in every **CI** **test** matrix cell; see [Backlog traceability: Harden replayt public-API boundary](#backlog-traceability-harden-replayt-public-api-boundary-lint-or-import-guard) |
-| **`docs/DEPENDENCY_AUDIT.md`** — **D1–D10** playbook (local **`pip-audit`**, fix vs override policy, **README** troubleshooting link) | **`tests/test_dependency_audit_doc.py`** (see [Dependency vulnerability audit (pip-audit)](#dependency-vulnerability-audit-pip-audit)) |
-| Optional **replayt** minor-line float job (**latest patch** within one minor, import + demo subprocess only) | **`.github/workflows/replayt-minor-float.yml`** — **`jobs.replayt-minor-float-smoke`**; **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**; `tests/test_design_principles_contract.py` (`test_ci_replayt_minor_float_job_matches_spec`); normative spec: [Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job), **`docs/compat.md`** [Optional replayt minor-line float job (spec)](compat.md#optional-replayt-minor-line-float-job-spec) |
-
-The **`docs/compat.md`** [CI exercise row inventory](compat.md#ci-exercise-row-inventory) MUST stay aligned with
-**`.github/workflows/ci.yml`** and with any companion workflow file that has an inventory row (for example **`replayt-minor-float.yml`**
-for **EX-REPLAYT-MINOR-FLOAT**)
-per [CI exercise rows](#ci-exercise-rows-matrix-jobs-and-best-effort). Drift fails **CI** via
-**`test_compat_ci_exercise_inventory_ids_match_ci_matrix`** / **`test_ci_replayt_minor_float_job_matches_spec`** (same change set as workflow or inventory edits — see
-[Backlog traceability: Expand compatibility matrix with explicit CI matrix job per row](#backlog-traceability-expand-compatibility-matrix-with-explicit-ci-matrix-job-per-row)).
-=======
 | **`docs/examples/`** **P-01** (`basic-player.html`) loads under **HTTP** in headless **Chromium** with documented **DOM** / stability checks | **`tests/docs_examples_playwright/test_basic_player.py`**; **`.github/workflows/ci.yml`** job **`docs-examples-playwright`** (**`playwright install --with-deps chromium`**, **`pytest`** with **`--no-cov`** and **`--browser chromium`**) — [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests) |
->>>>>>> origin/mc/backlog-ef4adea7
 
 When pins, workflow images, or section titles change, update **this document** and **tests** together in one change set
 unless the test is being retired on purpose.
@@ -123,10 +101,7 @@ unless the test is being retired on purpose.
 | **`package.json`** (repo root, optional) | **Private** **npm** metadata + scripts for **Vite** / **esbuild** local bundling per **[`docs/examples/build.md`](examples/build.md)** | Imply a **published** **npm** product for this repository, or omit **`"private": true`**, without an explicit maintainer decision and **CHANGELOG** entry |
 | **`tests/`** | Repo invariants: packaging, file presence, smoke behavior against installed **replayt** | Replace upstream **replayt** unit tests or depend on private APIs |
 <<<<<<< HEAD
-| **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); **`jobs.examples-playwright-smoke`** for **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`** (see [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright)); optional **`replayt-minor-float.yml`** for **schedule**/**manual** **0.2.x** float smoke ([Optional replayt minor-line float CI job](#optional-replayt-minor-line-float-ci-job)) | Store long-lived tokens (read-only `contents` is the default contract) |
-=======
 | **`.github/workflows/`** | CI that installs with **`pip install -e ".[dev]"`**, runs **pytest** (with **`[tool.pytest.ini_options]`** coverage gate on the non-browser **`tests/`** tree via **`--ignore=tests/docs_examples_playwright`**), job **`docs-examples-playwright`** for [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests), **ruff**, and **pip-audit** (see [GitHub Actions CI workflow](#github-actions-ci-workflow)); future matrix jobs as needed | Store long-lived tokens (read-only `contents` is the default contract) |
->>>>>>> origin/mc/backlog-ef4adea7
 
 **Dependency direction:** showcase code and tests **→** **replayt** (PyPI). Demos may document how integrators pull
 **replayt** in their own apps; this repo does not re-export **replayt** as a different product.
@@ -180,12 +155,8 @@ boundary rows appear here.
 
 - **Primary:** `src/replayt_ux_showcase/demo.py` — the console timeline module described in **`docs/demo.md`**.
 <<<<<<< HEAD
-- **Out of scope for the 80% gate:** static files under **`docs/examples/`** (see [Showcase stack matrix](#showcase-stack-matrix));
-  optional **Playwright** load smoke for those pages is specified in [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright) and does **not** change the **`demo.py`** coverage metric.
-=======
 - **Out of scope for the 80% gate:** static files under **`docs/examples/`** (see [Showcase stack matrix](#showcase-stack-matrix)).
   Headless browser smoke for those examples is specified in [docs/examples static demos: Playwright smoke tests](#docs-examples-static-demos-playwright-smoke-tests); it **does not** change the **`demo.py`** coverage metric or **`[tool.pytest.ini_options]`** **`--cov`** scope.
->>>>>>> origin/mc/backlog-ef4adea7
 
 ### Vanilla examples: integrator-facing replayt pins
 
@@ -642,11 +613,8 @@ explicit version constraints on its line:
 | **pytest** | Test runner |
 | **pytest-cov** | Line coverage and **`--cov-fail-under`** for **`src/replayt_ux_showcase/demo.py`** (via **`[tool.pytest.ini_options]`**) |
 <<<<<<< HEAD
-| **pytest-playwright** | Optional **Chromium** load smoke for **Shipped** **`docs/examples/*.html`** (separate **`ci.yml`** job; default **`pytest`** collection skips **`@pytest.mark.playwright`** via **`-m "not playwright"`** in **`addopts`**) |
-=======
 | **pytest-playwright** | **`pytest`** integration for **Playwright** ( **`page`** fixture, **`--browser`**); used only under **`tests/docs_examples_playwright/`** so default **`pytest`** runs do not load the browser stack |
 | **playwright** | **Playwright** Python package; browser binaries installed via **`playwright install`** (see **README**) |
->>>>>>> origin/mc/backlog-ef4adea7
 | **ruff** | Lint/format (as adopted by the repo) |
 | **pip-audit** | Supply-chain / vulnerability checks in contributor workflows |
 
@@ -742,8 +710,7 @@ work unless a change here explicitly requires synchronized updates to **`.github
 | **replayt** compatibility | **replayt** is pinned per **test** matrix cell (**`-c`** constraint) while staying inside **`[project].dependencies`**; contract tests and the **pytest** suite exercise pins, import smoke, and integration boundaries ([Demo module testing](#demo-module-testing-and-replayt-integration-boundaries), [Dependency pins](#dependency-pins-and-dev-toolchain)) | **`test_replayt_importable`**, **`test_replayt_dependency_matches_design_principles_matrix`**, **`test_ci_test_job_matrix_matches_design_principles_matrix`**, **`test_compat_ci_exercise_inventory_ids_match_ci_matrix`**, and full **`pytest`** run in CI |
 | **Supply chain** | Keep **`pip-audit`** aligned with **`docs/DEPENDENCY_AUDIT.md`** (including documented **`--ignore-vuln`** entries that match the workflow). | Existing **`supply-chain`** (or equivalent) job |
 <<<<<<< HEAD
-| **Static HTML smoke (optional)** | **`jobs.examples-playwright-smoke`**: **Playwright** loads **Shipped** **`docs/examples/*.html`** over **HTTP** per [Static HTML examples: browser smoke (Playwright)](#static-html-examples-browser-smoke-playwright); **Chromium**-first; scoped **`pytest`** (**`--no-cov`**, **`--override-ini="addopts="`**) does **not** replace **`jobs.test`** **pytest** **cov** gate | **`tests/playwright/test_static_html_examples_load.py`**; **`docs/compat.md`** **EX-PLAYWRIGHT-SMOKE**; **`test_ci_examples_playwright_smoke_job_matches_spec`** |
-| **replayt** minor-line float (optional) | **`schedule`** + **`workflow_dispatch`** only; **`pip install -e ".[dev]"`** with **PEP 508** constraint bounding **replayt** to **0.2.x** inside **`pyproject.toml`**; post-install version assert; **import smoke** + **`python -m replayt_ux_showcase.demo`** subprocess success only — **no** default **PR** trigger, **no** **ruff**/**cov**/**full pytest**/**Playwright**/**pip-audit** in this job unless a separate backlog expands it | **`.github/workflows/replayt-minor-float.yml`**; **`docs/compat.md`** **EX-REPLAYT-MINOR-FLOAT**; **`test_ci_replayt_minor_float_job_matches_spec`** |
+| **docs/examples** **Playwright** smoke | Run headless **Chromium** against **`basic-player.html`** served from **`docs/examples/`** over **HTTP**; **`pytest`** uses **`--no-cov`**; **non-zero** exit on failure | Job **`docs-examples-playwright`** in **`.github/workflows/ci.yml`**; **`test_ci_runs_docs_examples_playwright_smoke`** |
 
 ### Optional replayt minor-line float CI job
 
