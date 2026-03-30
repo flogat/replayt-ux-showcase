@@ -86,6 +86,7 @@ local tooling entries. Adapt or remove optional directories to match your teamâ€
 
 | Path | Purpose |
 | ---- | ------- |
+| `docs/README.md` | Documentation index â€” start here for navigation |
 | `docs/REPLAYT_ECOSYSTEM_IDEA.md` | Positioning (core-gap / showcase / bridge / combinator prompts) |
 | `docs/MISSION.md` | Mission and scope |
 | `docs/DESIGN_PRINCIPLES.md` | Design and integration principles |
