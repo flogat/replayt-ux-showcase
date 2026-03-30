@@ -9,11 +9,12 @@
       Tailwind content scanning (copy into your project so utilities are not purged):
       - v3 tailwind.config content:
           "./docs/examples/basic-player-tailwind.html"
-          "./src/**/*.{html,js}"   (when this file lives under src/)
+          "./src/**/*.{html,js,ts,jsx,tsx}"   (when this file lives under src/)
       - v4 in CSS:
           @source "./docs/examples/basic-player-tailwind.html";
-          @source "./src/**/*.{html,js}";
-      - CLI: npx tailwindcss --content "./docs/examples/basic-player-tailwind.html" -i ./input.css -o ./output.css
+          @source "./src/**/*.{html,js,ts,jsx,tsx}";
+      - CLI:
+          npx tailwindcss --content "./docs/examples/basic-player-tailwind.html" --content "./src/**/*.{html,js,ts,jsx,tsx}" -i ./input.css -o ./output.css
       All utility classes below are static in the markup (no safelist required for this snippet).
     -->
     <script src="https://cdn.tailwindcss.com"></script>

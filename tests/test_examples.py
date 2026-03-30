@@ -18,7 +18,7 @@ def test_basic_player_tailwind_html_exists():
 
 
 def test_basic_player_tailwind_contract_markers():
-    """Light contract: P-11 Tailwind parity with P-01 — fixture, adapter, init, content-path docs, pin (PATTERNS.md)."""
+    """P-11 keeps the shipped Tailwind story explicit: same teaching points as P-01 plus both scan-path cases."""
     text = (REPO_ROOT / "docs/examples/basic-player-tailwind.html").read_text(
         encoding="utf-8"
     )
@@ -26,9 +26,21 @@ def test_basic_player_tailwind_contract_markers():
     assert "cdn.tailwindcss.com" in text
     assert "tailwind.config" in text
     assert "@source" in text
+    assert '"./docs/examples/basic-player-tailwind.html"' in text
+    assert '"./src/**/*.{html,js,ts,jsx,tsx}"' in text
+    assert "--content" in text
+    assert "no safelist required for this snippet" in text
     assert "rux-showcase-session-fixture" in text
     assert "adaptConsoleSessionToReplaytMs" in text
     assert "replayt.player.init" in text
+    assert 'href="SESSION_SCHEMA.md"' in text
+    assert 'href="../playbook/tokens.md"' in text
+    assert 'href="../a11y/keyboard-model.md"' in text
+    assert "same object as <code>replayt_ux_showcase.demo.SAMPLE_SESSION_DATA</code>" in text
+    assert "often expects ms timestamps and camelCase metadata" in text
+    assert "wired to <code>--replayt-primary</code> for the player" in text
+    assert "Add timeline scrubber via replayt events API." in text
+    assert "tab order, scrubber keys, Escape" in text
     assert "keyboard-model.md" in text
     assert "cdn.jsdelivr.net/npm/replayt@" in text
 
