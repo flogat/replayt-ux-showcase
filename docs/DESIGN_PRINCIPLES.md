@@ -1217,15 +1217,17 @@ and **[offline / deterministic fixture](#offline-deterministic-fixture-page-for-
 
 **Scope:** **[P-11](examples/PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity)** in **`docs/examples/PATTERNS.md`** — primary file **`docs/examples/basic-player-tailwind.html`** (**Shipped**).
 
-**Normalized user story:** As an integrator, I want a **vanilla** example that matches **[`basic-player.html`](examples/basic-player.html)**’s **page chrome** and **`replayt.player.init`** story using **Tailwind CSS** utilities, with **copy-paste-safe** **Tailwind** **`content` / `@source`** documentation so production builds do not strip classes.
+**Normalized user story:** As an integrator, I want a **vanilla** example that matches **[`basic-player.html`](examples/basic-player.html)**’s **page chrome**, **instruction payload**, and **`replayt.player.init`** story using **Tailwind CSS** utilities, with **copy-paste-safe** **Tailwind** **`content` / `@source`** documentation for both repo-root and relocated-app copies so production builds do not strip classes.
 
 | Backlog acceptance criterion | Where specified | How verified (target — Builder / gate) |
 | ---------------------------- | --------------- | --------------------------------------- |
 | **P-11** registration + normative contract | **[`docs/examples/PATTERNS.md`](examples/PATTERNS.md)** — **P-11** | **`basic-player-tailwind.html`** on disk; inventory **Shipped** |
 | **P-01** fixture + adapter + **`init`** parity | **P-11** [Relationship to P-01](examples/PATTERNS.md#p-11-relationship-to-p-01-normative--replayt-contract) | **`tests/test_session_schema_examples.py`** (**`_FIXTURE_HTML_FILES`**); code review |
 | Layout + instruction panel parity (**Tailwind** utilities) | **P-11** [Layout parity](examples/PATTERNS.md#p-11-layout-parity-normative--tailwind-surface) | Code review; **`tests/test_examples.py`** markers |
+| Same five teaching points + relative links as **P-01** | **P-11** [Layout parity](examples/PATTERNS.md#p-11-layout-parity-normative--tailwind-surface) | Code review; **`tests/test_examples.py`** contract strings |
 | **`--replayt-primary`** / **`--rux-*`** preserved | **P-11** [Theme variables](examples/PATTERNS.md#p-11-theme-variables-normative) | Code review |
 | **Tailwind** scanning paths documented | **P-11** [Tailwind delivery and content paths](examples/PATTERNS.md#p-11-tailwind-delivery-and-content-paths-normative) | Code review |
+| Repo-root + relocated-app **Tailwind** scanning examples both documented | **P-11** [Tailwind delivery and content paths](examples/PATTERNS.md#p-11-tailwind-delivery-and-content-paths-normative) | Code review |
 | **a11y** link + tab order | **P-11** [Accessibility and keyboard](examples/PATTERNS.md#p-11-accessibility-and-keyboard-normative), **[`keyboard-model.md`](a11y/keyboard-model.md)** | Code review |
 | **replayt** **CDN** pin | **P-11** [Relationship to P-01](examples/PATTERNS.md#p-11-relationship-to-p-01-normative--replayt-contract) | **`tests/test_docs_examples_replayt_pins.py`** |
 | **Playwright** smoke + **MISSION** / **compat** / **README** | **P-11** [Verification intent](examples/PATTERNS.md#p-11-verification-intent-builder--tester--not-phase-2), **[`docs/MISSION.md`](MISSION.md#pattern-coverage-tracking)**, **[`docs/compat.md`](compat.md#vanilla-ui-pattern-catalog)** | Root **`basic-player-tailwind.html`** in **Shipped** inventory; vanilla count **8** |

@@ -956,7 +956,7 @@ As an integrator who standardizes on **Tailwind CSS** for app chrome, I want a *
 **`docs/examples/`** that **reproduces the layout and instruction panel** of **[`basic-player.html`](basic-player.html)** (**P-01**)
 using **Tailwind utility classes**, documents the **Tailwind content-scanning paths** I need so classes are not purged when I
 drop the file into my repo, and keeps the **same** **`replayt` player** initialization assumptions as **P-01** (fixture,
-adapter, **`replayt.player.init`**).
+adapter, **`replayt.player.init`**) without inventing a second embedding story.
 
 ### P-11 Relationship to P-01 (normative — replayt contract)
 
@@ -969,6 +969,9 @@ adapter, **`replayt.player.init`**).
   timestamp story — see [`SESSION_SCHEMA.md`](SESSION_SCHEMA.md) §2.
 - **Init:** **must** call **`replayt.player.init`** with **`container`**, **`data`**, and **`theme`** matching **P-01**
   (**`document.getElementById('player')`**, adapted payload, **`theme: 'light'`** unless a documented deviation is approved in review).
+- **Init surface:** Keep the same **single-page** teaching story as **P-01**. **Do not** swap in **`fetch()`**, framework state,
+  or a different **replayt** entrypoint for the primary example; optional “replace this fixture with your backend payload”
+  prose is fine in the instruction panel.
 - **CDN / pin:** Any **`<script src=…replayt…>`** **must** satisfy [Vanilla examples: integrator-facing replayt pins](../DESIGN_PRINCIPLES.md#vanilla-examples-integrator-facing-replayt-pins) (same PEP 508 band as **`pyproject.toml`**).
 
 ### P-11 Layout parity (normative — Tailwind surface)
@@ -981,9 +984,15 @@ adapter, **`replayt.player.init`**).
   matching **P-01**’s **`#player`** block.
 - **Heading:** Preserve an **`h1`** (or **`h1`**-equivalent with documented **`role="heading"`** / level) with the same
   integrator-facing title intent as **P-01** (emoji optional; copy may tighten but **must** remain obviously the “basic player” teaching page).
-- **Prose:** Instruction **bullet list** **must** cover the **same teaching points** as **P-01** (fixture / **`SESSION_SCHEMA`** §1 link,
-  §2 adapter note, **theme** / **`--rux-color-primary`** ↔ **`--replayt-primary`**, timeline extension hint, **`keyboard-model.md`** link).
-  Relative links **must** resolve from **`docs/examples/`** like **P-01** (**`../playbook/tokens.md`**, **`../a11y/keyboard-model.md`**, **`SESSION_SCHEMA.md`**).
+- **Instruction payload:** The instruction surface **must** keep **five** teaching points from **P-01**; wording may tighten,
+  order may vary, but each point must appear exactly once in the visible prose or bullet list:
+  1. **Fixture parity:** link to **`SESSION_SCHEMA.md`** §1 and state the JSON matches **`replayt_ux_showcase.demo.SAMPLE_SESSION_DATA`**.
+  2. **Adapter note:** explain that **`replayt.player.init`** typically needs **ms** timestamps / camelCase metadata and that the page adapts before **`init`**.
+  3. **Theme wiring:** explain **`--rux-color-primary`** → **`--replayt-primary`** and link to **`../playbook/tokens.md`**.
+  4. **Extension hint:** mention timeline/scrubber extension via the **replayt** events API.
+  5. **Keyboard handoff:** link to **`../a11y/keyboard-model.md`** and mention tab order / scrubber keys / **Escape**.
+- **Relative links:** Links in the instruction panel **must** resolve from **`docs/examples/`** like **P-01**
+  (**`../playbook/tokens.md`**, **`../a11y/keyboard-model.md`**, **`SESSION_SCHEMA.md`**).
 
 ### P-11 Theme variables (normative)
 
@@ -1000,10 +1009,12 @@ tokens **P-01** relies on) **defined** on **`:root`** or an equivalent ancestor 
 - **Primary file:** **`docs/examples/basic-player-tailwind.html`** (rename only with catalog + **CHANGELOG** + **compat** updates).
 - **Integrator-visible documentation:** The HTML **must** include a **prominent** comment block (and/or a short visible “Build / copy-paste”
   aside) listing **concrete `content` globs** (Tailwind **v3** `tailwind.config` / **v4** `@source` / CLI **`--content`**) that include **this file’s path**
-  when copied into a typical app tree (example: `"./docs/examples/basic-player-tailwind.html"` from repo root, or `"./src/**/*.{html,js}"` when the snippet lives in **`src/`**).
+  when copied into a typical app tree. The note **must** show **both** of these copy-paste cases:
+  1. repo-root / docs copy (`"./docs/examples/basic-player-tailwind.html"` or an equivalent glob that clearly includes the shipped file);
+  2. relocated app-source copy (`"./src/**/*.{html,js,ts,jsx,tsx}"` or an equivalent glob / **`@source`** example that clearly includes the pasted snippet).
 - **Tailwind distribution:** **Either** (a) document **Tailwind Play CDN** / standalone script with an explicit **“not for production”** maintainer note **in-snippet**, **or** (b) document a **built CSS** link produced locally (**Vite**, **Tailwind CLI**, etc.) and cross-link **[`docs/examples/build.md`](build.md)** for an optional **private** **`package.json`** recipe. Pick **one** primary story in the **Shipped** file so integrators are not left guessing.
 - **Purge safety:** Call out **dynamic class** pitfalls (**`safelist`** or equivalent) **only if** the snippet uses patterns that
-  require it; otherwise state that all classes are **static** in the markup.
+  require it; otherwise state that all classes are **static** in the markup and no **`safelist`** is needed for the shipped example.
 
 ### P-11 Accessibility and keyboard (normative)
 
@@ -1026,9 +1037,11 @@ When **Shipped**:
 1. **`docs/examples/basic-player-tailwind.html`** implements the normative sections above.
 2. [Pattern inventory](#pattern-inventory) lists **P-11** as **Shipped** with filename **`basic-player-tailwind.html`**.
 3. **[`docs/MISSION.md`](../MISSION.md#pattern-coverage-tracking)** vanilla **Shipped** count is **8**; **[`docs/compat.md`](../compat.md#vanilla-ui-pattern-catalog)** digest lists **P-11** as **Shipped**.
-4. **`CHANGELOG`** **Unreleased** records the new example; **[`README.md`](../../README.md)** project layout row added if table lists sibling examples.
-5. **`tests/test_session_schema_examples.py`**, **`tests/test_examples.py`**, **`tests/playwright/test_static_html_examples_load.py`** updated per [P-11 Verification intent](#p-11-verification-intent-builder--tester--not-phase-2).
-6. **[`docs/examples/build.md`](build.md)** documents optional **Vite** / **Tailwind** maintainer paths when **P-11** uses Play CDN as the primary integrator story (**optional** bundler subsection already covers extensions).
+4. The instruction panel carries the **same five teaching points** and the same relative-link destinations called out in [P-11 Layout parity](#p-11-layout-parity-normative--tailwind-surface).
+5. The build note / HTML comment includes **both** repo-root and relocated-app **Tailwind** scanning examples per [P-11 Tailwind delivery and content paths](#p-11-tailwind-delivery-and-content-paths-normative).
+6. **`CHANGELOG`** **Unreleased** records the new example; **[`README.md`](../../README.md)** project layout row added if table lists sibling examples.
+7. **`tests/test_session_schema_examples.py`**, **`tests/test_examples.py`**, **`tests/playwright/test_static_html_examples_load.py`** updated per [P-11 Verification intent](#p-11-verification-intent-builder--tester--not-phase-2).
+8. **[`docs/examples/build.md`](build.md)** documents optional **Vite** / **Tailwind** maintainer paths when **P-11** uses Play CDN as the primary integrator story (**optional** bundler subsection already covers extensions).
 
 ---
 
@@ -1038,7 +1051,9 @@ When **Shipped**:
 | ---------------------------- | ---------------- |
 | **`basic-player-tailwind.html`** (or equivalent) registered | [Pattern inventory](#pattern-inventory), [P-11 — Basic player chrome (Tailwind CSS layout parity)](#p-11--basic-player-chrome-tailwind-css-layout-parity) |
 | Layout + instruction panel parity with **P-01** | [P-11 Layout parity](#p-11-layout-parity-normative--tailwind-surface) |
+| Same five teaching points and relative links as **P-01** | [P-11 Layout parity](#p-11-layout-parity-normative--tailwind-surface) |
 | Tailwind **content** / **`@source`** copy-paste documentation | [P-11 Tailwind delivery and content paths](#p-11-tailwind-delivery-and-content-paths-normative) |
+| Repo-root and relocated-app scanning examples both documented | [P-11 Tailwind delivery and content paths](#p-11-tailwind-delivery-and-content-paths-normative) |
 | Same **`replayt.player.init`** assumptions as **P-01** | [P-11 Relationship to P-01](#p-11-relationship-to-p-01-normative--replayt-contract) |
 | Theme **`--replayt-primary`** / **`--rux-*`** story preserved | [P-11 Theme variables](#p-11-theme-variables-normative) |
 | **a11y** cross-link + tab order | [P-11 Accessibility and keyboard](#p-11-accessibility-and-keyboard-normative) |
