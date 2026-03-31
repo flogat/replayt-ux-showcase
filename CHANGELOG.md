@@ -9,11 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> master
 - Phase **2** spec (*Update GHCR publishing documentation to match the current workflow behavior*): **`docs/operations/deployment.md`** — deployment guide covering GHCR credential model: required (`GITHUB_TOKEN`/`GITHUB_ACTOR`) vs optional overrides (`GHCR_TOKEN`/`GHCR_USERNAME`), fallback behavior, use cases for custom credentials (cross-org publishing, restricted permissions, external integrations), security guidance, and troubleshooting table; **`.github/workflows/build-and-publish-images.yml`** — canonical workflow YAML with `secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN` fallback pattern; **`docs/DESIGN_PRINCIPLES.md`** — new [GHCR publishing credentials](docs/DESIGN_PRINCIPLES.md#ghcr-publishing-credentials) subsection with credential tiers table, workflow fallback behavior, use cases, security guidance, and troubleshooting; [Module and directory boundaries](docs/DESIGN_PRINCIPLES.md#module-and-directory-boundaries) row for `docs/operations/`; [Traceability to automated checks](docs/DESIGN_PRINCIPLES.md#traceability-to-automated-checks) row for GHCR publishing.
 - Phase **3** Builder (*Update GHCR publishing documentation to match the current workflow behavior*): **`docs/compat.md`** — added **EX-GHCR-PUBLISH** to [CI exercise row inventory](docs/compat.md#ci-exercise-row-inventory), documenting **`jobs.build-and-push`** in **`.github/workflows/build-and-publish-images.yml`** with trigger matrix and credential fallback behavior.
 - Phase **3** Builder (*Create a dedicated mission-and-scope document for contributors*): **`tests/test_mission_doc.py`** — contract tests for **`docs/MISSION.md`** existence, core sections, and cross-links to **`docs/README.md`**, **`docs/playbook/`**, and **`docs/design-kit/`**; README and docs index mission link coverage.
 - Phase **2** spec (*Create a dedicated mission-and-scope document for contributors*): **`docs/README.md`** — new documentation index with navigation table linking to **MISSION.md** and key docs; **`docs/MISSION.md`** linked from docs index and README project layout table so contributors can discover the mission document.
+<<<<<<< HEAD
 - Phase **2** spec (*Rewrite the README intro around audience, outcome, and scope*): **`docs/DESIGN_PRINCIPLES.md`** — new [README intro and repo orientation](docs/DESIGN_PRINCIPLES.md#readme-intro-and-repo-orientation) contract covering above-the-fold placement, required audience/outcome/non-goal copy, real-doc link targets, and Builder checklist; **`docs/MISSION.md`** — explicit **Non-goals** section so the README rewrite can point at stable repo boundaries instead of stale "main app / publish app" wording from the backlog text.
+=======
+>>>>>>> master
+- Phase **2** spec (*Rewrite the README intro around audience, outcome, and scope*): **`docs/DESIGN_PRINCIPLES.md`** — new [README intro and repo orientation](docs/DESIGN_PRINCIPLES.md#readme-intro-and-repo-orientation) contract covering above-the-fold placement, required audience/outcome/non-goal copy, real-doc link targets, and Builder checklist; **`docs/MISSION.md`** — explicit **Non-goals** section so the README rewrite can point at stable repo boundaries instead of stale “main app / publish app” wording from the backlog text.
+>>>>>>> master
 - Phase **3** Builder (*Rewrite the README intro around audience, outcome, and scope*): **`README.md`** — new top-of-file orientation block under the **H1** covering the intended audience, shipped repo surfaces (**`docs/examples/`**, **`docs/playbook/`**, **`docs/design-kit/`**, **`src/replayt_ux_showcase/`**), explicit non-goals, and direct next-step links to **Quick start**, **`docs/MISSION.md`**, **`docs/compat.md`**, **`docs/examples/PATTERNS.md`**, and **`docs/playbook/README.md`**.
 - Phase **8** CI fix (*Figma design kit stub: tokens + component list*): **`ruff format`** on **`tests/test_design_kit_docs.py`** so **`ruff format --check`** passes in **GitHub Actions** (matrix **test** job was failing on Ruff formatting for that file).
 - Phase **6** security review (*Figma design kit stub: tokens + component list*): reviewed **`git diff master`** (**`CHANGELOG.md`**, **`README.md`**, **`docs/DESIGN_PRINCIPLES.md`**, **`docs/MISSION.md`**, **`docs/design-kit/README.md`**, **`docs/playbook/README.md`**, **`docs/playbook/tokens.md`**, **`tests/test_design_kit_docs.py`**); docs + contract tests only — no **`pyproject.toml`** or **`.github/workflows/ci.yml`** changes; **`test_design_kit_docs.py`** reads markdown/JSON via **`pathlib`** (no network); no secrets, **`.env`**, or credential material in the diff; design-kit **Privacy** guidance on **Figma** URLs and secret tokens unchanged and still applicable; **CI** gates (**ruff**, **pytest** + **cov**, **`pip-audit`**, optional **Playwright**) unchanged by this diff.
@@ -135,6 +146,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Phase **8** CI fix (*Tailwind CSS integrator snippet for player chrome*): **`ruff format`** on **`tests/playwright/test_static_html_examples_load.py`** (wrap **`_CONSOLE_WARNING_ALLOWLIST`** tuple) so **`ruff format --check .`** passes in **CI** (failed run **23704015467**).
 - `tests/test_changelog_release_policy_docs.py`: **ruff format** (line wrap) and **LF** line endings so **`ruff format --check`** / Linux CI stay consistent (phase **8**, *CHANGELOG and release process for integrator-facing semver*).
 - `tests/test_examples.py`: **ruff format** so **`ruff format --check`** passes in CI (phase **8**, *Second UI pattern: event overlay / heatmap on static canvas* — **P-10** contract tests).
+=======
+- `docs/DESIGN_PRINCIPLES.md`: **Showcase stack matrix** and basic player contract notes now match **`tests/test_examples.py`** coverage for **`tailwind-player.html`** (phase 5 architecture review, same backlog).
+- `docs/examples/basic-player.html`: HTML comment states illustrative copy-paste / not an **npm** package, matching the static player contract (phase 5, same backlog).
+- `docs/examples/tailwind-player.html`: **Tailwind** Play CDN layout + CSS variables for theming; same **`sessionData`** / **`replayt.player.init`** contract as **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
+- `README.md`: **Examples** links **`basic-player.html`** and **`tailwind-player.html`**, contract anchors, illustrative-not-npm disclaimer; **Tailwind** entry is present tense (phase 2–3, Add Tailwind-based player layout example under docs/examples/).
+- `docs/DESIGN_PRINCIPLES.md`: basic player static HTML contract, **Showcase stack matrix** row for **Tailwind**, migration path row, and backlog traceability for **`docs/examples/tailwind-player.html`** (phase 2 spec, same backlog).
+
+### Tests
+
+- `tests/test_examples.py`: **`tailwind-player.html`** presence and contract parity with **`basic-player.html`** (phase 3, Add Tailwind-based player layout example under docs/examples/).
+>>>>>>> origin/mc/backlog-b7eb5287
 
 ## [0.2.0] - 2026-03-28
 
