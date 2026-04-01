@@ -45,13 +45,9 @@ python -m pytest tests --ignore=tests/docs_examples_playwright
 python -m pytest tests/docs_examples_playwright --no-cov --browser chromium
 ```
 
-<<<<<<< HEAD
-Run **`pytest`** from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). Default collection skips **`@pytest.mark.playwright`** tests (**`-m "not playwright"`** in **`addopts`**) so the main suite stays fast and does not require browser binaries. The **dev** extra pulls in **pytest-cov**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. Use **`python -m pytest`** from the repo root to match **CI** (same **`[tool.pytest.ini_options]`** as **`pytest`**).
+Run the first **`pytest`** line from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). Default collection skips **`@pytest.mark.playwright`** tests (**`-m "not playwright"`** in **`addopts`**), and **`--ignore=tests/docs_examples_playwright`** matches the main **CI** **`test`** job so legacy browser smoke stays off the **cov** path. The **dev** extra pulls in **pytest-cov**, **playwright**, and **pytest-playwright**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. The second **`pytest`** line runs the legacy **P-01** smoke only; it needs **`playwright install chromium`** once per machine (**Linux** **CI** uses **`install --with-deps chromium`**). Use **`python -m pytest`** from the repo root to match **CI**.
 
 **Design-to-code handoff (integrators):** After you can run the Python checks above, use **[`docs/playbook/README.md`](docs/playbook/README.md)** for **Tailwind-friendly** token tables, **timeline and overlay** component anatomy, and a **printable** checklist (accessibility, loading, error states). It links **[`docs/a11y/keyboard-model.md`](docs/a11y/keyboard-model.md)** and **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md)** for normative pattern rules. **Figma** library access, variable → **`rux-*`** mapping, interim **`design-tokens.json`**, shipped-example token wiring, and the component inventory live in **[`docs/design-kit/README.md`](docs/design-kit/README.md)** (**F1–F8**, **BC1–BC4**).
-=======
-Run the first **`pytest`** line from the **repository root** so **`[tool.pytest.ini_options]`** in **`pyproject.toml`** applies (coverage on **`replayt_ux_showcase.demo`**, fail-under **80**). **`--ignore=tests/docs_examples_playwright`** matches the main **CI** **`test`** job and keeps **Playwright** off the **cov** **addopts** path. The **dev** extra pulls in **pytest-cov**, **playwright**, and **pytest-playwright**; an editable install **without** **`[dev]`** is not enough and **`pytest`** often exits **4** with an unrecognized **`--cov`** argument. The second **`pytest`** line runs **P-01** smoke only; it needs **`playwright install chromium`** once per machine (**Linux** **CI** uses **`install --with-deps chromium`**). A bare **`pytest`** at the repo root still discovers **`tests/docs_examples_playwright`** and applies **cov** **addopts** to that session—use the two explicit commands above for a **CI**-aligned loop.
->>>>>>> origin/mc/backlog-ef4adea7
 
 **Tests and coverage policy** (demo module, **replayt** boundaries, **dev** pins) live in
 **[docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md)**; **[docs/demo.md](docs/demo.md)** defines the console demo contract.
@@ -102,7 +98,6 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/DEPENDENCY_AUDIT.md` | **`pip-audit`** (**Python** / **PyPI**): **CI** alignment, local reproduction, fix vs pin vs upstream, documented **`--ignore-vuln`** overrides |
 | `docs/compat.md` | Compatibility matrix digest, CI coverage truth, shims, migration |
 | `docs/demo.md` | Console demo contract (`python -m replayt_ux_showcase.demo`) |
-<<<<<<< HEAD
 | `docs/examples/` | Copy-paste static HTML/JS examples for integrators |
 | `docs/examples/react/` | **P-06** React timeline player + README (**Shipped** — **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-06--react-timeline-player-basic-player--scrubber-parity)**) |
 | `docs/examples/vue/` | **P-07** Vue 3 minimal player + scrubber + README (**Shipped** — **[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-07--vue-3-timeline-player-basic-player--scrubber-parity)**) |
@@ -113,22 +108,16 @@ local tooling entries. Adapt or remove optional directories to match your team�
 | `docs/examples/fixture-replay.html` | **P-05** deterministic offline fixture for reviewers / **LLM** harnesses (**Shipped** — **`docs/examples/PATTERNS.md`**) |
 | `docs/examples/event-overlay.html` | **P-09** event overlay lane (scrub-linked callouts, hover + keyboard) — **Shipped** (**[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-09--event-overlay-lane-scrub-hover-tooltips-keyboard)**) |
 | `docs/examples/click-heatmap-canvas.html` | **P-10** click density heatmap on a viewport-sized canvas — **Shipped** (**[`docs/examples/PATTERNS.md`](docs/examples/PATTERNS.md#p-10--click-heatmap-on-static-canvas-session-click-coordinates)**) |
+| `docs/examples/basic-player-tailwind.html` | **P-11** **Tailwind** layout twin of **P-01** + documented **`content` / `@source`** paths — **Shipped** — [**`docs/examples/PATTERNS.md`**](docs/examples/PATTERNS.md#p-11--basic-player-chrome-tailwind-css-layout-parity) |
 | `docs/examples/PATTERNS.md` | Canonical UI pattern inventory (mission **5+** tracking, per-pattern acceptance criteria) |
 | `docs/playbook/README.md` | **Design-to-code handoff**: tokens (**[`tokens.md`](docs/playbook/tokens.md)**), anatomy (**[`component-anatomy.md`](docs/playbook/component-anatomy.md)**), printable checklist (**[`handoff-checklist.md`](docs/playbook/handoff-checklist.md)**) |
 | `docs/design-kit/README.md` | **Figma** design kit spec: library access, **Figma** → **`rux-*`** mapping (**F3**), change requests, interim **`design-tokens.json`** (**F5**), shipped examples ↔ **`--rux-*`**, component inventory (**BC1–BC4**) — see **[`docs/DESIGN_PRINCIPLES.md`](docs/DESIGN_PRINCIPLES.md#design-kit-figma-and-token-export)** |
 | `docs/a11y/keyboard-model.md` | Shared **keyboard / focus** checklist for player and timeline embeds (tab order, scrubber keys, **Escape**) |
-=======
-| `docs/examples/` | Copy-paste static HTML/JS examples for integrators (not npm packages—see **Examples** below) |
->>>>>>> origin/mc/backlog-b7eb5287
 | `docs/reference-documentation/` | Optional markdown snapshot for contributors (when present) |
 | `src/replayt_ux_showcase/` | Python package (import `replayt_ux_showcase`) |
-| `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract; **`tests/docs_examples_playwright/`** — **Playwright** smoke for **`basic-player.html`** (**run with `--no-cov`**, see **Quick start**) |
+| `tests/` | Packaging and design-principles contract tests; demo behavior and coverage gates; **`docs/examples/`** **replayt** pin contract; legacy **`tests/docs_examples_playwright/`** smoke for **`basic-player.html`** and broader **`tests/playwright/`** smoke for shipped static demos |
 | `pyproject.toml` | Package metadata, dependencies, **pytest**/**ruff** config |
-<<<<<<< HEAD
-| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**; optional **`examples-playwright-smoke`** — **Playwright** / **Chromium** on **Shipped** **`docs/examples/*.html`**) |
-=======
-| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov** on **`tests/`** minus **`docs_examples_playwright`**, job **`docs-examples-playwright`**, **ruff**, **pip-audit**) |
->>>>>>> origin/mc/backlog-ef4adea7
+| `.github/workflows/` | **GitHub Actions** (editable **dev** install, **pytest** with **pytest-cov**, **ruff**, **pip-audit**; legacy **`docs-examples-playwright`** plus broader **`examples-playwright-smoke`** browser jobs) |
 | `CHANGELOG.md` | Release notes (Keep a Changelog); keep **Unreleased** updated |
 | `CONTRIBUTING.md` | Contributor guide: **CHANGELOG** / semver, **DESIGN_PRINCIPLES** + pins same change set |
 | `.gitignore` | Ignores `path/` (doc placeholders), `.orchestrator/`, `.cursor/skills/`, and `AGENTS.md` (local tooling) |
@@ -136,6 +125,6 @@ local tooling entries. Adapt or remove optional directories to match your team�
 ### Examples (`docs/examples/`)
 
 - **[`docs/examples/basic-player.html`](docs/examples/basic-player.html)** — vanilla CSS minimal player layout; reference for the [basic player example contract](docs/DESIGN_PRINCIPLES.md#basic-player-example-contract-static-html).
-- **[`docs/examples/tailwind-player.html`](docs/examples/tailwind-player.html)** — **Tailwind** utilities + CSS variables for the same [basic player example contract](docs/DESIGN_PRINCIPLES.md#basic-player-example-contract-static-html); details under [DESIGN_PRINCIPLES — Tailwind backlog traceability](docs/DESIGN_PRINCIPLES.md#backlog-traceability-tailwind-based-player-layout-example).
+- **[`docs/examples/basic-player-tailwind.html`](docs/examples/basic-player-tailwind.html)** — **Tailwind** utilities + CSS variables for the **P-11** layout twin of **P-01**; details under [DESIGN_PRINCIPLES — Tailwind backlog traceability](docs/DESIGN_PRINCIPLES.md#backlog-traceability-tailwind-basic-player-chrome-vanilla-p-11).
 
 These files are **illustrative copy-paste** starters only. They are **not** published **npm** packages and do not extend the Python package surface—see [`docs/DESIGN_PRINCIPLES.md` — Module and directory boundaries](docs/DESIGN_PRINCIPLES.md#module-and-directory-boundaries).

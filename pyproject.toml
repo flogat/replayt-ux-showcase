@@ -13,11 +13,7 @@ dev = [
   "playwright>=1.48.0",
   "pytest>=8.0",
   "pytest-cov>=5.0.0",
-<<<<<<< HEAD
   "pytest-playwright>=0.5.0,<0.7.0",
-=======
-  "pytest-playwright>=0.5.0",
->>>>>>> origin/mc/backlog-ef4adea7
   "ruff>=0.6.0",
 ]
 
@@ -42,7 +38,5 @@ addopts = [
 ]
 markers = [
   "playwright: Chromium load smoke for shipped docs/examples/*.html (see README; CI job examples-playwright-smoke)",
-]
-markers = [
   "browser_smoke: Playwright smoke for docs/examples (isolated from default pytest-cov addopts; see README).",
 ]

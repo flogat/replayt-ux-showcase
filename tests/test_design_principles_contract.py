@@ -87,22 +87,15 @@ def test_dev_optional_dependencies_match_baseline_package_set() -> None:
     names = {Requirement(d.strip()).name.lower() for d in dev}
     assert names == {
         "pip-audit",
-<<<<<<< HEAD
-=======
         "playwright",
->>>>>>> origin/mc/backlog-ef4adea7
         "pytest",
         "pytest-cov",
         "pytest-playwright",
         "ruff",
-<<<<<<< HEAD
-    }, f"dev extras must match DESIGN_PRINCIPLES baseline; got {sorted(names)}"
-=======
     }, (
         "dev extras must match DESIGN_PRINCIPLES.md Dev optional dependency set (baseline); "
         f"got {sorted(names)}"
     )
->>>>>>> origin/mc/backlog-ef4adea7
 
 
 def test_build_system_requires_have_version_constraints() -> None:
